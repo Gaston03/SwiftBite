@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "swift-bite",
-    "slug": "swift-bite",
+    "name": "swiftBite",
+    "slug": "swiftBite",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

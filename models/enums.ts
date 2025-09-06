@@ -1,0 +1,41 @@
+export enum VehicleType {
+  CAR = 'CAR',
+  MOTORCYCLE = 'MOTORCYCLE',
+  BICYCLE = 'BICYCLE',
+}
+
+export enum DocumentType {
+  ID_CARD = 'ID_CARD',
+  DRIVER_LICENSE = 'DRIVER_LICENSE',
+  VEHICLE_REGISTRATION = 'VEHICLE_REGISTRATION',
+}
+
+export enum EstablishmentType {
+  RESTAURANT = 'RESTAURANT',
+  GROCERY_STORE = 'GROCERY_STORE',
+  PHARMACY = 'PHARMACY',
+}
+
+export enum EstablishmentStatus {
+  OPEN = 'OPEN',
+  CLOSED = 'CLOSED',
+  TEMPORARILY_UNAVAILABLE = 'TEMPORARILY_UNAVAILABLE',
+}
+
+export enum OrderStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  PREPARING = 'PREPARING',
+  READY_FOR_PICKUP = 'READY_FOR_PICKUP',
+  PICKED_UP = 'PICKED_UP',
+  DELIVERING = 'DELIVERING',
+  DELIVERED = 'DELIVERED',
+  CANCELLED = 'CANCELLED',
+  REFUSED = 'REFUSED',
+}
+
+export enum PaymentMethodType {
+  CREDIT_CARD = 'CREDIT_CARD',
+  CASH = 'CASH',
+  MOBILE_MONEY = 'MOBILE_MONEY',
+}
