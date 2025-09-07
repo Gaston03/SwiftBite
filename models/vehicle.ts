@@ -5,6 +5,8 @@ export interface Vehicle {
   id: string;
   plateNumber: string;
   type: VehicleType;
+  createdAt: Date;
+  updatedAt?: Date;
   
   documents?: SBDocument[];
 }

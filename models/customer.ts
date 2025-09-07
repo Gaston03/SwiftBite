@@ -1,4 +1,5 @@
 import { Address } from "./address";
+import { UserRole } from "./enums";
 import { Order } from "./order";
 import { PaymentMethod } from "./payment-method";
 
@@ -9,6 +10,9 @@ export interface Customer {
   email: string;
   countryCode: string;
   phoneNumber: string;
+  createdAt: Date;
+  updatedAt?: Date
+  role: UserRole;
 
   address?: Address;
   orders?: Order[];

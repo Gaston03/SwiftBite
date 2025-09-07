@@ -5,4 +5,7 @@ export interface SBDocument {
   fileName: string;
   url: string;
   type: DocumentType;
+  createdAt: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }
