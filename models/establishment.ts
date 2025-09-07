@@ -1,7 +1,7 @@
-import {Address} from './address';
-import {Product} from './product';
-import {Order} from './order';
-import { EstablishmentStatus, EstablishmentType } from './enums';
+import { Address } from "./address";
+import { EstablishmentStatus, EstablishmentType } from "./enums";
+import { Order } from "./order";
+import { Product } from "./product";
 
 export interface Establishment {
   id: string;
@@ -9,8 +9,11 @@ export interface Establishment {
   type: EstablishmentType;
   openingHours: Record<string, number[]>;
   status: EstablishmentStatus;
-  commission: number;
+  deliveryFee: number;
   rate: number;
+  deliveryTime: string;
+  createdAt: Date;
+  updatedAt?: Date;
 
   address?: Address;
   products?: Product[];

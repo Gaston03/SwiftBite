@@ -8,4 +8,6 @@ export interface PaymentMethod {
   ownerFirstName?: string;
   ownerLastName?: string;
   cardLast4Digits?: string;
+  createdAt: Date;
+  updatedAt?: Date;
 }
