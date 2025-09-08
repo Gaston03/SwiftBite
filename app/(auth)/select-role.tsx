@@ -1,10 +1,40 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { COLORS, SIZES, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { Screen } from '@/components/shared/screen';
 
 export default function SelectRoleScreen() {
   const router = useRouter();
+  const { currentTheme } = useTheme();
+  const { colors, fonts, sizes } = currentTheme;
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: sizes.padding,
+    },
+    title: {
+      ...fonts.h1,
+      color: colors.text,
+      marginBottom: sizes.padding2,
+      textAlign: 'center',
+    },
+    button: {
+      backgroundColor: colors.primary,
+      paddingVertical: sizes.padding,
+      paddingHorizontal: sizes.padding * 2,
+      borderRadius: sizes.radius,
+      width: '100%',
+      alignItems: 'center',
+      marginBottom: sizes.padding,
+    },
+    buttonText: {
+      ...fonts.h4,
+      color: colors.black,
+    },
+  });
 
   return (
     <Screen>
@@ -20,31 +50,3 @@ export default function SelectRoleScreen() {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: SIZES.padding,
-  },
-  title: {
-    ...FONTS.h1,
-    color: COLORS.white,
-    marginBottom: SIZES.padding2,
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SIZES.padding,
-    paddingHorizontal: SIZES.padding * 2,
-    borderRadius: SIZES.radius,
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: SIZES.padding,
-  },
-  buttonText: {
-    ...FONTS.h4,
-    color: COLORS.black,
-  },
-});

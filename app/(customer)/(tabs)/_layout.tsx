@@ -1,17 +1,20 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { CartTabIcon } from '@/components/customer/cart-tab-icon';
-import { COLORS } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
 export default function CustomerTabsLayout() {
+  const { currentTheme } = useTheme();
+  const { colors } = currentTheme;
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.gray,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.gray,
         tabBarStyle: {
-          backgroundColor: COLORS.secondary,
-          borderTopColor: COLORS.tertiary,
+          backgroundColor: colors.background,
+          borderTopColor: colors.tertiary,
         },
         headerShown: false,
       }}

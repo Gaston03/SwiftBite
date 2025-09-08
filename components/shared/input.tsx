@@ -1,24 +1,26 @@
 import { TextInput, StyleSheet, TextInputProps } from 'react-native';
-import { COLORS, SIZES, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
 export function Input(props: TextInputProps) {
+  const { currentTheme } = useTheme();
+  const { colors, sizes, fonts } = currentTheme;
+
+  const styles = StyleSheet.create({
+    input: {
+      backgroundColor: colors.tertiary,
+      color: colors.text,
+      borderRadius: sizes.radius,
+      paddingHorizontal: sizes.padding,
+      paddingVertical: sizes.padding / 1.5,
+      ...fonts.body3,
+    },
+  });
+
   return (
     <TextInput
       style={[styles.input, props.style]}
-      placeholderTextColor={COLORS.gray}
+      placeholderTextColor={colors.gray}
       {...props}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    backgroundColor: COLORS.tertiary,
-    color: COLORS.white,
-    borderWidth: 0,
-    borderRadius: SIZES.radius,
-    paddingHorizontal: SIZES.padding,
-    paddingVertical: SIZES.padding / 1.5,
-    ...FONTS.body3,
-  },
-});

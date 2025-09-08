@@ -1,21 +1,27 @@
 import { ScrollView, StyleSheet, View, ViewProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
 interface ScreenProps extends ViewProps {
   scrollable?: boolean;
-  backgroundColor?: string;
 }
 
-export function Screen({
-  scrollable = false,
-  children,
-  style,
-  backgroundColor = COLORS.secondary,
-  ...props
-}: ScreenProps) {
+export function Screen({ scrollable = false, children, style, ...props }: ScreenProps) {
+  const { currentTheme } = useTheme();
+  const { colors } = currentTheme;
+
+  const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      padding: 16,
+    },
+  });
+
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+    <SafeAreaView style={styles.safeArea}>
       {scrollable ? (
         <ScrollView contentContainerStyle={styles.container} style={style} {...props}>
           {children}
@@ -28,12 +34,3 @@ export function Screen({
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  container: {
-    padding: 16,
-  },
-});

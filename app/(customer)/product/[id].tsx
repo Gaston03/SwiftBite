@@ -10,11 +10,14 @@ import { Button } from "@/components/shared/button";
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "@/contexts/cart-context";
 import * as Haptics from 'expo-haptics';
+import { useTheme } from "@/hooks/use-theme";
 
 export default function ProductDetailsScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { addToCart } = useCart();
+  const { currentTheme } = useTheme();
+  const { colors, fonts, sizes } = currentTheme;
   const [product, setProduct] = useState<Product | null>(null);
   const [establishmentName, setEstablishmentName] = useState("Back");
   const [quantity, setQuantity] = useState(1);
@@ -59,6 +62,42 @@ export default function ProductDetailsScreen() {
     }
   };
 
+  const styles = StyleSheet.create({
+    center: { flex: 1, justifyContent: "center", alignItems: "center" },
+    scrollContainer: { paddingBottom: 120 },
+    headerImage: { width: "100%", height: 300 },
+    infoContainer: { padding: sizes.padding },
+    name: { ...fonts.h1, color: colors.text, marginBottom: sizes.base },
+    description: { ...fonts.body3, color: colors.gray, lineHeight: 22 },
+    toppingsContainer: { paddingHorizontal: sizes.padding, marginTop: sizes.padding },
+    sectionTitle: { ...fonts.h2, color: colors.text, marginBottom: sizes.base },
+    footer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: sizes.padding,
+      backgroundColor: colors.background,
+      borderTopWidth: 1,
+      borderTopColor: colors.tertiary,
+    },
+    quantityContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginRight: sizes.padding,
+    },
+    quantityText: {
+      ...fonts.h2,
+      color: colors.text,
+      marginHorizontal: sizes.padding,
+    },
+    cartButton: {
+      flex: 1,
+    },
+  });
+
   if (!product) {
     return (
       <Screen style={styles.center}>
@@ -68,7 +107,7 @@ export default function ProductDetailsScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Stack.Screen
         options={{
           title: product.name,
@@ -78,13 +117,13 @@ export default function ProductDetailsScreen() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Image source={{ uri: product.imageUrl }} style={styles.headerImage} />
         <View style={styles.infoContainer}>
-          <Typography variant="title" style={styles.name}>{product.name}</Typography>
-          <Typography style={styles.description}>{product.description}</Typography>
+          <Text style={styles.name}>{product.name}</Text>
+          <Text style={styles.description}>{product.description}</Text>
         </View>
 
         {product.toppings && product.toppings.length > 0 && (
           <View style={styles.toppingsContainer}>
-            <Typography variant="subtitle" style={styles.sectionTitle}>Add-ons</Typography>
+            <Text style={styles.sectionTitle}>Add-ons</Text>
             {product.toppings.map(topping => (
               <ToppingRow
                 key={topping.id}
@@ -100,15 +139,15 @@ export default function ProductDetailsScreen() {
       <View style={styles.footer}>
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => setQuantity(q => Math.max(1, q - 1))}>
-            <Ionicons name="remove-circle-outline" size={32} color="#333" />
+            <Ionicons name="remove-circle-outline" size={32} color={colors.gray} />
           </TouchableOpacity>
           <Text style={styles.quantityText}>{quantity}</Text>
           <TouchableOpacity onPress={() => setQuantity(q => q + 1)}>
-            <Ionicons name="add-circle" size={32} color="#FF6347" />
+            <Ionicons name="add-circle" size={32} color={colors.primary} />
           </TouchableOpacity>
         </View>
         <Button
-          title={`Add to Cart - $${totalPrice.toFixed(2)}`}
+          title={`Add - $${totalPrice.toFixed(2)}`}
           onPress={handleAddToCart}
           style={styles.cartButton}
         />
@@ -116,39 +155,3 @@ export default function ProductDetailsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  scrollContainer: { paddingBottom: 120 }, // Padding for the sticky footer
-  headerImage: { width: "100%", height: 300 },
-  infoContainer: { padding: 16 },
-  name: { marginBottom: 8 },
-  description: { color: '#666', lineHeight: 22 },
-  toppingsContainer: { paddingHorizontal: 16, marginTop: 16 },
-  sectionTitle: { marginBottom: 8 },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  quantityText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginHorizontal: 16,
-  },
-  cartButton: {
-    flex: 1,
-  },
-});
