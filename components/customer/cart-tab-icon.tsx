@@ -1,39 +1,46 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '@/contexts/cart-context';
-import { useRouter } from 'expo-router';
 
-export function CartIcon() {
+type CartTabIconProps = {
+  focused: boolean;
+  color: string;
+  size: number;
+};
+
+export function CartTabIcon({ focused, color, size }: CartTabIconProps) {
   const { itemCount } = useCart();
-  const router = useRouter();
 
   return (
-    <TouchableOpacity onPress={() => router.push('/(customer)/cart')} style={styles.container}>
-      <Ionicons name="cart-outline" size={28} color="#333" />
+    <View style={styles.container}>
+      <Ionicons name={focused ? 'cart' : 'cart-outline'} size={size} color={color} />
       {itemCount > 0 && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{itemCount}</Text>
         </View>
       )}
-    </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginRight: 16,
-    padding: 4,
+    width: 24, // To match the other icons
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   badge: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: -5,
+    right: -10,
     backgroundColor: '#FF6347',
     borderRadius: 10,
-    width: 20,
+    minWidth: 20,
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 4,
     borderWidth: 1,
     borderColor: '#fff',
   },
