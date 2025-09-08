@@ -1,37 +1,130 @@
 import { Order } from "@/models/order";
+import { supabase } from "@/utils/supabase";
+import { keysToCamelCase, keysToSnakeCase } from "@/utils/case-converter";
+import { OrderStatus } from "@/models/enums";
 
 export type CreateOrderData = Omit<Order, "id" | "createdAt" | "updatedAt">;
 
-//TODO: Implement this class
 class OrderService {
-  placeOrder = async (data: CreateOrderData): Promise<void> => {};
+  placeOrder = async (data: CreateOrderData): Promise<void> => {
+    const { error } = await supabase
+      .from("orders")
+      .insert(keysToSnakeCase(data));
 
-  replaceOrder = async (orderId: string): Promise<void> => {};
+    if (error) {
+      throw error;
+    }
+  };
 
-  updateOrder = async (id: string, data: Partial<Order>): Promise<void> => {};
+  replaceOrder = async (orderId: string): Promise<void> => {
+    const oldOrder = await this.getOrderById(orderId);
 
-  acceptOrder = async (id: string): Promise<void> => {};
+    if (oldOrder) {
+      const { id, ...rest } = oldOrder;
+      const { error } = await supabase
+        .from("orders")
+        .insert(keysToSnakeCase(rest));
 
-  refuseOrder = async (id: string): Promise<void> => {};
+      if (error) {
+        throw error;
+      }
+    }
+  };
 
-  deleteOrder = async (id: string): Promise<void> => {};
+  updateOrder = async (id: string, data: Partial<Order>): Promise<void> => {
+    const { error } = await supabase
+      .from("orders")
+      .update(keysToSnakeCase(data))
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  acceptOrder = async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from("orders")
+      .update({ status: OrderStatus.ACCEPTED })
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  refuseOrder = async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from("orders")
+      .update({ status: OrderStatus.REFUSED })
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  deleteOrder = async (id: string): Promise<void> => {
+    const { error } = await supabase.from("orders").delete().eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+  };
 
   getOrderById = async (id: string): Promise<Order | null> => {
-    return null;
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return keysToCamelCase(data);
   };
 
   getEstablishmentOrders = async (
     establishmentId: string
   ): Promise<Order[]> => {
-    return [];
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("establishment_id", establishmentId);
+
+    if (error) {
+      throw error;
+    }
+
+    return keysToCamelCase(data || []);
   };
 
   getCustomerOrders = async (customerId: string): Promise<Order[]> => {
-    return [];
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("customer_id", customerId);
+
+    if (error) {
+      throw error;
+    }
+
+    return keysToCamelCase(data || []);
   };
 
   getDelivererOrders = async (delivererId: string): Promise<Order[]> => {
-    return [];
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("deliverer_id", delivererId);
+
+    if (error) {
+      throw error;
+    }
+
+    return keysToCamelCase(data || []);
   };
 }
 

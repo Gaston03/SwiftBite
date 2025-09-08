@@ -1,9 +1,8 @@
-import {Address} from './address';
+import { Address } from './address';
 import { UserRole } from './enums';
-import {Order} from './order';
-import {PaymentMethod} from './payment-method.js';
+import { Order } from './order';
+import { PaymentMethod } from './payment-method.js';
 import { SBDocument } from './sb-document';
-import {Vehicle} from './vehicle';
 
 export interface Deliverer {
   id: string;
@@ -20,7 +19,6 @@ export interface Deliverer {
 
   address?: Address;
   paymentMethod?: PaymentMethod;
-  vehicle?: Vehicle;
   orders?: Order[];
   documents?: SBDocument[];
 }

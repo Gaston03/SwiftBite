@@ -1,4 +1,6 @@
 import { OrderProductLine } from "@/models/order-product-line";
+import { supabase } from "@/utils/supabase";
+import { keysToCamelCase, keysToSnakeCase } from "@/utils/case-converter";
 
 export type CreateOrderProductLineData = Omit<
   OrderProductLine,
@@ -8,14 +10,40 @@ export type CreateOrderProductLineData = Omit<
 class OrderProductLineService {
   createOrderProductLine = async (
     data: CreateOrderProductLineData
-  ): Promise<void> => {};
+  ): Promise<void> => {
+    const { error } = await supabase
+      .from("order_product_lines")
+      .insert(keysToSnakeCase(data));
 
-  deleteOrderProductLine = async (id: string): Promise<void> => {};
+    if (error) {
+      throw error;
+    }
+  };
+
+  deleteOrderProductLine = async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from("order_product_lines")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+  };
 
   getProductLinesByOrderId = async (
     orderId: string
   ): Promise<OrderProductLine[]> => {
-    return [];
+    const { data, error } = await supabase
+      .from("order_product_lines")
+      .select("*")
+      .eq("order_id", orderId);
+
+    if (error) {
+      throw error;
+    }
+
+    return keysToCamelCase(data || []);
   };
 }
 

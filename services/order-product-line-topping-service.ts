@@ -1,12 +1,34 @@
 import { OrderProductLineTopping } from "@/models/order-product-line-topping";
+import { supabase } from "@/utils/supabase";
+import { keysToSnakeCase } from "@/utils/case-converter";
 
-//TODO: Implement this class
 class OrderProductLineToppingService {
   createOrderProductLineTopping = async (
     data: OrderProductLineTopping
-  ): Promise<void> => {};
+  ): Promise<void> => {
+    const { error } = await supabase
+      .from("order_product_line_toppings")
+      .insert(keysToSnakeCase(data));
 
-  deleteOrderProductLineTopping = async (id: string): Promise<void> => {};
+    if (error) {
+      throw error;
+    }
+  };
+
+  deleteOrderProductLineTopping = async (
+    productLineId: string,
+    toppingId: string
+  ): Promise<void> => {
+    const { error } = await supabase
+      .from("order_product_line_toppings")
+      .delete()
+      .eq("product_line_id", productLineId)
+      .eq("topping_id", toppingId);
+
+    if (error) {
+      throw error;
+    }
+  };
 }
 
 export const orderProductLineToppingService =
