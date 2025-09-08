@@ -2,7 +2,7 @@ import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { View, StyleSheet, ScrollView, Image, Text, TouchableOpacity } from "react-native";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { MOCK_PRODUCTS } from "@/constants/mock-data";
+import { MOCK_PRODUCTS, MOCK_ESTABLISHMENTS } from "@/constants/mock-data";
 import { Product } from "@/models/product";
 import { useEffect, useState } from "react";
 import { ToppingRow } from "@/components/customer/topping-row";
@@ -16,6 +16,7 @@ export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
+  const [establishmentName, setEstablishmentName] = useState("Back");
   const [quantity, setQuantity] = useState(1);
   const [selectedToppings, setSelectedToppings] = useState<Record<string, boolean>>({});
   const [totalPrice, setTotalPrice] = useState(0);
@@ -26,6 +27,10 @@ export default function ProductDetailsScreen() {
       setProduct(foundProduct || null);
       if (foundProduct) {
         setTotalPrice(foundProduct.price);
+        const foundEstablishment = MOCK_ESTABLISHMENTS.find(
+          (e) => e.id === foundProduct.establishmentId
+        );
+        setEstablishmentName(foundEstablishment?.name || "Back");
       }
     }
   }, [id]);
@@ -64,7 +69,12 @@ export default function ProductDetailsScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Stack.Screen options={{ title: product.name, headerBackTitle: "Back" }} />
+      <Stack.Screen
+        options={{
+          title: product.name,
+          headerBackTitle: establishmentName,
+        }}
+      />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Image source={{ uri: product.imageUrl }} style={styles.headerImage} />
         <View style={styles.infoContainer}>

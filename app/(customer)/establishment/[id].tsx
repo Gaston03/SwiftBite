@@ -16,7 +16,7 @@ type ProductSection = {
 
 export default function EstablishmentDetailsScreen() {
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, category } = useLocalSearchParams<{ id: string, category?: string }>();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
   const [productSections, setProductSections] = useState<ProductSection[]>([]);
 
@@ -58,7 +58,12 @@ export default function EstablishmentDetailsScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: establishment.name, headerBackTitle: "Back" }} />
+      <Stack.Screen
+        options={{
+          title: establishment.name,
+          headerBackTitle: category || "Back",
+        }}
+      />
       <SectionList
         sections={productSections}
         keyExtractor={(item) => item.id}
