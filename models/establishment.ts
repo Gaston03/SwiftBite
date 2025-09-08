@@ -6,6 +6,7 @@ import { Product } from "./product";
 export interface Establishment {
   id: string;
   name: string;
+  imageUrl: string;
   type: EstablishmentType;
   openingHours: Record<string, number[]>;
   status: EstablishmentStatus;
