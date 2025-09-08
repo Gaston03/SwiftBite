@@ -2,6 +2,7 @@ import { PaymentMethodType } from "./enums";
 
 export interface PaymentMethod {
   id: string;
+  ownerId: string;
   type: PaymentMethodType;
   countryCode?: string;
   phone?: string;

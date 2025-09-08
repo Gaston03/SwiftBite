@@ -1,9 +1,9 @@
-import { Product } from './product';
 import { Topping } from './topping';
 
 export interface OrderProductLine {
   id: string;
   orderId: string;
+  productId: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
@@ -11,6 +11,5 @@ export interface OrderProductLine {
   createdAt: Date;
   updatedAt?: Date;
 
-  product: Product;
   selectedToppings?: Topping[];
 }
