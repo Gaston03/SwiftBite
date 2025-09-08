@@ -8,6 +8,7 @@ export interface Customer {
   firstName: string;
   lastName: string;
   email: string;
+  avatar?: string;
   countryCode: string;
   phoneNumber: string;
   createdAt: Date;

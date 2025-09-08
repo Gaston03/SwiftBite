@@ -1,10 +1,10 @@
-import { View, StyleSheet, Image } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { ProfileRow } from "@/components/customer/profile-row";
+import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { MOCK_USER } from "@/constants/mock-data";
-import { ProfileRow } from "@/components/customer/profile-row";
-import { Button } from "@/components/shared/button";
+import { Stack, useRouter } from "expo-router";
+import { Image, StyleSheet, View } from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function ProfileScreen() {
     <Screen>
       <Stack.Screen options={{ title: "My Profile" }} />
       <View style={styles.header}>
-        <Image source={{ uri: MOCK_USER.avatarUrl }} style={styles.avatar} />
+        <Image source={{ uri: MOCK_USER.avatar }} style={styles.avatar} />
         <Typography variant="title" style={styles.name}>
           {MOCK_USER.firstName} {MOCK_USER.lastName}
         </Typography>

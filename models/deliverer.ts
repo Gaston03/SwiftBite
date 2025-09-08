@@ -9,6 +9,7 @@ export interface Deliverer {
   firstName: string;
   lastName: string;
   email: string;
+  avartar?: string;
   countryCode: string;
   phoneNumber: string;
   available: boolean;
