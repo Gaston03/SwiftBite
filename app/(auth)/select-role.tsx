@@ -1,19 +1,23 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { COLORS, SIZES, FONTS } from '@/constants/theme';
+import { Screen } from '@/components/shared/screen';
 
 export default function SelectRoleScreen() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>How do you want to use SwiftBite?</Text>
-      <TouchableOpacity style={styles.button} onPress={() => router.push('/(customer)/home')}>
-        <Text style={styles.buttonText}>I'm a Customer</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => router.push('/(deliverer)/home')}>
-        <Text style={styles.buttonText}>I'm a Deliverer</Text>
-      </TouchableOpacity>
-    </View>
+    <Screen>
+      <View style={styles.container}>
+        <Text style={styles.title}>How do you want to use SwiftBite?</Text>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/(customer)/home')}>
+          <Text style={styles.buttonText}>I'm a Customer</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/(deliverer)/home')}>
+          <Text style={styles.buttonText}>I'm a Deliverer</Text>
+        </TouchableOpacity>
+      </View>
+    </Screen>
   );
 }
 
@@ -22,27 +26,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
+    padding: SIZES.padding,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 32,
+    ...FONTS.h1,
+    color: COLORS.white,
+    marginBottom: SIZES.padding2,
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#FF6347',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 8,
+    backgroundColor: COLORS.primary,
+    paddingVertical: SIZES.padding,
+    paddingHorizontal: SIZES.padding * 2,
+    borderRadius: SIZES.radius,
     width: '100%',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: SIZES.padding,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    ...FONTS.h4,
+    color: COLORS.black,
   },
 });
