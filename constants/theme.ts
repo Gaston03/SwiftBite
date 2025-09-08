@@ -2,16 +2,6 @@ import { Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
-export const COLORS = {
-  primary: '#FFD700', // A vibrant yellow, similar to Glovo
-  secondary: '#212121', // A dark color for backgrounds
-  tertiary: '#424242', // A slightly lighter dark color for cards and surfaces
-  white: '#FFFFFF',
-  black: '#000000',
-  gray: '#9E9E9E',
-  lightGray: '#F5F5F5',
-};
-
 export const SIZES = {
   // global sizes
   base: 8,
@@ -48,6 +38,38 @@ export const FONTS = {
   body4: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.body4, lineHeight: 22 },
 };
 
-const appTheme = { COLORS, SIZES, FONTS };
+const darkColors = {
+  primary: '#FF5722', // Deep Orange
+  secondary: '#212121',
+  tertiary: '#424242',
+  white: '#FFFFFF',
+  black: '#000000',
+  gray: '#9E9E9E',
+  lightGray: '#F5F5F5',
+  background: '#121212',
+  text: '#FFFFFF',
+};
 
-export default appTheme;
+const lightColors = {
+  primary: '#FF5722',
+  secondary: '#FFFFFF',
+  tertiary: '#F5F5F5',
+  white: '#FFFFFF',
+  black: '#000000',
+  gray: '#616161',
+  lightGray: '#E0E0E0',
+  background: '#FFFFFF',
+  text: '#000000',
+};
+
+export const darkTheme = {
+  colors: darkColors,
+  sizes: SIZES,
+  fonts: FONTS,
+};
+
+export const lightTheme = {
+  colors: lightColors,
+  sizes: SIZES,
+  fonts: FONTS,
+};

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
-import { COLORS, SIZES, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import Animated, { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, interpolate, Extrapolate } from 'react-native-reanimated';
 
 const onboardingSlides = [
@@ -27,6 +27,36 @@ const onboardingSlides = [
 ];
 
 const Slide = ({ item }) => {
+  const { currentTheme } = useTheme();
+  const { colors, fonts, sizes } = currentTheme;
+
+  const styles = StyleSheet.create({
+    slide: {
+      width: sizes.width,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: sizes.padding * 2,
+    },
+    image: {
+      width: sizes.width * 0.7,
+      height: sizes.width * 0.7,
+      resizeMode: 'contain',
+    },
+    title: {
+      ...fonts.h1,
+      color: colors.text,
+      textAlign: 'center',
+      marginTop: sizes.padding2,
+    },
+    subtitle: {
+      ...fonts.body3,
+      color: colors.gray,
+      textAlign: 'center',
+      marginTop: sizes.padding,
+      maxWidth: '70%',
+    },
+  });
+
   return (
     <View style={styles.slide}>
       <Image source={item.image} style={styles.image} />
@@ -37,11 +67,29 @@ const Slide = ({ item }) => {
 };
 
 const Paginator = ({ data, scrollX }) => {
+  const { currentTheme } = useTheme();
+  const { colors, sizes } = currentTheme;
+
+  const styles = StyleSheet.create({
+    paginatorContainer: {
+        flexDirection: 'row',
+        height: 64,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    dot: {
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: colors.primary,
+        marginHorizontal: 8,
+    },
+  });
+
   return (
     <View style={styles.paginatorContainer}>
       {data.map((_, i) => {
         const style = useAnimatedStyle(() => {
-          const inputRange = [(i - 1) * SIZES.width, i * SIZES.width, (i + 1) * SIZES.width];
+          const inputRange = [(i - 1) * sizes.width, i * sizes.width, (i + 1) * sizes.width];
           const dotWidth = interpolate(scrollX.value, inputRange, [10, 20, 10], Extrapolate.CLAMP);
           const opacity = interpolate(scrollX.value, inputRange, [0.3, 1, 0.3], Extrapolate.CLAMP);
           return {
@@ -57,6 +105,25 @@ const Paginator = ({ data, scrollX }) => {
 
 const NextButton = ({ scrollTo, isLastSlide }) => {
     const router = useRouter();
+    const { currentTheme } = useTheme();
+    const { colors, fonts, sizes } = currentTheme;
+
+    const styles = StyleSheet.create({
+        button: {
+            backgroundColor: colors.primary,
+            padding: sizes.padding,
+            borderRadius: sizes.radius,
+            width: '80%',
+            alignItems: 'center',
+            marginBottom: 30,
+        },
+        buttonText: {
+            ...fonts.h4,
+            color: colors.black,
+            fontWeight: 'bold'
+        }
+    });
+
     const onPress = () => {
         if (isLastSlide) {
             router.push('/(auth)/select-role');
@@ -72,6 +139,8 @@ const NextButton = ({ scrollTo, isLastSlide }) => {
 };
 
 export default function OnboardingScreen() {
+  const { currentTheme } = useTheme();
+  const { colors } = currentTheme;
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useSharedValue(0);
   const slidesRef = useRef(null);
@@ -90,6 +159,15 @@ export default function OnboardingScreen() {
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
     scrollX.value = event.contentOffset.x;
+  });
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
   });
 
   return (
@@ -115,61 +193,3 @@ export default function OnboardingScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.secondary,
-  },
-  slide: {
-    width: SIZES.width,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: SIZES.padding * 2,
-  },
-  image: {
-    width: SIZES.width * 0.7,
-    height: SIZES.width * 0.7,
-    resizeMode: 'contain',
-  },
-  title: {
-    ...FONTS.h1,
-    color: COLORS.white,
-    textAlign: 'center',
-    marginTop: SIZES.padding2,
-  },
-  subtitle: {
-    ...FONTS.body3,
-    color: COLORS.gray,
-    textAlign: 'center',
-    marginTop: SIZES.padding,
-    maxWidth: '70%',
-  },
-  paginatorContainer: {
-      flexDirection: 'row',
-      height: 64,
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
-  dot: {
-      height: 10,
-      borderRadius: 5,
-      backgroundColor: COLORS.primary,
-      marginHorizontal: 8,
-  },
-  button: {
-      backgroundColor: COLORS.primary,
-      padding: SIZES.padding,
-      borderRadius: SIZES.radius,
-      width: '80%',
-      alignItems: 'center',
-      marginBottom: 30,
-  },
-  buttonText: {
-      ...FONTS.h4,
-      color: COLORS.black,
-      fontWeight: 'bold'
-  }
-});

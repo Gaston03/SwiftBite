@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, PressableProps } from 'react-native';
-import { COLORS, SIZES, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
 type ButtonProps = PressableProps & {
@@ -8,6 +8,8 @@ type ButtonProps = PressableProps & {
 };
 
 export function Button({ title, variant = 'primary', style, ...props }: ButtonProps) {
+  const { currentTheme } = useTheme();
+  const { colors, sizes, fonts } = currentTheme;
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -24,6 +26,30 @@ export function Button({ title, variant = 'primary', style, ...props }: ButtonPr
     scale.value = withSpring(1);
   };
 
+  const styles = StyleSheet.create({
+    button: {
+      paddingVertical: sizes.padding,
+      paddingHorizontal: sizes.padding * 2,
+      borderRadius: sizes.radius,
+      alignItems: 'center',
+    },
+    primary: {
+      backgroundColor: colors.primary,
+    },
+    secondary: {
+      backgroundColor: colors.tertiary,
+    },
+    text: {
+      ...fonts.h4,
+    },
+    primaryText: {
+      color: colors.black,
+    },
+    secondaryText: {
+      color: colors.white,
+    },
+  });
+
   return (
     <Animated.View style={animatedStyle}>
       <Pressable
@@ -36,27 +62,3 @@ export function Button({ title, variant = 'primary', style, ...props }: ButtonPr
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-    button: {
-      paddingVertical: SIZES.padding,
-      paddingHorizontal: SIZES.padding * 2,
-      borderRadius: SIZES.radius,
-      alignItems: 'center',
-    },
-    primary: {
-      backgroundColor: COLORS.primary,
-    },
-    secondary: {
-      backgroundColor: COLORS.tertiary,
-    },
-    text: {
-      ...FONTS.h4,
-    },
-    primaryText: {
-      color: COLORS.black,
-    },
-    secondaryText: {
-      color: COLORS.white,
-    },
-  });

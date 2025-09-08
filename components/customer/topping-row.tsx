@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Checkbox from 'expo-checkbox';
+import { useTheme } from '@/hooks/use-theme';
 
 type ToppingRowProps = {
   name: string;
@@ -9,37 +10,41 @@ type ToppingRowProps = {
 };
 
 export function ToppingRow({ name, price, isSelected, onValueChange }: ToppingRowProps) {
+  const { currentTheme } = useTheme();
+  const { colors, fonts, sizes } = currentTheme;
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: sizes.padding,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.tertiary,
+    },
+    checkbox: {
+      marginRight: sizes.padding,
+    },
+    name: {
+      ...fonts.body3,
+      color: colors.text,
+      flex: 1,
+    },
+    price: {
+      ...fonts.body3,
+      color: colors.gray,
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Checkbox
         style={styles.checkbox}
         value={isSelected}
         onValueChange={onValueChange}
-        color={isSelected ? '#FF6347' : undefined}
+        color={isSelected ? colors.primary : undefined}
       />
       <Text style={styles.name}>{name}</Text>
       <Text style={styles.price}>+${price.toFixed(2)}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  checkbox: {
-    marginRight: 12,
-  },
-  name: {
-    flex: 1,
-    fontSize: 16,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/hooks/use-theme';
 
 type ProfileRowProps = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -8,28 +9,32 @@ type ProfileRowProps = {
 };
 
 export function ProfileRow({ icon, label, onPress }: ProfileRowProps) {
+  const { currentTheme } = useTheme();
+  const { colors, fonts, sizes } = currentTheme;
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: sizes.padding,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.tertiary,
+    },
+    icon: {
+      marginRight: sizes.padding,
+    },
+    label: {
+      ...fonts.body3,
+      color: colors.text,
+      flex: 1,
+    },
+  });
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Ionicons name={icon} size={24} color="#333" style={styles.icon} />
+      <Ionicons name={icon} size={24} color={colors.text} style={styles.icon} />
       <Text style={styles.label}>{label}</Text>
-      <Ionicons name="chevron-forward" size={24} color="#ccc" />
+      <Ionicons name="chevron-forward" size={24} color={colors.gray} />
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  icon: {
-    marginRight: 16,
-  },
-  label: {
-    flex: 1,
-    fontSize: 16,
-  },
-});

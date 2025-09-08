@@ -2,11 +2,13 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withRepeat, Easing } from 'react-native-reanimated';
-import { COLORS } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
 const logo = require('@/assets/images/logo.png');
 
 export function SplashScreen() {
+  const { currentTheme } = useTheme();
+  const { colors } = currentTheme;
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -26,6 +28,24 @@ export function SplashScreen() {
     );
   }, [scale]);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    logoContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logo: {
+      width: 150,
+      height: 150,
+      resizeMode: 'contain',
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.logoContainer, animatedStyle]}>
@@ -34,21 +54,3 @@ export function SplashScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.secondary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    width: 150,
-    height: 150,
-    resizeMode: 'contain',
-  },
-});
