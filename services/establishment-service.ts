@@ -74,6 +74,16 @@ class EstablishmentService {
     return keysToCamelCase(data || []);
   };
 
+  getAllEstablishments = async (): Promise<Establishment[]> => {
+    const { data, error } = await supabase.from("establishments").select("*");
+
+    if (error) {
+      throw error;
+    }
+
+    return keysToCamelCase(data || []);
+  };
+
   getEstablishmentsByType = async (
     type: EstablishmentType
   ): Promise<Establishment[]> => {
