@@ -21,6 +21,7 @@ interface EstablishmentContextData {
   getEstablishmentsByType: (
     type: EstablishmentType
   ) => Promise<Establishment[]>;
+  getAllEstablishments: () => Promise<void>;
 }
 
 export const EstablishmentContext = createContext<EstablishmentContextData>(
@@ -90,6 +91,18 @@ export const EstablishmentProvider = ({
     }
   };
 
+  const getAllEstablishments = async () => {
+    try {
+      setLoading(true);
+      const data = await establishmentService.getAllEstablishments();
+      setEstablishments(data);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getEstablishmentsByType = async (type: EstablishmentType) => {
     try {
       setLoading(true);
@@ -115,6 +128,7 @@ export const EstablishmentProvider = ({
         deleteEstablishment,
         getEstablishmentById,
         getEstablishmentsByType,
+        getAllEstablishments,
       }}
     >
       {children}
