@@ -5,20 +5,22 @@ import {
   EmailAndPasswordSignInData,
   PhoneNumberSignInData,
   SignUpData,
+  VerifyPhoneNumberOtpData,
 } from "@/services/auth-service";
-import { createContext, useState } from "react";
+import { supabase } from "@/utils/supabase";
+import { createContext, useCallback, useEffect, useState } from "react";
 
-
-//TODO: I should correctly implement this context
 interface AuthContextType {
   userProfile: Customer | Deliverer | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  refreshProfile: (id: string) => Promise<void>;
+  requiresProfileCompletion: boolean;
+  refreshProfile: () => Promise<void>;
   signInWithEmailAndPassword: (
     data: EmailAndPasswordSignInData
   ) => Promise<void>;
   signInWithPhoneNumber: (data: PhoneNumberSignInData) => Promise<void>;
+  verifyPhoneNumberOtp: (data: VerifyPhoneNumberOtpData) => Promise<void>;
   signUpWithGoogle: () => Promise<void>;
   signUpWithFacebook: () => Promise<void>;
   signUpWithApple: () => Promise<void>;
@@ -32,77 +34,188 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [userProfile, setUserProfile] = useState<Customer | Deliverer | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userProfile, setUserProfile] = useState<Customer | Deliverer | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [requiresProfileCompletion, setRequiresProfileCompletion] =
+    useState(false);
 
-  const refreshProfile = async (id: string): Promise<void> => {};
+  const loadUser = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setRequiresProfileCompletion(false);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        const { data: profile } = await authService.getProfile(session.user.id);
+        if (profile) {
+          setUserProfile(profile);
+        } else {
+          setRequiresProfileCompletion(true);
+        }
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("Error loading user:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUser();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setIsAuthenticated(true);
+        authService.getProfile(session.user.id).then(({ data: profile }) => {
+          if (profile) {
+            setUserProfile(profile);
+            setRequiresProfileCompletion(false);
+          } else {
+            setUserProfile(null);
+            setRequiresProfileCompletion(true);
+          }
+        });
+      } else {
+        setUserProfile(null);
+        setIsAuthenticated(false);
+        setRequiresProfileCompletion(false);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [loadUser]);
+
+  const refreshProfile = async (): Promise<void> => {
+    setIsLoading(true);
+    try {
+      const { user } = await authService.getCurrentUser();
+      if (user) {
+        const role = user.app_metadata?.role;
+        if (role) {
+          const { data: profile } = await authService.refreshProfile(
+            user.id,
+            role
+          );
+          setUserProfile(profile);
+        }
+      }
+    } catch (error) {
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const signInWithEmailAndPassword = async (
     data: EmailAndPasswordSignInData
   ): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.signInWithEmailAndPassword(data)
+      await authService.signInWithEmailAndPassword(data);
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signInWithPhoneNumber = async (
     data: PhoneNumberSignInData
   ): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.signInWithPhoneNumber(data)
+      await authService.signInWithPhoneNumber(data);
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyPhoneNumberOtp = async (
+    data: VerifyPhoneNumberOtpData
+  ): Promise<void> => {
+    setIsLoading(true);
+    try {
+      await authService.verifyPhoneNumberOtp(data);
+    } catch (error) {
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signUpWithGoogle = async (): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.signUpWithGoogle()
+      await authService.signUpWithGoogle();
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signUpWithFacebook = async (): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.signUpWithFacebook()
+      await authService.signUpWithFacebook();
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signUpWithApple = async (): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.signUpWithApple()
+      await authService.signUpWithApple();
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signUp = async (data: SignUpData): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.signUp(data)
+      await authService.signUp(data);
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signOut = async (): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.signOut()
+      await authService.signOut();
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const resetPassword = async (email: string): Promise<void> => {
+    setIsLoading(true);
     try {
-      await authService.resetPassword(email)
+      await authService.resetPassword(email);
     } catch (error) {
-      console.log("An error occured: ", error)
+      console.log("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -110,9 +223,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     userProfile,
     isAuthenticated,
     isLoading,
+    requiresProfileCompletion,
     refreshProfile,
     signInWithEmailAndPassword,
     signInWithPhoneNumber,
+    verifyPhoneNumberOtp,
     signUpWithGoogle,
     signUpWithFacebook,
     signUpWithApple,

@@ -42,13 +42,29 @@ CREATE TABLE payment_methods (
     customer_id UUID REFERENCES customers(id)
 );
 
+CREATE TABLE deliverers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    country_code TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
+    available BOOLEAN DEFAULT false,
+    rate NUMERIC,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ,
+    role user_role NOT NULL,
+    address_id UUID REFERENCES addresses(id),
+    payment_method_id UUID REFERENCES payment_methods(id)
+);
+
 CREATE TABLE vehicles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plate_number TEXT NOT NULL,
     type vehicle_type NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now(),
-    updated_at TIMESTAMPTZ
-    deliverer_id UUI REFERENCES deliverers(id)
+    updated_at TIMESTAMPTZ,
+    deliverer_id UUID REFERENCES deliverers(id)
 );
 
 CREATE TABLE orders (
@@ -79,7 +95,7 @@ CREATE TABLE order_product_lines (
 
 CREATE TABLE order_product_line_toppings (
     product_line_id UUID REFERENCES order_product_lines(id),
-    topping_id UUID REFERENCES toppings(id)
+    topping_id UUID REFERENCES toppings(id),
     PRIMARY KEY (product_line_id, topping_id)
 );
 
@@ -95,33 +111,17 @@ CREATE TABLE sb_documents (
     -- deliverer_id UUID REFERENCES deliverers(id)
 );
 
-CREATE TABLE deliverers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    country_code TEXT NOT NULL,
-    phone_number TEXT NOT NULL,
-    available BOOLEAN DEFAULT false,
-    rate NUMERIC,
-    created_at TIMESTAMPTZ DEFAULT now(),
-    updated_at TIMESTAMPTZ,
-    role user_role NOT NULL,
-    address_id UUID REFERENCES addresses(id),
-    payment_method_id UUID REFERENCES payment_methods(id),
+CREATE TABLE vehicle_documents (
+    vehicle_id UUID REFERENCES vehicles(id),
+    sb_document_id UUID REFERENCES sb_documents(id),
+    PRIMARY KEY (vehicle_id, sb_document_id)
 );
 
-CREATE TABLE vehicle_documents {
-    vehicle_id UUID REFERENCES vehicles(id)
-    sb_document_id UUID REFERENCES sb_documents(id)
-    PRIMARY KEY (vehicle_id, sb_document_id)
-}
-
-CREATE TABLE deliverer_documents {
-    deliverer_id UUID REFERENCES deliverers(id)
-    sb_document_id UUID REFERENCES sb_documents(id)
+CREATE TABLE deliverer_documents (
+    deliverer_id UUID REFERENCES deliverers(id),
+    sb_document_id UUID REFERENCES sb_documents(id),
     PRIMARY KEY (deliverer_id, sb_document_id)
-}
+);
 
 CREATE TABLE establishments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
