@@ -1,34 +1,62 @@
-import { TouchableOpacity, Text, StyleSheet, TouchableOpacityProps } from 'react-native';
+import { Pressable, StyleSheet, Text, PressableProps } from 'react-native';
+import { COLORS, SIZES, FONTS } from '@/constants/theme';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
-type ButtonProps = TouchableOpacityProps & {
+type ButtonProps = PressableProps & {
   title: string;
   variant?: 'primary' | 'secondary';
 };
 
 export function Button({ title, variant = 'primary', style, ...props }: ButtonProps) {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.98);
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1);
+  };
+
   return (
-    <TouchableOpacity style={[styles.button, styles[variant], style]} {...props}>
-      <Text style={styles.text}>{title}</Text>
-    </TouchableOpacity>
+    <Animated.View style={animatedStyle}>
+      <Pressable
+        style={[styles.button, styles[variant], style]}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        {...props}>
+        <Text style={[styles.text, styles[`${variant}Text`]]}>{title}</Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  primary: {
-    backgroundColor: '#FF6347',
-  },
-  secondary: {
-    backgroundColor: '#666',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+    button: {
+      paddingVertical: SIZES.padding,
+      paddingHorizontal: SIZES.padding * 2,
+      borderRadius: SIZES.radius,
+      alignItems: 'center',
+    },
+    primary: {
+      backgroundColor: COLORS.primary,
+    },
+    secondary: {
+      backgroundColor: COLORS.tertiary,
+    },
+    text: {
+      ...FONTS.h4,
+    },
+    primaryText: {
+      color: COLORS.black,
+    },
+    secondaryText: {
+      color: COLORS.white,
+    },
+  });
