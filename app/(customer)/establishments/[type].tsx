@@ -25,12 +25,17 @@ export default function EstablishmentListScreen() {
   }, [type]);
 
   const handleEstablishmentPress = (id: string) => {
-    router.push(`/(customer)/establishment/${id}`);
+    router.push(`/(customer)/establishment/${id}?category=${categoryName}`);
   };
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: categoryName, headerBackTitle: "Home" }} />
+      <Stack.Screen
+        options={{
+          title: categoryName ? `Explore ${categoryName}` : "Establishments",
+          headerBackTitle: "Home",
+        }}
+      />
       {establishments.length > 0 ? (
         <FlatList
           data={establishments}
