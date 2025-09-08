@@ -33,16 +33,21 @@ export default function ProfileScreen() {
       ...fonts.body3,
       color: colors.gray,
     },
+    content: {
+      flex: 1,
+      paddingHorizontal: sizes.padding,
+    },
     menu: {
       flex: 1,
     },
     switchButton: {
       marginTop: sizes.padding2,
+      marginBottom: sizes.padding,
     },
   });
 
   return (
-    <Screen>
+    <Screen withPadding={false}>
       <Stack.Screen options={{ title: "My Profile" }} />
       <View style={styles.header}>
         <Image source={{ uri: MOCK_USER.avatar }} style={styles.avatar} />
@@ -52,25 +57,27 @@ export default function ProfileScreen() {
         <Typography style={styles.email}>{MOCK_USER.email}</Typography>
       </View>
 
-      <View style={styles.menu}>
-        <ProfileRow icon="list" label="My Orders" onPress={() => {}} />
-        <ProfileRow icon="card-outline" label="Payment Methods" onPress={() => {}} />
-        <ProfileRow icon="person-outline" label="My Details" onPress={() => {}} />
-        <ProfileRow icon="help-circle-outline" label="Help Center" onPress={() => {}} />
-        <ProfileRow icon="settings-outline" label="Settings" onPress={() => {}} />
-        <ProfileRow
-          icon="contrast-outline"
-          label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-          onPress={toggleTheme}
+      <View style={styles.content}>
+        <View style={styles.menu}>
+          <ProfileRow icon="list" label="My Orders" onPress={() => {}} />
+          <ProfileRow icon="card-outline" label="Payment Methods" onPress={() => {}} />
+          <ProfileRow icon="person-outline" label="My Details" onPress={() => {}} />
+          <ProfileRow icon="help-circle-outline" label="Help Center" onPress={() => {}} />
+          <ProfileRow icon="settings-outline" label="Settings" onPress={() => {}} />
+          <ProfileRow
+            icon="contrast-outline"
+            label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+            onPress={toggleTheme}
+          />
+        </View>
+
+        <Button
+          title="Switch to Deliverer"
+          onPress={() => router.push('/(deliverer)/home')}
+          variant="secondary"
+          style={styles.switchButton}
         />
       </View>
-
-      <Button
-        title="Switch to Deliverer"
-        onPress={() => router.push('/(deliverer)/home')}
-        variant="secondary"
-        style={styles.switchButton}
-      />
     </Screen>
   );
 }

@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { CartItem, useCart } from '@/contexts/cart-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/hooks/use-theme';
 
 type CartItemRowProps = {
   item: CartItem;
@@ -8,6 +9,45 @@ type CartItemRowProps = {
 
 export function CartItemRow({ item }: CartItemRowProps) {
   const { updateItemQuantity } = useCart();
+  const { currentTheme } = useTheme();
+  const { colors, fonts, sizes } = currentTheme;
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: sizes.padding,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.tertiary,
+    },
+    image: {
+      width: 60,
+      height: 60,
+      borderRadius: sizes.radius,
+      marginRight: sizes.padding,
+    },
+    infoContainer: {
+      flex: 1,
+    },
+    name: {
+      ...fonts.h4,
+      color: colors.text,
+      marginBottom: sizes.base,
+    },
+    price: {
+      ...fonts.body4,
+      color: colors.gray,
+    },
+    quantityContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    quantityText: {
+      ...fonts.h4,
+      color: colors.text,
+      marginHorizontal: sizes.padding,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -18,50 +58,13 @@ export function CartItemRow({ item }: CartItemRowProps) {
       </View>
       <View style={styles.quantityContainer}>
         <TouchableOpacity onPress={() => updateItemQuantity(item.id, item.quantity - 1)}>
-          <Ionicons name="remove-circle-outline" size={28} color="#666" />
+          <Ionicons name="remove-circle-outline" size={28} color={colors.gray} />
         </TouchableOpacity>
         <Text style={styles.quantityText}>{item.quantity}</Text>
         <TouchableOpacity onPress={() => updateItemQuantity(item.id, item.quantity + 1)}>
-          <Ionicons name="add-circle" size={28} color="#FF6347" />
+          <Ionicons name="add-circle" size={28} color={colors.primary} />
         </TouchableOpacity>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  infoContainer: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  price: {
-    fontSize: 14,
-    color: '#666',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginHorizontal: 12,
-  },
-});

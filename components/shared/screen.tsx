@@ -4,9 +4,10 @@ import { useTheme } from '@/hooks/use-theme';
 
 interface ScreenProps extends ViewProps {
   scrollable?: boolean;
+  withPadding?: boolean;
 }
 
-export function Screen({ scrollable = false, children, style, ...props }: ScreenProps) {
+export function Screen({ scrollable = false, withPadding = true, children, style, ...props }: ScreenProps) {
   const { currentTheme } = useTheme();
   const { colors } = currentTheme;
 
@@ -16,18 +17,21 @@ export function Screen({ scrollable = false, children, style, ...props }: Screen
       backgroundColor: colors.background,
     },
     container: {
-      padding: 16,
+      flex: 1,
+    },
+    contentContainer: {
+      padding: withPadding ? 16 : 0,
     },
   });
 
   return (
     <SafeAreaView style={styles.safeArea}>
       {scrollable ? (
-        <ScrollView contentContainerStyle={styles.container} style={style} {...props}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} {...props}>
           {children}
         </ScrollView>
       ) : (
-        <View style={[styles.container, style]} {...props}>
+        <View style={[styles.container, styles.contentContainer, style]} {...props}>
           {children}
         </View>
       )}
