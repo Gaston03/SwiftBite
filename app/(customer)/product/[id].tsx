@@ -107,14 +107,14 @@ export default function ProductDetailsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <Stack.Screen
-        options={{
-          title: product.name,
-          headerBackTitle: establishmentName,
-        }}
-      />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <View style={{ flex: 1 }}>
+      <Screen scrollable withPadding={false}>
+        <Stack.Screen
+          options={{
+            title: product.name,
+            headerBackTitle: establishmentName,
+          }}
+        />
         <Image source={{ uri: product.imageUrl }} style={styles.headerImage} />
         <View style={styles.infoContainer}>
           <Text style={styles.name}>{product.name}</Text>
@@ -135,7 +135,7 @@ export default function ProductDetailsScreen() {
             ))}
           </View>
         )}
-      </ScrollView>
+      </Screen>
       <View style={styles.footer}>
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => setQuantity(q => Math.max(1, q - 1))}>
