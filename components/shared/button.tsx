@@ -56,9 +56,23 @@ export function Button({
     },
     text: {
       ...fonts.h4,
+    },
+    primaryText: {
       color: colors.white,
     },
+    secondaryText: {
+      color: colors.white,
+    },
+    ghostText: {
+      color: colors.text,
+    },
   });
+
+  const textVariantStyle = {
+    primary: styles.primaryText,
+    secondary: styles.secondaryText,
+    ghost: styles.ghostText,
+  };
 
   return (
     <Animated.View style={animatedStyle}>
@@ -68,7 +82,7 @@ export function Button({
         onPressOut={handlePressOut}
         {...props}
       >
-        <Text style={styles.text}>{title}</Text>
+        <Text style={[styles.text, textVariantStyle[variant]]}>{title}</Text>
       </Pressable>
     </Animated.View>
   );

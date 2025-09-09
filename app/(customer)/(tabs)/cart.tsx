@@ -108,7 +108,7 @@ export default function CartScreen() {
       paddingTop: headerHeight,
     },
     scrollViewContent: {
-      paddingBottom: 120, // Space for the footer
+      paddingBottom: 200, // Space for the footer
     },
     section: {
       paddingHorizontal: sizes.padding,
@@ -147,6 +147,14 @@ export default function CartScreen() {
     allergiesText: {
       marginLeft: sizes.base,
       color: colors.primary,
+    },
+    summaryRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: sizes.base,
+    },
+    summaryContainer: {
+      marginBottom: sizes.padding,
     },
   });
 
@@ -221,6 +229,20 @@ export default function CartScreen() {
             </View>
           </ScrollView>
           <View style={styles.footer}>
+            <View style={styles.summaryContainer}>
+              <View style={styles.summaryRow}>
+                <Typography>Delivery Fee</Typography>
+                <Typography>${deliveryFee.toFixed(2)}</Typography>
+              </View>
+              <View style={styles.summaryRow}>
+                <Typography>Service Fee</Typography>
+                <Typography>${serviceFee.toFixed(2)}</Typography>
+              </View>
+              <View style={styles.summaryRow}>
+                <Typography>Items Total</Typography>
+                <Typography>${total.toFixed(2)}</Typography>
+              </View>
+            </View>
             <Button
               title={`Confirm Purchase - ${(
                 total +
