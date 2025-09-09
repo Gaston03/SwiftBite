@@ -1,7 +1,4 @@
 import { EstablishmentType } from "@/models/enums";
-import { Establishment } from "@/models/establishment";
-import { Product } from "@/models/product";
-import { Customer } from "@/models/customer";
 
 // Mock Data for UI Development
 
@@ -38,7 +35,7 @@ export const MOCK_CATEGORIES = [
   },
 ];
 
-export const MOCK_PRODUCTS: Product[] = [
+export const MOCK_PRODUCTS = [
   // Restaurant Products
   {
     id: "prod-1",
@@ -131,7 +128,7 @@ export const MOCK_PRODUCTS: Product[] = [
   },
 ];
 
-export const MOCK_ESTABLISHMENTS: Establishment[] = [
+export const MOCK_ESTABLISHMENTS = [
   {
     id: "est-1",
     name: "The Cheesy Crust",
@@ -180,13 +177,13 @@ export const MOCK_POPULAR_ESTABLISHMENTS = MOCK_ESTABLISHMENTS.filter(
   (e) => e.is_popular
 );
 
-export const MOCK_USER: Omit<Customer, "password"> = {
+export const MOCK_USER = {
   id: "user-1",
   firstName: "Jules",
   lastName: "Verne",
   email: "jules.verne@swiftbite.com",
   phone: "555-123-4567",
-  avatarUrl: "https://placehold.co/100x100/9C27B0/FFFFFF/png?text=JV",
+  avatar: "https://placehold.co/100x100/9C27B0/FFFFFF/png?text=JV",
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };

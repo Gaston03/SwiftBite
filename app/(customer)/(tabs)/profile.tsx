@@ -44,8 +44,6 @@ export default function ProfileScreen() {
     },
     buttonContainer: {
       padding: sizes.padding,
-      borderTopWidth: 1,
-      borderTopColor: colors.tertiary,
     },
   });
 
@@ -63,7 +61,7 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.menu}>
-            <ProfileRow icon="list" label="My Orders" onPress={() => {}} />
+            <ProfileRow icon="list" label="My Orders" onPress={() => router.navigate('/(customer)/(tabs)/cart')} />
             <ProfileRow icon="card-outline" label="Payment Methods" onPress={() => {}} />
             <ProfileRow icon="person-outline" label="My Details" onPress={() => {}} />
             <ProfileRow icon="help-circle-outline" label="Help Center" onPress={() => {}} />
