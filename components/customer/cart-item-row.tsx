@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { CartItem, useCart } from "@/contexts/cart-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/hooks/use-theme";
@@ -19,7 +19,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
       alignItems: "center",
       paddingVertical: sizes.padding,
     },
-    quantityContainer: {
+    quantityControlContainer: {
       flexDirection: "row",
       alignItems: "center",
       marginRight: sizes.padding,
@@ -40,8 +40,22 @@ export function CartItemRow({ item }: CartItemRowProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.quantityContainer}>
-        <Typography>{item.quantity}x</Typography>
+      <View style={styles.quantityControlContainer}>
+        <TouchableOpacity
+          onPress={() => updateItemQuantity(item.id, item.quantity - 1)}
+        >
+          <Ionicons
+            name="remove-circle-outline"
+            size={28}
+            color={colors.gray}
+          />
+        </TouchableOpacity>
+        <Typography style={styles.quantityText}>{item.quantity}</Typography>
+        <TouchableOpacity
+          onPress={() => updateItemQuantity(item.id, item.quantity + 1)}
+        >
+          <Ionicons name="add-circle" size={28} color={colors.primary} />
+        </TouchableOpacity>
       </View>
       <View style={styles.infoContainer}>
         <Typography variant="h4">{item.product.name}</Typography>
@@ -58,16 +72,6 @@ export function CartItemRow({ item }: CartItemRowProps) {
       <Typography variant="h4" style={styles.price}>
         ${(item.price * item.quantity).toFixed(2)}
       </Typography>
-      <TouchableOpacity
-        onPress={() => updateItemQuantity(item.id, item.quantity - 1)}
-      >
-        <Ionicons name="remove-circle-outline" size={28} color={colors.gray} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => updateItemQuantity(item.id, item.quantity + 1)}
-      >
-        <Ionicons name="add-circle" size={28} color={colors.primary} />
-      </TouchableOpacity>
     </View>
   );
 }
