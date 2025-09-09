@@ -3,20 +3,20 @@ import { EstablishmentCard } from "@/components/customer/establishment-card";
 import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import {
-  MOCK_CATEGORIES,
-  MOCK_CUSTOMER,
-  MOCK_ESTABLISHMENTS,
-} from "@/constants/mock-data";
+import { MOCK_CATEGORIES } from "@/constants/mock-data";
+import { useCustomer } from "@/hooks/use-customer";
+import { useEstablishment } from "@/hooks/use-establishment";
 import { useTheme } from "@/hooks/use-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { FlatList, StyleSheet, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
   const { theme, currentTheme, toggleTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
+  const { popularEstablishments, loading } = useEstablishment();
+  const { customer } = useCustomer();
 
   const handleCategoryPress = (type: string) => {
     router.push(`/(customer)/establishments/${type}`);
@@ -68,7 +68,7 @@ export default function CustomerHomeScreen() {
           </Typography>
           <View style={styles.locationContainer}>
             <Typography variant="h3" style={styles.locationText}>
-              {MOCK_CUSTOMER.address?.city}, {MOCK_CUSTOMER.address?.area}
+              {customer?.address?.city}, {customer?.address?.area}
             </Typography>
             <Ionicons name="chevron-down" size={24} color={colors.primary} />
           </View>
@@ -105,18 +105,22 @@ export default function CustomerHomeScreen() {
         Popular
       </Typography>
 
-      <FlatList
-        data={MOCK_ESTABLISHMENTS}
-        renderItem={({ item }) => (
-          <EstablishmentCard
-            establishment={item}
-            onPress={() => handleEstablishmentPress(item.id)}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={false} // To avoid nested scrollviews warning
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color={colors.primary} />
+      ) : (
+        <FlatList
+          data={popularEstablishments}
+          renderItem={({ item }) => (
+            <EstablishmentCard
+              establishment={item}
+              onPress={() => handleEstablishmentPress(item.id)}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false} // To avoid nested scrollviews warning
+        />
+      )}
     </Screen>
   );
 }

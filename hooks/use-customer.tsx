@@ -7,4 +7,6 @@ export const useCustomer = () => {
   if (!context) {
     throw new Error("useCustomer must be used within a CustomerProvider");
   }
+
+  return context;
 };

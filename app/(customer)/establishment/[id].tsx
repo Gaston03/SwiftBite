@@ -1,14 +1,22 @@
-import { useLocalSearchParams, useRouter, Stack } from "expo-router";
-import { View, StyleSheet, SectionList, Image, Text } from "react-native";
+import { ProductRow } from "@/components/customer/product-row";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { MOCK_ESTABLISHMENTS } from "@/constants/mock-data";
+import { useEstablishment } from "@/hooks/use-establishment";
+import { useProduct } from "@/hooks/use-product";
+import { useTheme } from "@/hooks/use-theme";
 import { Establishment } from "@/models/establishment";
-import { useEffect, useState } from "react";
-import { ProductRow } from "@/components/customer/product-row";
 import { Product } from "@/models/product";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@/hooks/use-theme";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 type ProductSection = {
   title: string;
@@ -17,12 +25,21 @@ type ProductSection = {
 
 export default function EstablishmentDetailsScreen() {
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id: string, category?: string }>();
-  const [establishment, setEstablishment] = useState<Establishment | null>(null);
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [establishment, setEstablishment] = useState<Establishment | null>(
+    null
+  );
   const [productSections, setProductSections] = useState<ProductSection[]>([]);
+  const { getEstablishmentById, loading: establishmentLoading } =
+    useEstablishment();
+  const {
+    getEstablishmentProducts,
+    products,
+    loading: productsLoading,
+  } = useProduct();
 
-  const { currentTheme } = useTheme()
-  const { sizes, colors, fonts } = currentTheme
+  const { currentTheme } = useTheme();
+  const { sizes, colors, fonts } = currentTheme;
 
   const styles = StyleSheet.create({
     center: {
@@ -41,12 +58,12 @@ export default function EstablishmentDetailsScreen() {
     infoContainer: {
       padding: sizes.padding,
       ...fonts.h4,
-      color: colors.text
+      color: colors.text,
     },
     name: {
       marginBottom: 8,
       ...fonts.h4,
-      color: colors.text
+      color: colors.text,
     },
     detailsContainer: {
       flexDirection: "row",
@@ -54,54 +71,70 @@ export default function EstablishmentDetailsScreen() {
     },
     rating: {
       ...fonts.h4,
-      color: colors.text
+      color: colors.text,
     },
     dot: {
       marginHorizontal: 6,
       ...fonts.h4,
-      color: colors.text
+      color: colors.text,
     },
     deliveryTime: {
       ...fonts.h4,
-      color: colors.text
+      color: colors.text,
     },
     sectionHeader: {
       paddingVertical: 12,
       paddingHorizontal: 16,
-      backgroundColor: colors.secondary,
+      backgroundColor: "#f7f7f7",
+      borderBottomWidth: 1,
+      borderTopWidth: 1,
+      borderColor: "#eee",
     },
   });
 
   useEffect(() => {
     if (id) {
-      const foundEstablishment = MOCK_ESTABLISHMENTS.find((e) => e.id === id);
-      setEstablishment(foundEstablishment || null);
-
-      if (foundEstablishment && foundEstablishment.products) {
-        const groupedProducts = foundEstablishment.products.reduce(
-          (acc, product) => {
-            const category = product.category || "Other";
-            if (!acc[category]) {
-              acc[category] = [];
-            }
-            acc[category].push(product);
-            return acc;
-          },
-          {} as Record<string, Product[]>
-        );
-
-        const sections = Object.keys(groupedProducts).map((title) => ({
-          title,
-          data: groupedProducts[title],
-        }));
-        setProductSections(sections);
-      }
+      const fetchEstablishment = async () => {
+        const foundEstablishment = await getEstablishmentById(id);
+        setEstablishment(foundEstablishment);
+        if (foundEstablishment) {
+          getEstablishmentProducts(foundEstablishment.id);
+        }
+      };
+      fetchEstablishment();
     }
-  }, [id]);
+  }, [getEstablishmentById, getEstablishmentProducts, id]);
+
+  useEffect(() => {
+    if (products) {
+      const groupedProducts = products.reduce((acc, product) => {
+        const category = product.category || "Other";
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(product);
+        return acc;
+      }, {} as Record<string, Product[]>);
+
+      const sections = Object.keys(groupedProducts).map((title) => ({
+        title,
+        data: groupedProducts[title],
+      }));
+      setProductSections(sections);
+    }
+  }, [products]);
 
   const handleProductPress = (productId: string) => {
     router.push(`/(customer)/product/${productId}`);
   };
+
+  if (establishmentLoading) {
+    return (
+      <Screen style={styles.center}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </Screen>
+    );
+  }
 
   if (!establishment) {
     return (
@@ -123,10 +156,13 @@ export default function EstablishmentDetailsScreen() {
         sections={productSections}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ProductRow product={item} onPress={() => handleProductPress(item.id)} />
+          <ProductRow
+            product={item}
+            onPress={() => handleProductPress(item.id)}
+          />
         )}
         renderSectionHeader={({ section: { title } }) => (
-          <Typography variant="h3" style={styles.sectionHeader}>
+          <Typography variant="h2" style={styles.sectionHeader}>
             {title}
           </Typography>
         )}
@@ -150,6 +186,11 @@ export default function EstablishmentDetailsScreen() {
               </View>
             </View>
           </View>
+        }
+        ListFooterComponent={
+          productsLoading ? (
+            <ActivityIndicator size="large" color={colors.primary} />
+          ) : null
         }
         contentContainerStyle={styles.list}
       />
