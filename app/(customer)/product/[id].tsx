@@ -78,7 +78,8 @@ export default function ProductDetailsScreen() {
       right: 0,
       flexDirection: 'row',
       alignItems: 'center',
-      padding: sizes.padding,
+      paddingVertical: sizes.padding3,
+      paddingHorizontal: sizes.padding,
       backgroundColor: colors.background,
       borderTopWidth: 1,
       borderTopColor: colors.tertiary,
@@ -95,6 +96,7 @@ export default function ProductDetailsScreen() {
     },
     cartButton: {
       flex: 1,
+      // paddingVertical: sizes.padding
     },
   });
 
