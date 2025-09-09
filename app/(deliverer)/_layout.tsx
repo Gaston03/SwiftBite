@@ -15,9 +15,7 @@ export default function DelivererLayout() {
           backgroundColor: colors.background,
           borderTopColor: colors.tertiary,
         },
-        headerStyle: {
-          backgroundColor: colors.background,
-        },
+        headerTransparent: true,
         headerTintColor: colors.text,
         headerTitleStyle: {
           ...fonts.h3,

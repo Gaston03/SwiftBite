@@ -6,14 +6,17 @@ import { useCart } from "@/contexts/cart-context";
 import { CartItemRow } from "@/components/customer/cart-item-row";
 import { Button } from "@/components/shared/button";
 import { useTheme } from "@/hooks/use-theme";
+import { useHeaderHeight } from '@react-navigation/elements';
 
 export default function CartScreen() {
   const { items, total } = useCart();
   const { currentTheme } = useTheme();
   const { colors, sizes } = currentTheme;
+  const headerHeight = useHeaderHeight();
 
   const styles = StyleSheet.create({
     list: {
+      paddingTop: headerHeight,
       paddingBottom: 120, // Space for the footer
     },
     footer: {
