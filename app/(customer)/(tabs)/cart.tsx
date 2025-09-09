@@ -108,7 +108,7 @@ export default function CartScreen() {
       paddingTop: headerHeight,
     },
     scrollViewContent: {
-      paddingBottom: 200, // Space for the footer
+      paddingBottom: 120, // Space for the footer
     },
     section: {
       paddingHorizontal: sizes.padding,
@@ -152,9 +152,6 @@ export default function CartScreen() {
       flexDirection: "row",
       justifyContent: "space-between",
       marginBottom: sizes.base,
-    },
-    summaryContainer: {
-      marginBottom: sizes.padding,
     },
   });
 
@@ -227,9 +224,8 @@ export default function CartScreen() {
                 onPress={() => setPaymentMethodModalVisible(true)}
               />
             </View>
-          </ScrollView>
-          <View style={styles.footer}>
-            <View style={styles.summaryContainer}>
+
+            <View style={styles.section}>
               <View style={styles.summaryRow}>
                 <Typography>Delivery Fee</Typography>
                 <Typography>${deliveryFee.toFixed(2)}</Typography>
@@ -243,6 +239,8 @@ export default function CartScreen() {
                 <Typography>${total.toFixed(2)}</Typography>
               </View>
             </View>
+          </ScrollView>
+          <View style={styles.footer}>
             <Button
               title={`Confirm Purchase - ${(
                 total +
