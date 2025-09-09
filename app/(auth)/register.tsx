@@ -7,6 +7,8 @@ import { Button } from "@/components/shared/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
 import { Typography } from "@/components/shared/typography";
+import { SignUpData } from "@/services/auth-service";
+import { UserRole } from "@/models/enums";
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -33,8 +35,24 @@ export default function RegisterScreen() {
       return;
     }
     try {
-      await signUp({ email, password, options: { data: { name, role } } });
-      // The root redirector will now handle navigation to the complete-profile screen
+      const signUpData: SignUpData = {
+        firstName: name.split(" ")[0],
+        lastName: name.split(" ")[-1],
+        email,
+        password,
+        countryCode: "",
+        phoneNumber: "",
+        role: role === "customer" ? UserRole.CUSTOMER : UserRole.DELIVERER
+      }
+      await signUp(signUpData);
+      await completeOnboarding();
+      // The root redirector should handle navigation to the home screen.
+      // But we can give it a push just in case.
+      if (role === "customer") {
+        router.replace("/(customer)/(tabs)/home");
+      } else {
+        router.replace("/(deliverer)/home");
+      }
     } catch (error) {
       // The error is caught and set in the AuthContext, so we don't need to do anything here.
       // The useEffect hook will handle displaying the alert.
@@ -45,7 +63,8 @@ export default function RegisterScreen() {
     container: {
       flex: 1,
       justifyContent: "center",
-      padding: sizes.padding,
+      gap: sizes.padding,
+      padding: sizes.padding
     },
     title: {
       ...fonts.h1,
@@ -65,7 +84,7 @@ export default function RegisterScreen() {
       marginTop: sizes.padding,
     },
     link: {
-      ...fonts.body,
+      ...fonts.body3,
       color: colors.primary,
       marginLeft: sizes.padding / 2,
     },
