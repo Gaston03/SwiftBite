@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { useTheme } from '@/hooks/use-theme';
+import { View } from 'react-native';
 
 export default function CustomerLayout() {
   const { currentTheme } = useTheme();
@@ -14,6 +15,9 @@ export default function CustomerLayout() {
           ...fonts.h3,
           color: colors.text,
         },
+        headerBackground: () => (
+          <View style={{ flex: 1, backgroundColor: colors.background }} />
+        ),
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
