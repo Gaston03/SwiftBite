@@ -26,14 +26,7 @@ export default function RegisterScreen() {
     }
     try {
       await signUp({ email, password, options: { data: { name, role } } });
-      await completeOnboarding();
-      // The root redirector should handle navigation to the home screen.
-      // But we can give it a push just in case.
-      if (role === "customer") {
-        router.replace("/(customer)/home");
-      } else {
-        router.replace("/(deliverer)/home");
-      }
+      // The root redirector will now handle navigation to the complete-profile screen
     } catch (error) {
       console.error("Registration failed:", error);
     }

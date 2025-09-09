@@ -3,8 +3,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { Redirect } from "expo-router";
 
 export default function Index() {
-  const { isLoading, isAuthenticated, onboardingCompleted, userProfile } =
-    useAuth();
+  const {
+    isLoading,
+    isAuthenticated,
+    onboardingCompleted,
+    requiresProfileCompletion,
+    userProfile,
+  } = useAuth();
 
   if (isLoading) {
     return <SplashScreen />;
@@ -18,10 +23,15 @@ export default function Index() {
     }
   }
 
+  // User is authenticated at this point
+  if (requiresProfileCompletion) {
+    return <Redirect href="/(auth)/complete-profile" />;
+  }
+
   if (!onboardingCompleted) {
-    // This case should technically be handled by the registration flow,
-    // but as a fallback, we send them to select-role.
-    return <Redirect href="/(auth)/select-role" />;
+    // This case should not happen if requiresProfileCompletion is handled correctly,
+    // but as a fallback, we send them to complete profile.
+    return <Redirect href="/(auth)/complete-profile" />;
   }
 
   if (userProfile?.role === "customer") {
