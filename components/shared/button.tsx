@@ -1,13 +1,24 @@
-import { Pressable, StyleSheet, Text, PressableProps } from 'react-native';
-import { useTheme } from '@/hooks/use-theme';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { Pressable, StyleSheet, Text, PressableProps } from "react-native";
+import { useTheme } from "@/hooks/use-theme";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 
 type ButtonProps = PressableProps & {
   title: string;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary" | "ghost";
+  fullWidth?: boolean;
 };
 
-export function Button({ title, variant = 'primary', style, ...props }: ButtonProps) {
+export function Button({
+  title,
+  variant = "primary",
+  fullWidth = false,
+  style,
+  ...props
+}: ButtonProps) {
   const { currentTheme } = useTheme();
   const { colors, sizes, fonts } = currentTheme;
   const scale = useSharedValue(1);
@@ -31,7 +42,8 @@ export function Button({ title, variant = 'primary', style, ...props }: ButtonPr
       paddingVertical: sizes.padding,
       paddingHorizontal: sizes.padding * 2,
       borderRadius: sizes.radius,
-      alignItems: 'center',
+      alignItems: "center",
+      width: fullWidth ? "100%" : "auto",
     },
     primary: {
       backgroundColor: colors.primary,
@@ -39,9 +51,12 @@ export function Button({ title, variant = 'primary', style, ...props }: ButtonPr
     secondary: {
       backgroundColor: colors.tertiary,
     },
+    ghost: {
+      backgroundColor: colors.gray,
+    },
     text: {
       ...fonts.h4,
-      color: colors.text
+      color: colors.white,
     },
   });
 
@@ -51,7 +66,8 @@ export function Button({ title, variant = 'primary', style, ...props }: ButtonPr
         style={[styles.button, styles[variant], style]}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        {...props}>
+        {...props}
+      >
         <Text style={styles.text}>{title}</Text>
       </Pressable>
     </Animated.View>

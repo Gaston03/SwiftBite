@@ -1,7 +1,8 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { CartItem, useCart } from '@/contexts/cart-context';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@/hooks/use-theme';
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { CartItem, useCart } from "@/contexts/cart-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@/hooks/use-theme";
+import { Typography } from "../shared/typography";
 
 type CartItemRowProps = {
   item: CartItem;
@@ -10,61 +11,63 @@ type CartItemRowProps = {
 export function CartItemRow({ item }: CartItemRowProps) {
   const { updateItemQuantity } = useCart();
   const { currentTheme } = useTheme();
-  const { colors, fonts, sizes } = currentTheme;
+  const { colors, sizes } = currentTheme;
 
   const styles = StyleSheet.create({
     container: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
       paddingVertical: sizes.padding,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.tertiary,
     },
-    image: {
-      width: 60,
-      height: 60,
-      borderRadius: sizes.radius,
+    quantityContainer: {
+      flexDirection: "row",
+      alignItems: "center",
       marginRight: sizes.padding,
+    },
+    quantityText: {
+      marginHorizontal: sizes.base,
     },
     infoContainer: {
       flex: 1,
     },
-    name: {
-      ...fonts.h4,
-      color: colors.text,
-      marginBottom: sizes.base,
-    },
-    price: {
-      ...fonts.body4,
+    description: {
       color: colors.gray,
     },
-    quantityContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    quantityText: {
-      ...fonts.h4,
-      color: colors.text,
-      marginHorizontal: sizes.padding,
+    price: {
+      marginLeft: "auto",
     },
   });
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: item.product.imageUrl }} style={styles.image} />
-      <View style={styles.infoContainer}>
-        <Text style={styles.name} numberOfLines={1}>{item.product.name}</Text>
-        <Text style={styles.price}>${(item.price * item.quantity).toFixed(2)}</Text>
-      </View>
       <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={() => updateItemQuantity(item.id, item.quantity - 1)}>
-          <Ionicons name="remove-circle-outline" size={28} color={colors.gray} />
-        </TouchableOpacity>
-        <Text style={styles.quantityText}>{item.quantity}</Text>
-        <TouchableOpacity onPress={() => updateItemQuantity(item.id, item.quantity + 1)}>
-          <Ionicons name="add-circle" size={28} color={colors.primary} />
-        </TouchableOpacity>
+        <Typography>{item.quantity}x</Typography>
       </View>
+      <View style={styles.infoContainer}>
+        <Typography variant="h4">{item.product.name}</Typography>
+        <Typography style={styles.description} numberOfLines={1}>
+          {Object.keys(item.selectedToppings)
+            .filter((toppingId) => item.selectedToppings[toppingId])
+            .map(
+              (toppingId) =>
+                item.product.toppings?.find((t) => t.id === toppingId)?.name
+            )
+            .join(", ")}
+        </Typography>
+      </View>
+      <Typography variant="h4" style={styles.price}>
+        ${(item.price * item.quantity).toFixed(2)}
+      </Typography>
+      <TouchableOpacity
+        onPress={() => updateItemQuantity(item.id, item.quantity - 1)}
+      >
+        <Ionicons name="remove-circle-outline" size={28} color={colors.gray} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => updateItemQuantity(item.id, item.quantity + 1)}
+      >
+        <Ionicons name="add-circle" size={28} color={colors.primary} />
+      </TouchableOpacity>
     </View>
   );
 }
