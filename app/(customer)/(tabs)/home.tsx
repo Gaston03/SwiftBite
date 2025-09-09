@@ -1,3 +1,4 @@
+import CategoryCard from "@/components/customer/category-card";
 import { EstablishmentCard } from "@/components/customer/establishment-card";
 import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
@@ -8,71 +9,12 @@ import {
 } from "@/constants/mock-data";
 import { useTheme } from "@/hooks/use-theme";
 import { Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import {
   FlatList,
   StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated";
-
-const CategoryCard = ({ item, onPress, index }) => {
-  const { currentTheme } = useTheme();
-  const { colors, fonts, sizes } = currentTheme;
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withDelay(index * 100, withTiming(1)),
-      transform: [
-        {
-          translateY: withDelay(index * 100, withTiming(0, { duration: 500 })),
-        },
-      ],
-    };
-  });
-
-  const styles = StyleSheet.create({
-    categoryCard: {
-      backgroundColor: colors.tertiary,
-      borderRadius: sizes.radius,
-      padding: sizes.padding / 2,
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: sizes.padding,
-      width: 120,
-      height: 120,
-    },
-    categoryImage: {
-      width: 60,
-      height: 60,
-      borderRadius: 30,
-      marginBottom: sizes.base,
-    },
-    categoryName: {
-      ...fonts.body4,
-      color: colors.text,
-      textAlign: "center",
-    },
-  });
-
-  return (
-    <Animated.View
-      style={[{ opacity: 0, transform: [{ translateY: 50 }] }, animatedStyle]}
-    >
-      <TouchableOpacity style={styles.categoryCard} onPress={onPress}>
-        <Image source={{ uri: item.image }} style={styles.categoryImage} />
-        <Text style={styles.categoryName}>{item.name}</Text>
-      </TouchableOpacity>
-    </Animated.View>
-  );
-};
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
