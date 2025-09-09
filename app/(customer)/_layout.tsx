@@ -1,11 +1,21 @@
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { View } from "react-native";
 import { CustomerProvider } from "@/contexts/customer-context";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function CustomerLayout() {
   const { currentTheme } = useTheme();
   const { colors, fonts } = currentTheme;
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return null; // Or a loading spinner
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/(auth)/login" />;
+  }
 
   return (
     <CustomerProvider>
