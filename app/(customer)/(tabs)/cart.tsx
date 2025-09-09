@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { Stack } from "expo-router";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
@@ -8,7 +8,6 @@ import { Button } from "@/components/shared/button";
 import { useTheme } from "@/hooks/use-theme";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useAuth } from "@/hooks/use-auth";
-import { Card } from "@/components/shared/card";
 import { PaymentMethodType } from "@/models/enums";
 import { useEffect, useState } from "react";
 import { Address } from "@/models/address";
@@ -17,6 +16,8 @@ import { Customer } from "@/models/customer";
 import { PaymentMethod } from "@/models/payment-method";
 import { PaymentMethodSelectionModal } from "@/components/customer/payment-method-selection-modal";
 import { useEstablishment } from "@/hooks/use-establishment";
+import { CartSectionRow } from "@/components/customer/cart-section-row";
+import { Ionicons } from "@expo/vector-icons";
 
 // Mock Data
 const mockAddresses: Address[] = [
@@ -102,16 +103,23 @@ export default function CartScreen() {
   };
 
   const styles = StyleSheet.create({
-    list: {
+    container: {
+      flex: 1,
       paddingTop: headerHeight,
-      paddingBottom: 320, // Space for the footer
+    },
+    scrollViewContent: {
+      paddingBottom: 120, // Space for the footer
     },
     section: {
-      marginTop: sizes.padding,
       paddingHorizontal: sizes.padding,
+      paddingVertical: sizes.padding / 2,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.tertiary,
     },
     sectionTitle: {
-      marginBottom: sizes.base,
+      textTransform: "uppercase",
+      color: colors.gray,
+      marginBottom: sizes.padding,
     },
     footer: {
       position: "absolute",
@@ -120,14 +128,6 @@ export default function CartScreen() {
       right: 0,
       padding: sizes.padding,
       backgroundColor: colors.background,
-      borderTopWidth: 1,
-      borderTopColor: colors.tertiary,
-    },
-    totalContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: sizes.padding,
     },
     emptyContainer: {
       flex: 1,
@@ -140,11 +140,13 @@ export default function CartScreen() {
       color: colors.gray,
       textAlign: "center",
     },
-    row: {
+    allergiesContainer: {
       flexDirection: "row",
-      justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: sizes.base,
+    },
+    allergiesText: {
+      marginLeft: sizes.base,
+      color: colors.primary,
     },
   });
 
@@ -152,7 +154,7 @@ export default function CartScreen() {
     <Screen>
       <Stack.Screen options={{ title: "My Cart" }} />
       {items.length > 0 ? (
-        <>
+        <View style={styles.container}>
           <AddressSelectionModal
             visible={isAddressModalVisible}
             onClose={() => setAddressModalVisible(false)}
@@ -165,79 +167,71 @@ export default function CartScreen() {
             paymentMethods={mockPaymentMethods}
             onSelect={handleSelectPaymentMethod}
           />
-          <FlatList
-            data={items}
-            renderItem={({ item }) => <CartItemRow item={item} />}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
-            ListHeaderComponent={
-              <>
-                <View style={styles.section}>
-                  <Typography variant="h3" style={styles.sectionTitle}>
-                    Delivery Address
-                  </Typography>
-                  <Card>
-                    <View style={styles.row}>
-                      <Typography>
-                        {selectedAddress?.area}, {selectedAddress?.city}
-                      </Typography>
-                      <Pressable onPress={() => setAddressModalVisible(true)}>
-                        <Typography style={{ color: colors.primary }}>
-                          Change
-                        </Typography>
-                      </Pressable>
-                    </View>
-                  </Card>
-                </View>
-                <View style={styles.section}>
-                  <Typography variant="h3" style={styles.sectionTitle}>
-                    Payment Method
-                  </Typography>
-                  <Card>
-                    <View style={styles.row}>
-                      <Typography>
-                        {selectedPaymentMethod?.type}
-                        {selectedPaymentMethod?.type ===
-                          PaymentMethodType.CREDIT_CARD &&
-                          ` **** ${selectedPaymentMethod?.cardLast4Digits}`}
-                      </Typography>
-                      <Pressable
-                        onPress={() => setPaymentMethodModalVisible(true)}
-                      >
-                        <Typography style={{ color: colors.primary }}>
-                          Change
-                        </Typography>
-                      </Pressable>
-                    </View>
-                  </Card>
-                </View>
-              </>
-            }
-          />
-          <View style={styles.footer}>
-            <View>
-              <View style={styles.row}>
-                <Typography>Delivery Fee</Typography>
-                <Typography>${deliveryFee.toFixed(2)}</Typography>
-              </View>
-              <View style={styles.row}>
-                <Typography>Service Fee</Typography>
-                <Typography>${serviceFee.toFixed(2)}</Typography>
-              </View>
-              <View style={styles.row}>
-                <Typography>Items Total</Typography>
-                <Typography>${total.toFixed(2)}</Typography>
-              </View>
-            </View>
-            <View style={styles.totalContainer}>
-              <Typography variant="h3">Total</Typography>
-              <Typography variant="h2">
-                ${(total + deliveryFee + serviceFee).toFixed(2)}
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <View style={styles.section}>
+              <Typography variant="h3" style={styles.sectionTitle}>
+                Order Summary
               </Typography>
+              {items.map((item) => (
+                <CartItemRow item={item} key={item.id} />
+              ))}
             </View>
-            <Button title="Proceed to Checkout" />
+
+            <View style={styles.section}>
+              <View style={styles.allergiesContainer}>
+                <Ionicons
+                  name="alert-circle-outline"
+                  size={24}
+                  color={colors.primary}
+                />
+                <Typography style={styles.allergiesText}>
+                  Add allergies
+                </Typography>
+              </View>
+            </View>
+
+            <View style={styles.section}>
+              <CartSectionRow
+                icon="flag-outline"
+                title="Delivery Address"
+                content={`${selectedAddress?.area}, ${selectedAddress?.city}`}
+                onPress={() => setAddressModalVisible(true)}
+              />
+            </View>
+
+            <View style={styles.section}>
+              <CartSectionRow
+                icon="time-outline"
+                title="Delivery Time"
+                content="As soon as possible (25-35 min)"
+              />
+            </View>
+
+            <View style={styles.section}>
+              <CartSectionRow
+                icon="card-outline"
+                title="Payment Method"
+                content={
+                  selectedPaymentMethod?.type === PaymentMethodType.CREDIT_CARD
+                    ? `Credit Card **** ${selectedPaymentMethod?.cardLast4Digits}`
+                    : "Cash"
+                }
+                onPress={() => setPaymentMethodModalVisible(true)}
+              />
+            </View>
+          </ScrollView>
+          <View style={styles.footer}>
+            <Button
+              title={`Confirm Purchase - ${(
+                total +
+                deliveryFee +
+                serviceFee
+              ).toFixed(2)}`}
+              variant="ghost"
+              fullWidth
+            />
           </View>
-        </>
+        </View>
       ) : (
         <View style={styles.emptyContainer}>
           <Typography variant="h2">Your cart is empty</Typography>
