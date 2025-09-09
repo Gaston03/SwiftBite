@@ -5,16 +5,13 @@ import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import {
   MOCK_CATEGORIES,
-  MOCK_POPULAR_ESTABLISHMENTS,
+  MOCK_CUSTOMER,
+  MOCK_ESTABLISHMENTS,
 } from "@/constants/mock-data";
 import { useTheme } from "@/hooks/use-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-  FlatList,
-  StyleSheet,
-  View
-} from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
@@ -58,7 +55,7 @@ export default function CustomerHomeScreen() {
     },
     themeToggleIcon: {
       ...fonts.h1,
-      color: colors.text
+      color: colors.text,
     },
   });
 
@@ -71,7 +68,7 @@ export default function CustomerHomeScreen() {
           </Typography>
           <View style={styles.locationContainer}>
             <Typography variant="h3" style={styles.locationText}>
-              123 Ocean Drive
+              {MOCK_CUSTOMER.address?.city}, {MOCK_CUSTOMER.address?.area}
             </Typography>
             <Ionicons name="chevron-down" size={24} color={colors.primary} />
           </View>
@@ -109,7 +106,7 @@ export default function CustomerHomeScreen() {
       </Typography>
 
       <FlatList
-        data={MOCK_POPULAR_ESTABLISHMENTS}
+        data={MOCK_ESTABLISHMENTS}
         renderItem={({ item }) => (
           <EstablishmentCard
             establishment={item}

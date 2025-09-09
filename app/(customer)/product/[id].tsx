@@ -115,7 +115,7 @@ export default function ProductDetailsScreen() {
             headerBackTitle: establishmentName,
           }}
         />
-        <Image source={{ uri: product.imageUrl }} style={styles.headerImage} />
+        <Image source={{ uri: product.url }} style={styles.headerImage} />
         <View style={styles.infoContainer}>
           <Text style={styles.name}>{product.name}</Text>
           <Text style={styles.description}>{product.description}</Text>

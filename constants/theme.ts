@@ -7,6 +7,7 @@ export const SIZES = {
   base: 8,
   font: 14,
   radius: 12,
+  borderRadius: 12,
   padding: 16,
   padding2: 24,
   padding3: 32,
