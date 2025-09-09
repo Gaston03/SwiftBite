@@ -1,10 +1,13 @@
-import { EstablishmentProvider } from "@/contexts/establishment-context";
-import { CartProvider } from "@/contexts/cart-context";
-import { Stack } from "expo-router";
 import { SplashScreen } from "@/components/shared/SplashScreen";
-import { useState, useEffect, useContext } from "react";
-import { ThemeProvider, ThemeContext } from "@/contexts/theme-context";
 import { AuthProvider } from "@/contexts/auth-context";
+import { CartProvider } from "@/contexts/cart-context";
+import { EstablishmentProvider } from "@/contexts/establishment-context";
+import { ProductProvider } from "@/contexts/product-context";
+import { ThemeContext, ThemeProvider } from "@/contexts/theme-context";
+import { ToppingProvider } from "@/contexts/topping-context";
+import { Stack } from "expo-router";
+import { useContext, useEffect, useState } from "react";
+import "react-native-get-random-values";
 
 function App() {
   const [isAppReady, setAppReady] = useState(false);
@@ -25,15 +28,25 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <EstablishmentProvider>
-          <Stack>
-            <Stack.Screen
-              name="(onboarding)"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(customer)" options={{ headerShown: false }} />
-            <Stack.Screen name="(deliverer)" options={{ headerShown: false }} />
-          </Stack>
+          <ProductProvider>
+            <ToppingProvider>
+              <Stack>
+                <Stack.Screen
+                  name="(onboarding)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(customer)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(deliverer)"
+                  options={{ headerShown: false }}
+                />
+              </Stack>
+            </ToppingProvider>
+          </ProductProvider>
         </EstablishmentProvider>
       </CartProvider>
     </AuthProvider>

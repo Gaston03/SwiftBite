@@ -2,10 +2,16 @@ import { ProfileRow } from "@/components/customer/profile-row";
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { MOCK_CUSTOMER } from "@/constants/mock-data";
+import { useCustomer } from "@/hooks/use-customer";
 import { useTheme } from "@/hooks/use-theme";
 import { Stack, useRouter } from "expo-router";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 
 export default function ProfileScreen() {
@@ -13,6 +19,7 @@ export default function ProfileScreen() {
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
+  const { customer, loading } = useCustomer();
 
   const styles = StyleSheet.create({
     container: {
@@ -45,7 +52,28 @@ export default function ProfileScreen() {
     buttonContainer: {
       padding: sizes.padding,
     },
+    center: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
   });
+
+  if (loading) {
+    return (
+      <Screen style={styles.center}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </Screen>
+    );
+  }
+
+  if (!customer) {
+    return (
+      <Screen style={styles.center}>
+        <Typography>Could not load profile.</Typography>
+      </Screen>
+    );
+  }
 
   return (
     <Screen withPadding={false}>
@@ -54,13 +82,15 @@ export default function ProfileScreen() {
         <ScrollView contentContainerStyle={{ paddingTop: headerHeight }}>
           <View style={styles.header}>
             <Image
-              source={{ uri: MOCK_CUSTOMER.avatar }}
+              source={{
+                uri: "https://placehold.co/100x100/9C27B0/FFFFFF/png?text=AV",
+              }}
               style={styles.avatar}
             />
             <Typography variant="h2" style={styles.name}>
-              {MOCK_CUSTOMER.firstName} {MOCK_CUSTOMER.lastName}
+              {customer.firstName} {customer.lastName}
             </Typography>
-            <Typography style={styles.email}>{MOCK_CUSTOMER.email}</Typography>
+            <Typography style={styles.email}>{customer.email}</Typography>
           </View>
 
           <View style={styles.menu}>
