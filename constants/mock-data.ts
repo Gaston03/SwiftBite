@@ -1,15 +1,43 @@
+import 'react-native-get-random-values';
+import { Address } from "@/models/address";
+import { Customer } from "@/models/customer";
 import {
   EstablishmentStatus,
   EstablishmentType,
   UserRole,
 } from "@/models/enums";
-import { Address } from "@/models/address";
-import { Customer } from "@/models/customer";
-import { Topping } from "@/models/topping";
-import { Product } from "@/models/product";
 import { Establishment } from "@/models/establishment";
+import { Product } from "@/models/product";
+import { Topping } from "@/models/topping";
+import { v4 as uuid } from "uuid";
 
 // Mock Data for UI Development
+
+const addressIds = {
+  1: uuid(),
+  2: uuid(),
+};
+const customerId = uuid();
+const establishmentIds = {
+  1: uuid(),
+  2: uuid(),
+  3: uuid(),
+};
+const productIds = {
+  1: uuid(),
+  2: uuid(),
+  3: uuid(),
+  4: uuid(),
+  5: uuid(),
+  6: uuid(),
+  7: uuid(),
+};
+const toppingIds = {
+  1: uuid(),
+  2: uuid(),
+  3: uuid(),
+  4: uuid(),
+};
 
 export const MOCK_CATEGORIES = [
   {
@@ -46,7 +74,7 @@ export const MOCK_CATEGORIES = [
 
 const MOCK_ADDRESSES: Address[] = [
   {
-    id: "addr-1",
+    id: addressIds[1],
     area: "Downtown",
     city: "Metropolis",
     zipCode: "12345",
@@ -55,7 +83,7 @@ const MOCK_ADDRESSES: Address[] = [
     instructions: "Leave at the front door.",
   },
   {
-    id: "addr-2",
+    id: addressIds[2],
     area: "Suburbia",
     city: "Smallville",
     zipCode: "67890",
@@ -66,7 +94,7 @@ const MOCK_ADDRESSES: Address[] = [
 ];
 
 export const MOCK_CUSTOMER: Customer = {
-  id: "user-1",
+  id: customerId,
   firstName: "Jules",
   lastName: "Verne",
   email: "jules.verne@swiftbite.com",
@@ -81,8 +109,8 @@ export const MOCK_CUSTOMER: Customer = {
 
 const MOCK_TOPPINGS: Topping[] = [
   {
-    id: "top-1",
-    productId: "prod-1",
+    id: toppingIds[1],
+    productId: productIds[1],
     name: "Extra Cheese",
     price: 2.0,
     isRequired: false,
@@ -90,8 +118,8 @@ const MOCK_TOPPINGS: Topping[] = [
     updatedAt: new Date(),
   },
   {
-    id: "top-2",
-    productId: "prod-1",
+    id: toppingIds[2],
+    productId: productIds[1],
     name: "Mushrooms",
     price: 1.5,
     isRequired: false,
@@ -99,8 +127,8 @@ const MOCK_TOPPINGS: Topping[] = [
     updatedAt: new Date(),
   },
   {
-    id: "top-3",
-    productId: "prod-2",
+    id: toppingIds[3],
+    productId: productIds[2],
     name: "Bacon",
     price: 2.5,
     isRequired: false,
@@ -108,8 +136,8 @@ const MOCK_TOPPINGS: Topping[] = [
     updatedAt: new Date(),
   },
   {
-    id: "top-4",
-    productId: "prod-2",
+    id: toppingIds[4],
+    productId: productIds[2],
     name: "Avocado",
     price: 2.0,
     isRequired: false,
@@ -121,8 +149,8 @@ const MOCK_TOPPINGS: Topping[] = [
 export const MOCK_PRODUCTS: Product[] = [
   // Restaurant Products
   {
-    id: "prod-1",
-    establishmentId: "est-1",
+    id: productIds[1],
+    establishmentId: establishmentIds[1],
     name: "Margherita Pizza",
     description: "Classic pizza with fresh mozzarella, tomatoes, and basil.",
     price: 12.99,
@@ -131,11 +159,11 @@ export const MOCK_PRODUCTS: Product[] = [
     available: true,
     createdAt: new Date(),
     updatedAt: new Date(),
-    toppings: MOCK_TOPPINGS.filter((t) => t.productId === "prod-1"),
+    toppings: MOCK_TOPPINGS.filter((t) => t.productId === productIds[1]),
   },
   {
-    id: "prod-2",
-    establishmentId: "est-1",
+    id: productIds[2],
+    establishmentId: establishmentIds[1],
     name: "Cheeseburger",
     description: "Juicy beef patty with cheddar cheese, lettuce, and tomato.",
     price: 9.99,
@@ -144,11 +172,11 @@ export const MOCK_PRODUCTS: Product[] = [
     available: true,
     createdAt: new Date(),
     updatedAt: new Date(),
-    toppings: MOCK_TOPPINGS.filter((t) => t.productId === "prod-2"),
+    toppings: MOCK_TOPPINGS.filter((t) => t.productId === productIds[2]),
   },
   {
-    id: "prod-5",
-    establishmentId: "est-1",
+    id: productIds[3],
+    establishmentId: establishmentIds[1],
     name: "Garlic Bread",
     description: "Warm and crispy garlic bread with a side of marinara sauce.",
     price: 5.99,
@@ -161,8 +189,8 @@ export const MOCK_PRODUCTS: Product[] = [
 
   // Pharmacy Products
   {
-    id: "prod-3",
-    establishmentId: "est-2",
+    id: productIds[4],
+    establishmentId: establishmentIds[2],
     name: "Painkiller",
     description: "Box of 20 Paracetamol tablets, 500mg.",
     price: 5.49,
@@ -173,8 +201,8 @@ export const MOCK_PRODUCTS: Product[] = [
     updatedAt: new Date(),
   },
   {
-    id: "prod-6",
-    establishmentId: "est-2",
+    id: productIds[5],
+    establishmentId: establishmentIds[2],
     name: "Vitamin C",
     description: "Bottle of 100 Vitamin C tablets, 1000mg.",
     price: 12.99,
@@ -187,8 +215,8 @@ export const MOCK_PRODUCTS: Product[] = [
 
   // Grocery Products
   {
-    id: "prod-4",
-    establishmentId: "est-3",
+    id: productIds[6],
+    establishmentId: establishmentIds[3],
     name: "Fresh Milk",
     description: "1 liter of fresh, full-fat milk.",
     price: 2.99,
@@ -199,8 +227,8 @@ export const MOCK_PRODUCTS: Product[] = [
     updatedAt: new Date(),
   },
   {
-    id: "prod-7",
-    establishmentId: "est-3",
+    id: productIds[7],
+    establishmentId: establishmentIds[3],
     name: "Free-range Eggs",
     description: "A dozen of large, free-range brown eggs.",
     price: 4.99,
@@ -214,7 +242,7 @@ export const MOCK_PRODUCTS: Product[] = [
 
 export const MOCK_ESTABLISHMENTS: Establishment[] = [
   {
-    id: "est-1",
+    id: establishmentIds[1],
     name: "The Cheesy Crust",
     imageUrl:
       "https://placehold.co/600x400/F44336/FFFFFF/png?text=The+Cheesy+Crust",
@@ -235,13 +263,12 @@ export const MOCK_ESTABLISHMENTS: Establishment[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     address: MOCK_ADDRESSES[0],
-    products: MOCK_PRODUCTS.filter((p) => p.establishmentId === "est-1"),
+    products: MOCK_PRODUCTS.filter((p) => p.establishmentId === establishmentIds[1]),
   },
   {
-    id: "est-2",
+    id: establishmentIds[2],
     name: "HealthFirst Pharmacy",
-    imageUrl:
-      "https://placehold.co/600x400/2196F3/FFFFFF/png?text=HealthFirst",
+    imageUrl: "https://placehold.co/600x400/2196F3/FFFFFF/png?text=HealthFirst",
     type: EstablishmentType.PHARMACY,
     openingHours: {
       monday: [0, 24],
@@ -259,13 +286,12 @@ export const MOCK_ESTABLISHMENTS: Establishment[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     address: MOCK_ADDRESSES[1],
-    products: MOCK_PRODUCTS.filter((p) => p.establishmentId === "est-2"),
+    products: MOCK_PRODUCTS.filter((p) => p.establishmentId === establishmentIds[2]),
   },
   {
-    id: "est-3",
+    id: establishmentIds[3],
     name: "Daily Needs Groceries",
-    imageUrl:
-      "https://placehold.co/600x400/4CAF50/FFFFFF/png?text=Daily+Needs",
+    imageUrl: "https://placehold.co/600x400/4CAF50/FFFFFF/png?text=Daily+Needs",
     type: EstablishmentType.SUPER_MARKET,
     openingHours: {
       monday: [8, 22],
@@ -282,6 +308,6 @@ export const MOCK_ESTABLISHMENTS: Establishment[] = [
     deliveryTime: "30-45 min",
     createdAt: new Date(),
     updatedAt: new Date(),
-    products: MOCK_PRODUCTS.filter((p) => p.establishmentId === "est-3"),
+    products: MOCK_PRODUCTS.filter((p) => p.establishmentId === establishmentIds[3]),
   },
 ];

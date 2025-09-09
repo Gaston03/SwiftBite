@@ -86,6 +86,7 @@ export const EstablishmentProvider = ({
     try {
       return await establishmentService.getEstablishmentById(id);
     } catch (error) {
+      console.log('error', error)
       handleError(error);
       return null;
     }
