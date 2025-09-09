@@ -2,13 +2,14 @@ import { FlatList, StyleSheet, View, Text, TouchableOpacity } from 'react-native
 import { Screen } from '@/components/shared/screen';
 import { Typography } from '@/components/shared/typography';
 import { Input } from '@/components/shared/input';
-import { MOCK_CATEGORIES } from '@/constants/mock-data';
+import { MOCK_CATEGORIES, MOCK_POPULAR_ESTABLISHMENTS } from '@/constants/mock-data';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/use-theme';
 import { Avatar } from '@/components/shared/avatar';
 import { Image } from 'expo-image';
 import Animated, { useAnimatedStyle, withDelay, withTiming } from 'react-native-reanimated';
+import { EstablishmentCard } from '@/components/customer/establishment-card';
 
 const CategoryCard = ({ item, onPress, index }) => {
   const { currentTheme } = useTheme();
@@ -64,6 +65,10 @@ export default function CustomerHomeScreen() {
     router.push(`/(customer)/establishments/${type}`);
   };
 
+  const handleEstablishmentPress = (id: string) => {
+    router.push(`/(customer)/establishment/${id}`);
+  };
+
   const styles = StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -88,7 +93,7 @@ export default function CustomerHomeScreen() {
       color: colors.text,
       marginBottom: sizes.padding,
     },
-    gridContainer: {
+    listContainer: {
       paddingBottom: sizes.padding,
     },
   });
@@ -127,7 +132,21 @@ export default function CustomerHomeScreen() {
         keyExtractor={(item) => item.type}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.gridContainer}
+        contentContainerStyle={styles.listContainer}
+      />
+
+      <Typography variant="h2" style={styles.sectionTitle}>
+        Popular
+      </Typography>
+
+      <FlatList
+        data={MOCK_POPULAR_ESTABLISHMENTS}
+        renderItem={({ item }) => (
+          <EstablishmentCard establishment={item} onPress={() => handleEstablishmentPress(item.id)} />
+        )}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={false} // To avoid nested scrollviews warning
       />
     </Screen>
   );

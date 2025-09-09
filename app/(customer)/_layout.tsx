@@ -8,9 +8,7 @@ export default function CustomerLayout() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: {
-          backgroundColor: colors.background,
-        },
+        headerTransparent: true,
         headerTintColor: colors.text,
         headerTitleStyle: {
           ...fonts.h3,

@@ -176,6 +176,10 @@ export const MOCK_ESTABLISHMENTS: Establishment[] = [
   },
 ];
 
+export const MOCK_POPULAR_ESTABLISHMENTS = MOCK_ESTABLISHMENTS.filter(
+  (e) => e.is_popular
+);
+
 export const MOCK_USER: Omit<Customer, "password"> = {
   id: "user-1",
   firstName: "Jules",
