@@ -53,14 +53,14 @@ export function EstablishmentCard({ establishment, onPress }: EstablishmentCardP
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: establishment.image }} style={styles.image} />
+      <Image source={{ uri: establishment.imageUrl }} style={styles.image} />
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{establishment.name}</Text>
         <View style={styles.detailsContainer}>
           <Ionicons name="star" size={16} color={colors.primary} />
           <Text style={styles.rating}>{establishment.rate}</Text>
           <Text style={styles.dot}>•</Text>
-          <Text style={styles.deliveryTime}>{establishment.delivery_time}</Text>
+          <Text style={styles.deliveryTime}>{establishment.deliveryTime}</Text>
         </View>
       </View>
     </TouchableOpacity>

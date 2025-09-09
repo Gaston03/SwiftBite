@@ -80,17 +80,20 @@ export default function EstablishmentDetailsScreen() {
       const foundEstablishment = MOCK_ESTABLISHMENTS.find((e) => e.id === id);
       setEstablishment(foundEstablishment || null);
 
-      if (foundEstablishment) {
-        const groupedProducts = foundEstablishment.products.reduce((acc, product) => {
-          const category = product.category || "Other";
-          if (!acc[category]) {
-            acc[category] = [];
-          }
-          acc[category].push(product);
-          return acc;
-        }, {} as Record<string, Product[]>);
+      if (foundEstablishment && foundEstablishment.products) {
+        const groupedProducts = foundEstablishment.products.reduce(
+          (acc, product) => {
+            const category = product.category || "Other";
+            if (!acc[category]) {
+              acc[category] = [];
+            }
+            acc[category].push(product);
+            return acc;
+          },
+          {} as Record<string, Product[]>
+        );
 
-        const sections = Object.keys(groupedProducts).map(title => ({
+        const sections = Object.keys(groupedProducts).map((title) => ({
           title,
           data: groupedProducts[title],
         }));
@@ -126,20 +129,27 @@ export default function EstablishmentDetailsScreen() {
           <ProductRow product={item} onPress={() => handleProductPress(item.id)} />
         )}
         renderSectionHeader={({ section: { title } }) => (
-          <Typography variant="subtitle" style={styles.sectionHeader}>
+          <Typography variant="h2" style={styles.sectionHeader}>
             {title}
           </Typography>
         )}
         ListHeaderComponent={
           <View>
-            <Image source={{ uri: establishment.image }} style={styles.headerImage} />
+            <Image
+              source={{ uri: establishment.imageUrl }}
+              style={styles.headerImage}
+            />
             <View style={styles.infoContainer}>
-              <Typography variant="title" style={styles.name}>{establishment.name}</Typography>
+              <Typography variant="h1" style={styles.name}>
+                {establishment.name}
+              </Typography>
               <View style={styles.detailsContainer}>
                 <Ionicons name="star" size={16} color="#FFC107" />
                 <Text style={styles.rating}>{establishment.rate}</Text>
                 <Text style={styles.dot}>•</Text>
-                <Text style={styles.deliveryTime}>{establishment.delivery_time}</Text>
+                <Text style={styles.deliveryTime}>
+                  {establishment.deliveryTime}
+                </Text>
               </View>
             </View>
           </View>

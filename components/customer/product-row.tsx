@@ -52,8 +52,8 @@ export function ProductRow({ product, onPress }: ProductRowProps) {
         </Text>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
       </View>
-      {product.imageUrl && (
-        <Image source={{ uri: product.imageUrl }} style={styles.image} />
+      {product.url && (
+        <Image source={{ uri: product.url }} style={styles.image} />
       )}
     </TouchableOpacity>
   );

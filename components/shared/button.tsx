@@ -77,7 +77,11 @@ export function Button({
   return (
     <Animated.View style={animatedStyle}>
       <Pressable
-        style={[styles.button, styles[variant], style]}
+        style={(state) => [
+          styles.button,
+          styles[variant],
+          typeof style === "function" ? style(state) : style,
+        ]}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         {...props}
