@@ -33,6 +33,7 @@ export default function LoginScreen() {
     container: {
       flex: 1,
       justifyContent: "center",
+      gap: sizes.padding,
       padding: sizes.padding,
     },
     title: {
@@ -53,7 +54,7 @@ export default function LoginScreen() {
       marginTop: sizes.padding,
     },
     link: {
-      ...fonts.body,
+      ...fonts.body3,
       color: colors.primary,
       marginLeft: sizes.padding / 2,
     },
