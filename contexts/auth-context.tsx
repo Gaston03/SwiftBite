@@ -9,11 +9,13 @@ import {
 } from "@/services/auth-service";
 import { supabase } from "@/utils/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { User } from "@supabase/supabase-js";
 import { createContext, useCallback, useEffect, useState } from "react";
 
 const ONBOARDING_COMPLETED_KEY = "onboarding-completed";
 
 interface AuthContextType {
+  user: User | null;
   userProfile: Customer | Deliverer | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -39,6 +41,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<Customer | Deliverer | null>(
     null
   );
@@ -56,6 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         data: { session },
       } = await supabase.auth.getSession();
       if (session) {
+        setUser(session.user);
         const { data: profile } = await authService.getProfile(session.user.id);
         if (profile) {
           setUserProfile(profile);
@@ -81,6 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
+        setUser(session.user);
         setIsAuthenticated(true);
         authService.getProfile(session.user.id).then(({ data: profile }) => {
           if (profile) {
@@ -92,6 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         });
       } else {
+        setUser(null);
         setUserProfile(null);
         setIsAuthenticated(false);
         setRequiresProfileCompletion(false);
@@ -235,6 +241,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const value: AuthContextType = {
+    user,
     userProfile,
     isAuthenticated,
     isLoading,
