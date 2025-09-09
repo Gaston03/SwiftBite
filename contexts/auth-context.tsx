@@ -8,13 +8,18 @@ import {
   VerifyPhoneNumberOtpData,
 } from "@/services/auth-service";
 import { supabase } from "@/utils/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useCallback, useEffect, useState } from "react";
+
+const ONBOARDING_COMPLETED_KEY = "onboarding-completed";
 
 interface AuthContextType {
   userProfile: Customer | Deliverer | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  onboardingCompleted: boolean;
   requiresProfileCompletion: boolean;
+  completeOnboarding: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   signInWithEmailAndPassword: (
     data: EmailAndPasswordSignInData
@@ -39,6 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const [requiresProfileCompletion, setRequiresProfileCompletion] =
     useState(false);
 
@@ -58,6 +64,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         setIsAuthenticated(true);
       }
+      const onboardingCompleted = await AsyncStorage.getItem(
+        ONBOARDING_COMPLETED_KEY
+      );
+      setOnboardingCompleted(onboardingCompleted === "true");
     } catch (error) {
       console.error("Error loading user:", error);
     } finally {
@@ -219,11 +229,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const completeOnboarding = async (): Promise<void> => {
+    setOnboardingCompleted(true);
+    await AsyncStorage.setItem(ONBOARDING_COMPLETED_KEY, "true");
+  };
+
   const value: AuthContextType = {
     userProfile,
     isAuthenticated,
     isLoading,
+    onboardingCompleted,
     requiresProfileCompletion,
+    completeOnboarding,
     refreshProfile,
     signInWithEmailAndPassword,
     signInWithPhoneNumber,

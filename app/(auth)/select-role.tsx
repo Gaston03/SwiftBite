@@ -2,11 +2,18 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/hooks/use-theme';
 import { Screen } from '@/components/shared/screen';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function SelectRoleScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
+  const { completeOnboarding } = useAuth();
+
+  const handleRoleSelection = (role: 'customer' | 'deliverer') => {
+    completeOnboarding();
+    router.push(role === 'customer' ? '/(customer)/home' : '/(deliverer)/home');
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -40,10 +47,10 @@ export default function SelectRoleScreen() {
     <Screen>
       <View style={styles.container}>
         <Text style={styles.title}>How do you want to use SwiftBite?</Text>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/(customer)/home')}>
+        <TouchableOpacity style={styles.button} onPress={() => handleRoleSelection('customer')}>
           <Text style={styles.buttonText}>I'm a Customer</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/(deliverer)/home')}>
+        <TouchableOpacity style={styles.button} onPress={() => handleRoleSelection('deliverer')}>
           <Text style={styles.buttonText}>I'm a Deliverer</Text>
         </TouchableOpacity>
       </View>
