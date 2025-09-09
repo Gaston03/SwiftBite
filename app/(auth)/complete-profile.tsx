@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { Screen } from "@/components/shared/screen";
@@ -14,12 +14,27 @@ export default function CompleteProfileScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
-  const { user, isLoading, refreshProfile, completeOnboarding } = useAuth();
+  const {
+    user,
+    isLoading,
+    refreshProfile,
+    completeOnboarding,
+    error,
+    clearError,
+  } = useAuth();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Profile Error", error.message, [
+        { text: "OK", onPress: () => clearError() },
+      ]);
+    }
+  }, [error]);
 
   useEffect(() => {
     if (user?.app_metadata.name) {
@@ -61,8 +76,10 @@ export default function CompleteProfileScreen() {
       await completeOnboarding();
       await refreshProfile();
       // The root redirector will handle navigation
-    } catch (error) {
-      console.error("Failed to complete profile:", error);
+    } catch (error: any) {
+      // This will be caught by the AuthContext, but we can also set it here
+      // for services that don't throw AuthError specifically.
+      Alert.alert("Profile Error", error.message || "An unknown error occurred.");
     }
   };
 

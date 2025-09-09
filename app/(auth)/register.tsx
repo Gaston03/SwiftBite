@@ -1,11 +1,11 @@
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { Screen } from "@/components/shared/screen";
 import { Input } from "@/components/shared/input";
 import { Button } from "@/components/shared/button";
 import { useAuth } from "@/hooks/use-auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Typography } from "@/components/shared/typography";
 
 export default function RegisterScreen() {
@@ -13,10 +13,18 @@ export default function RegisterScreen() {
   const { role } = useLocalSearchParams<{ role: "customer" | "deliverer" }>();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
-  const { signUp, completeOnboarding, isLoading } = useAuth();
+  const { signUp, isLoading, error, clearError } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Registration Error", error.message, [
+        { text: "OK", onPress: () => clearError() },
+      ]);
+    }
+  }, [error]);
 
   const handleRegister = async () => {
     if (!role) {
@@ -28,7 +36,8 @@ export default function RegisterScreen() {
       await signUp({ email, password, options: { data: { name, role } } });
       // The root redirector will now handle navigation to the complete-profile screen
     } catch (error) {
-      console.error("Registration failed:", error);
+      // The error is caught and set in the AuthContext, so we don't need to do anything here.
+      // The useEffect hook will handle displaying the alert.
     }
   };
 
