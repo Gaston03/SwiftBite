@@ -10,7 +10,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { currentTheme, toggleTheme, theme } = useTheme();
+  const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
 
@@ -66,18 +66,18 @@ export default function ProfileScreen() {
             <ProfileRow icon="person-outline" label="My Details" onPress={() => {}} />
             <ProfileRow icon="help-circle-outline" label="Help Center" onPress={() => {}} />
             <ProfileRow icon="settings-outline" label="Settings" onPress={() => {}} />
-            <ProfileRow
+            {/* <ProfileRow
               icon="contrast-outline"
               label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               onPress={toggleTheme}
-            />
+            /> */}
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
           <Button
             title="Switch to Deliverer"
             onPress={() => router.push('/(deliverer)/home')}
-            variant="secondary"
+            variant="primary"
           />
         </View>
       </View>
