@@ -47,7 +47,7 @@ export default function ProfileScreen() {
   });
 
   return (
-    <Screen withPadding={false}>
+    <Screen scrollable withPadding={false}>
       <Stack.Screen options={{ title: "My Profile" }} />
       <View style={styles.header}>
         <Image source={{ uri: MOCK_USER.avatar }} style={styles.avatar} />
