@@ -1,5 +1,6 @@
 import { SplashScreen } from "@/components/shared/SplashScreen";
 import { useAuth } from "@/hooks/use-auth";
+import { UserRole } from "@/models/enums";
 import { Redirect } from "expo-router";
 
 export default function Index() {
@@ -34,11 +35,11 @@ export default function Index() {
     return <Redirect href="/(auth)/complete-profile" />;
   }
 
-  if (userProfile?.role === "customer") {
-    return <Redirect href="/(customer)/home" />;
+  if (userProfile?.role === UserRole.CUSTOMER) {
+    return <Redirect href="/(customer)/(tabs)/home" />;
   }
 
-  if (userProfile?.role === "deliverer") {
+  if (userProfile?.role === UserRole.DELIVERER) {
     return <Redirect href="/(deliverer)/home" />;
   }
 
