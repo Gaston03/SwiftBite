@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/use-theme';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type ProfileRowProps = {
   icon: keyof typeof Ionicons.glyphMap;

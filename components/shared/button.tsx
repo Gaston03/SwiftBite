@@ -41,12 +41,7 @@ export function Button({ title, variant = 'primary', style, ...props }: ButtonPr
     },
     text: {
       ...fonts.h4,
-    },
-    primaryText: {
-      color: colors.black,
-    },
-    secondaryText: {
-      color: colors.white,
+      color: colors.text
     },
   });
 
@@ -57,7 +52,7 @@ export function Button({ title, variant = 'primary', style, ...props }: ButtonPr
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         {...props}>
-        <Text style={[styles.text, styles[`${variant}Text`]]}>{title}</Text>
+        <Text style={styles.text}>{title}</Text>
       </Pressable>
     </Animated.View>
   );
