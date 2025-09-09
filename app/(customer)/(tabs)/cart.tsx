@@ -18,6 +18,7 @@ import { PaymentMethodSelectionModal } from "@/components/customer/payment-metho
 import { useEstablishment } from "@/hooks/use-establishment";
 import { CartSectionRow } from "@/components/customer/cart-section-row";
 import { Ionicons } from "@expo/vector-icons";
+import { MOCK_ESTABLISHMENTS } from "@/constants/mock-data";
 
 // Mock Data
 const mockAddresses: Address[] = [
@@ -69,7 +70,7 @@ export default function CartScreen() {
     async function fetchDeliveryFee() {
       if (items.length > 0) {
         const establishmentId = items[0].product.establishmentId;
-        const establishment = await getEstablishmentById(establishmentId);
+        const establishment = MOCK_ESTABLISHMENTS.filter(e => e.id === establishmentId)[0]
         if (establishment) {
           setDeliveryFee(establishment.deliveryFee);
         }

@@ -17,7 +17,7 @@ type ProductSection = {
 
 export default function EstablishmentDetailsScreen() {
   const router = useRouter();
-  const { id, category } = useLocalSearchParams<{ id: string, category?: string }>();
+  const { id } = useLocalSearchParams<{ id: string, category?: string }>();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
   const [productSections, setProductSections] = useState<ProductSection[]>([]);
 
@@ -68,10 +68,7 @@ export default function EstablishmentDetailsScreen() {
     sectionHeader: {
       paddingVertical: 12,
       paddingHorizontal: 16,
-      backgroundColor: "#f7f7f7",
-      borderBottomWidth: 1,
-      borderTopWidth: 1,
-      borderColor: "#eee",
+      backgroundColor: colors.secondary,
     },
   });
 
@@ -129,7 +126,7 @@ export default function EstablishmentDetailsScreen() {
           <ProductRow product={item} onPress={() => handleProductPress(item.id)} />
         )}
         renderSectionHeader={({ section: { title } }) => (
-          <Typography variant="h2" style={styles.sectionHeader}>
+          <Typography variant="h3" style={styles.sectionHeader}>
             {title}
           </Typography>
         )}
