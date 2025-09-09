@@ -7,12 +7,26 @@ import { EstablishmentCard } from "@/components/customer/establishment-card";
 import { EstablishmentType } from "@/models/enums";
 import { useEffect, useState } from "react";
 import { Establishment } from "@/models/establishment";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function EstablishmentListScreen() {
   const router = useRouter();
   const { type } = useLocalSearchParams<{ type: EstablishmentType }>();
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [categoryName, setCategoryName] = useState("");
+  const { currentTheme } = useTheme()
+  const { sizes } = currentTheme
+
+  const styles = StyleSheet.create({
+    list: {
+      paddingVertical: sizes.padding3,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });
 
   useEffect(() => {
     if (type) {
@@ -56,14 +70,3 @@ export default function EstablishmentListScreen() {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  list: {
-    paddingVertical: 16,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

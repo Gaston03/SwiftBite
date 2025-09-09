@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { ProductRow } from "@/components/customer/product-row";
 import { Product } from "@/models/product";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@/hooks/use-theme";
 
 type ProductSection = {
   title: string;
@@ -19,6 +20,60 @@ export default function EstablishmentDetailsScreen() {
   const { id, category } = useLocalSearchParams<{ id: string, category?: string }>();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
   const [productSections, setProductSections] = useState<ProductSection[]>([]);
+
+  const { currentTheme } = useTheme()
+  const { sizes, colors, fonts } = currentTheme
+
+  const styles = StyleSheet.create({
+    center: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    list: {
+      paddingBottom: sizes.padding3,
+    },
+    headerImage: {
+      paddingTop: sizes.padding3,
+      width: "100%",
+      height: 200,
+    },
+    infoContainer: {
+      padding: sizes.padding,
+      ...fonts.h4,
+      color: colors.text
+    },
+    name: {
+      marginBottom: 8,
+      ...fonts.h4,
+      color: colors.text
+    },
+    detailsContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    rating: {
+      ...fonts.h4,
+      color: colors.text
+    },
+    dot: {
+      marginHorizontal: 6,
+      ...fonts.h4,
+      color: colors.text
+    },
+    deliveryTime: {
+      ...fonts.h4,
+      color: colors.text
+    },
+    sectionHeader: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      backgroundColor: "#f7f7f7",
+      borderBottomWidth: 1,
+      borderTopWidth: 1,
+      borderColor: "#eee",
+    },
+  });
 
   useEffect(() => {
     if (id) {
@@ -61,7 +116,7 @@ export default function EstablishmentDetailsScreen() {
       <Stack.Screen
         options={{
           title: establishment.name,
-          headerBackTitle: category || "Back",
+          headerBackTitle: "Back",
         }}
       />
       <SectionList
@@ -94,50 +149,3 @@ export default function EstablishmentDetailsScreen() {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  list: {
-    paddingBottom: 24,
-  },
-  headerImage: {
-    width: "100%",
-    height: 200,
-  },
-  infoContainer: {
-    padding: 16,
-  },
-  name: {
-    marginBottom: 8,
-  },
-  detailsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  rating: {
-    marginLeft: 4,
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  dot: {
-    marginHorizontal: 6,
-    fontSize: 14,
-    color: "#666",
-  },
-  deliveryTime: {
-    fontSize: 14,
-    color: "#666",
-  },
-  sectionHeader: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: "#f7f7f7",
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: "#eee",
-  },
-});
