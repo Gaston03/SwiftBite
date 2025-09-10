@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { MOCK_CUSTOMER } from "@/constants/mock-data";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function ProfileScreen() {
   const { colors, fonts, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
   const { loading } = useCustomer();
+  const { signOut } = useAuth()
   const customer = MOCK_CUSTOMER
 
   const styles = StyleSheet.create({
@@ -52,6 +54,8 @@ export default function ProfileScreen() {
       marginTop: sizes.padding2,
     },
     buttonContainer: {
+      flex: 1,
+      gap: sizes.padding / 2,
       padding: sizes.padding,
     },
     center: {
@@ -60,6 +64,8 @@ export default function ProfileScreen() {
       alignItems: "center",
     },
   });
+
+  const handleSignOut = async () => await signOut()
 
   if (loading) {
     return (
@@ -129,10 +135,15 @@ export default function ProfileScreen() {
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
+        <Button
+            title="Logout"
+            onPress={handleSignOut}
+            variant="primary"
+          />
           <Button
             title="Switch to Deliverer"
             onPress={() => router.push("/(deliverer)/home")}
-            variant="primary"
+            variant="secondary"
           />
         </View>
       </View>

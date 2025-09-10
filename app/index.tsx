@@ -44,6 +44,6 @@ export default function Index() {
   }
 
   // Fallback in case user is authenticated, onboarded, but has no role.
-  // return <Redirect href="/(auth)/select-role" />;
-  return <Redirect href="/(onboarding)" />;
+  return <Redirect href="/(auth)/select-role" />;
+  // return <Redirect href="/(onboarding)" />;
 }

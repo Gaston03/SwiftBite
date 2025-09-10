@@ -77,6 +77,7 @@ class AuthService {
       data: { session },
       error,
     } = await supabase.auth.signInWithPassword(data);
+    console.log('===== error: ', error)
     return { session, error };
   };
 
