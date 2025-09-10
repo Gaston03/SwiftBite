@@ -23,7 +23,9 @@ export default function LoginScreen() {
         { text: "OK", onPress: () => clearError() },
       ]);
     }
-  }, [error]);
+  }, [clearError, error]);
+
+  const handleTestLogin = () => router.push("/(customer)/(tabs)/home")
 
   const handleLogin = () => {
     signInWithEmailAndPassword({ email, password });
@@ -82,11 +84,11 @@ export default function LoginScreen() {
         <Button
           style={styles.button}
           title="Sign In"
-          onPress={handleLogin}
+          onPress={handleTestLogin}
           disabled={isLoading}
         />
         <View style={styles.footer}>
-          <Typography>Don't have an account?</Typography>
+          <Typography>Don&apos;t have an account?</Typography>
           <TouchableOpacity onPress={() => router.push("/(auth)/select-role")}>
             <Typography style={styles.link}>Sign Up</Typography>
           </TouchableOpacity>

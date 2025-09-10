@@ -34,7 +34,7 @@ export default function CompleteProfileScreen() {
         { text: "OK", onPress: () => clearError() },
       ]);
     }
-  }, [error]);
+  }, [clearError, error]);
 
   useEffect(() => {
     if (user?.app_metadata.name) {

@@ -35,8 +35,11 @@ export default function ProductDetailsScreen() {
   >({});
   const [totalPrice, setTotalPrice] = useState(0);
   const { getProductById, loading: productLoading } = useProduct();
-  const { getToppingsByProductId, toppings, loading: toppingsLoading } =
-    useTopping();
+  const {
+    getToppingsByProductId,
+    toppings,
+    loading: toppingsLoading,
+  } = useTopping();
   const { getEstablishmentById } = useEstablishment();
 
   useEffect(() => {
@@ -55,7 +58,19 @@ export default function ProductDetailsScreen() {
       };
       fetchProduct();
     }
-  }, [getEstablishmentById, getProductById, getToppingsByProductId, id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  useEffect(() => {
+    if (product) {
+      const updatedProduct: Product = {
+        ...product,
+        toppings: toppings || [],
+      };
+      setProduct(updatedProduct);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toppings]);
 
   useEffect(() => {
     if (product) {

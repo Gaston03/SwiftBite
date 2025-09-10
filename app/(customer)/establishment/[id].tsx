@@ -83,12 +83,9 @@ export default function EstablishmentDetailsScreen() {
       color: colors.text,
     },
     sectionHeader: {
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      backgroundColor: "#f7f7f7",
-      borderBottomWidth: 1,
-      borderTopWidth: 1,
-      borderColor: "#eee",
+      paddingVertical: sizes.padding - 4,
+      paddingHorizontal: sizes.padding,
+      backgroundColor: colors.secondary
     },
   });
 
@@ -103,7 +100,8 @@ export default function EstablishmentDetailsScreen() {
       };
       fetchEstablishment();
     }
-  }, [getEstablishmentById, getEstablishmentProducts, id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   useEffect(() => {
     if (products) {

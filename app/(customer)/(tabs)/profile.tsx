@@ -13,13 +13,15 @@ import {
   View,
 } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { MOCK_CUSTOMER } from "@/constants/mock-data";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
-  const { customer, loading } = useCustomer();
+  const { loading } = useCustomer();
+  const customer = MOCK_CUSTOMER
 
   const styles = StyleSheet.create({
     container: {
