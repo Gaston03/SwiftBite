@@ -84,7 +84,7 @@ export default function LoginScreen() {
         <Button
           style={styles.button}
           title="Sign In"
-          onPress={handleTestLogin}
+          onPress={handleLogin}
           disabled={isLoading}
         />
         <View style={styles.footer}>

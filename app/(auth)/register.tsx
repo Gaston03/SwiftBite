@@ -129,7 +129,7 @@ export default function RegisterScreen() {
         <Button
           style={styles.button}
           title="Sign Up"
-          onPress={handleTestRegister}
+          onPress={handleRegister}
           disabled={isLoading}
         />
         <View style={styles.footer}>
