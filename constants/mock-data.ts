@@ -75,8 +75,8 @@ export const MOCK_CATEGORIES = [
 const MOCK_ADDRESSES: Address[] = [
   {
     id: addressIds[1],
-    area: "Downtown",
-    city: "Metropolis",
+    area: "Gbessia",
+    city: "Conakry",
     zipCode: "12345",
     longitude: -74.006,
     latitude: 40.7128,
@@ -84,8 +84,8 @@ const MOCK_ADDRESSES: Address[] = [
   },
   {
     id: addressIds[2],
-    area: "Suburbia",
-    city: "Smallville",
+    area: "Kaloum",
+    city: "Conakry",
     zipCode: "67890",
     longitude: -96.6989,
     latitude: 32.96,

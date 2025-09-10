@@ -259,7 +259,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const value: AuthContextType = {
     user,
     userProfile,
-    isAuthenticated,
+    isAuthenticated: true,
     isLoading,
     onboardingCompleted,
     requiresProfileCompletion,

@@ -1,5 +1,11 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { Product } from '@/models/product';
+import { Product } from "@/models/product";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export interface CartItem {
   id: string; // Unique ID for the cart item (e.g., product.id + sorted topping ids)
@@ -11,7 +17,11 @@ export interface CartItem {
 
 interface CartContextData {
   items: CartItem[];
-  addToCart: (product: Product, quantity: number, selectedToppings: Record<string, boolean>) => void;
+  addToCart: (
+    product: Product,
+    quantity: number,
+    selectedToppings: Record<string, boolean>
+  ) => void;
   updateItemQuantity: (itemId: string, quantity: number) => void;
   removeItem: (itemId: string) => void;
   clearCart: () => void;
@@ -27,54 +37,80 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [itemCount, setItemCount] = useState(0);
 
   useEffect(() => {
-    const newTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const newTotal = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
     const newItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     setTotal(newTotal);
     setItemCount(newItemCount);
   }, [items]);
 
-  const addToCart = (product: Product, quantity: number, selectedToppings: Record<string, boolean>) => {
-    const toppingPrice = Object.keys(selectedToppings).reduce((sum, toppingId) => {
-      if (selectedToppings[toppingId]) {
-        const topping = product.toppings?.find(t => t.id === toppingId);
-        return sum + (topping?.price || 0);
-      }
-      return sum;
-    }, 0);
+  const addToCart = (
+    product: Product,
+    quantity: number,
+    selectedToppings: Record<string, boolean>
+  ) => {
+    console.log("===== selectedToppings: ", selectedToppings);
+    console.log("===== productToppings: ", product.toppings);
+    const toppingPrice = Object.keys(selectedToppings).reduce(
+      (sum, toppingId) => {
+        if (selectedToppings[toppingId]) {
+          const topping = product.toppings?.find((t) => t.id === toppingId);
+          return sum + (topping?.price || 0);
+        }
+        return sum;
+      },
+      0
+    );
+    console.log("===== toppingPrice: ", toppingPrice);
 
     const price = product.price + toppingPrice;
 
     // Create a unique ID based on product and toppings to handle same product with different toppings
-    const toppingIds = Object.keys(selectedToppings).filter(id => selectedToppings[id]).sort().join('-');
-    const id = `${product.id}-${toppingIds || 'base'}`;
+    const toppingIds = Object.keys(selectedToppings)
+      .filter((id) => selectedToppings[id])
+      .sort()
+      .join("-");
+    const id = `${product.id}-${toppingIds || "base"}`;
 
-    setItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === id);
+    setItems((prevItems) => {
+      const existingItem = prevItems.find((item) => item.id === id);
       if (existingItem) {
-        return prevItems.map(item =>
+        return prevItems.map((item) =>
           item.id === id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       } else {
-        const newItem: CartItem = { id, product, quantity, selectedToppings, price };
+        const newItem: CartItem = {
+          id,
+          product,
+          quantity,
+          selectedToppings,
+          price,
+        };
+        console.log("=== newItem: ", newItem);
         return [...prevItems, newItem];
       }
     });
   };
 
   const updateItemQuantity = (itemId: string, quantity: number) => {
-    setItems(prevItems =>
-      prevItems.map(item =>
-        item.id === itemId
-          ? { ...item, quantity: Math.max(0, quantity) }
-          : item
-      ).filter(item => item.quantity > 0) // Remove item if quantity is 0
+    setItems(
+      (prevItems) =>
+        prevItems
+          .map((item) =>
+            item.id === itemId
+              ? { ...item, quantity: Math.max(0, quantity) }
+              : item
+          )
+          .filter((item) => item.quantity > 0) // Remove item if quantity is 0
     );
   };
 
   const removeItem = (itemId: string) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== itemId));
+    setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
   };
 
   const clearCart = () => {
@@ -83,7 +119,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <CartContext.Provider
-      value={{ items, addToCart, updateItemQuantity, removeItem, clearCart, total, itemCount }}
+      value={{
+        items,
+        addToCart,
+        updateItemQuantity,
+        removeItem,
+        clearCart,
+        total,
+        itemCount,
+      }}
     >
       {children}
     </CartContext.Provider>
@@ -93,7 +137,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 export const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
+    throw new Error("useCart must be used within a CartProvider");
   }
   return context;
 };

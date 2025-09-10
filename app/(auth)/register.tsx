@@ -1,21 +1,22 @@
-import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useTheme } from "@/hooks/use-theme";
-import { Screen } from "@/components/shared/screen";
-import { Input } from "@/components/shared/input";
 import { Button } from "@/components/shared/button";
-import { useAuth } from "@/hooks/use-auth";
-import { useEffect, useState } from "react";
+import { Input } from "@/components/shared/input";
+import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { SignUpData } from "@/services/auth-service";
+import { useAuth } from "@/hooks/use-auth";
+import { useTheme } from "@/hooks/use-theme";
 import { UserRole } from "@/models/enums";
+import { SignUpData } from "@/services/auth-service";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 
 export default function RegisterScreen() {
   const router = useRouter();
   const { role } = useLocalSearchParams<{ role: "customer" | "deliverer" }>();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
-  const { signUp, isLoading, error, clearError } = useAuth();
+  const { signUp, isLoading, error, clearError, completeOnboarding } =
+    useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +27,11 @@ export default function RegisterScreen() {
         { text: "OK", onPress: () => clearError() },
       ]);
     }
-  }, [error]);
+  }, [clearError, error]);
+
+  const handleTestRegister = () => {
+    router.push("/(customer)/(tabs)/home")
+  }
 
   const handleRegister = async () => {
     if (!role) {
@@ -37,23 +42,27 @@ export default function RegisterScreen() {
     try {
       const signUpData: SignUpData = {
         firstName: name.split(" ")[0],
-        lastName: name.split(" ")[-1],
+        lastName: name.split(" ")[1],
         email,
         password,
         countryCode: "",
         phoneNumber: "",
-        role: role === "customer" ? UserRole.CUSTOMER : UserRole.DELIVERER
-      }
+        role: role === "customer" ? UserRole.CUSTOMER : UserRole.DELIVERER,
+      };
       await signUp(signUpData);
       await completeOnboarding();
       // The root redirector should handle navigation to the home screen.
       // But we can give it a push just in case.
-      if (role === "customer") {
-        router.replace("/(customer)/(tabs)/home");
-      } else {
-        router.replace("/(deliverer)/home");
-      }
+      // if (role === "customer") {
+      //   router.replace("/(customer)/(tabs)/home");
+      // } else {
+      //   router.replace("/(deliverer)/home");
+      // }
     } catch (error) {
+      console.log('error: ', error)
+      Alert.alert("Registration Error", error as string, [
+        { text: "OK", onPress: () => clearError() },
+      ]);
       // The error is caught and set in the AuthContext, so we don't need to do anything here.
       // The useEffect hook will handle displaying the alert.
     }
@@ -64,7 +73,7 @@ export default function RegisterScreen() {
       flex: 1,
       justifyContent: "center",
       gap: sizes.padding,
-      padding: sizes.padding
+      padding: sizes.padding,
     },
     title: {
       ...fonts.h1,
@@ -120,7 +129,7 @@ export default function RegisterScreen() {
         <Button
           style={styles.button}
           title="Sign Up"
-          onPress={handleRegister}
+          onPress={handleTestRegister}
           disabled={isLoading}
         />
         <View style={styles.footer}>

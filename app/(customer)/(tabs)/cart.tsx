@@ -1,24 +1,23 @@
-import { View, StyleSheet, ScrollView } from "react-native";
-import { Stack } from "expo-router";
+import { AddressSelectionModal } from "@/components/customer/address-selection-modal";
+import { CartItemRow } from "@/components/customer/cart-item-row";
+import { CartSectionRow } from "@/components/customer/cart-section-row";
+import { PaymentMethodSelectionModal } from "@/components/customer/payment-method-selection-modal";
+import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { useCart } from "@/contexts/cart-context";
-import { CartItemRow } from "@/components/customer/cart-item-row";
-import { Button } from "@/components/shared/button";
-import { useTheme } from "@/hooks/use-theme";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { useAuth } from "@/hooks/use-auth";
-import { PaymentMethodType } from "@/models/enums";
-import { useEffect, useState } from "react";
-import { Address } from "@/models/address";
-import { AddressSelectionModal } from "@/components/customer/address-selection-modal";
-import { Customer } from "@/models/customer";
-import { PaymentMethod } from "@/models/payment-method";
-import { PaymentMethodSelectionModal } from "@/components/customer/payment-method-selection-modal";
 import { useEstablishment } from "@/hooks/use-establishment";
-import { CartSectionRow } from "@/components/customer/cart-section-row";
+import { useTheme } from "@/hooks/use-theme";
+import { Address } from "@/models/address";
+import { Customer } from "@/models/customer";
+import { PaymentMethodType } from "@/models/enums";
+import { PaymentMethod } from "@/models/payment-method";
 import { Ionicons } from "@expo/vector-icons";
-import { MOCK_ESTABLISHMENTS } from "@/constants/mock-data";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { Stack } from "expo-router";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 // Mock Data
 const mockAddresses: Address[] = [
@@ -70,7 +69,7 @@ export default function CartScreen() {
     async function fetchDeliveryFee() {
       if (items.length > 0) {
         const establishmentId = items[0].product.establishmentId;
-        const establishment = MOCK_ESTABLISHMENTS.filter(e => e.id === establishmentId)[0]
+        const establishment = await getEstablishmentById(establishmentId)
         if (establishment) {
           setDeliveryFee(establishment.deliveryFee);
         }
@@ -79,7 +78,8 @@ export default function CartScreen() {
       }
     }
     fetchDeliveryFee();
-  }, [items, getEstablishmentById]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
 
   const [isAddressModalVisible, setAddressModalVisible] = useState(false);
   const [

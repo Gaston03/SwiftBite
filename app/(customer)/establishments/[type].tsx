@@ -40,7 +40,8 @@ export default function EstablishmentListScreen() {
       const category = MOCK_CATEGORIES.find((c) => c.type === type);
       setCategoryName(category?.name || "Establishments");
     }
-  }, [getEstablishmentsByType, type]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type]);
 
   const handleEstablishmentPress = (id: string) => {
     router.push(`/(customer)/establishment/${id}?category=${categoryName}`);

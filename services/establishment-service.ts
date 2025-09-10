@@ -95,7 +95,6 @@ class EstablishmentService {
     if (error) {
       throw error;
     }
-
     return keysToCamelCase(data || []);
   };
 }
