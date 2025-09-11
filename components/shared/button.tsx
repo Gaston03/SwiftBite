@@ -1,4 +1,10 @@
-import { Pressable, StyleSheet, Text, PressableProps } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  PressableProps,
+  ActivityIndicator,
+} from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import Animated, {
   useSharedValue,
@@ -10,12 +16,14 @@ type ButtonProps = PressableProps & {
   title: string;
   variant?: "primary" | "secondary" | "ghost";
   fullWidth?: boolean;
+  loading?: boolean;
 };
 
 export function Button({
   title,
   variant = "primary",
   fullWidth = false,
+  loading = false,
   style,
   ...props
 }: ButtonProps) {
@@ -84,9 +92,14 @@ export function Button({
         ]}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        disabled={loading || props.disabled}
         {...props}
       >
-        <Text style={[styles.text, textVariantStyle[variant]]}>{title}</Text>
+        {loading ? (
+          <ActivityIndicator color={colors.white} />
+        ) : (
+          <Text style={[styles.text, textVariantStyle[variant]]}>{title}</Text>
+        )}
       </Pressable>
     </Animated.View>
   );

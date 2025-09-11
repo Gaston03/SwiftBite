@@ -29,6 +29,10 @@ export default function RegisterScreen() {
   }, [clearError, error]);
 
   const handleRegister = async () => {
+    if (!email || !password) {
+      Alert.alert("Validation Error", "Email and password cannot be empty.");
+      return;
+    }
     if (!role) {
       // This should not happen in the normal flow
       console.error("Role is missing.");
@@ -115,7 +119,7 @@ export default function RegisterScreen() {
           style={styles.button}
           title="Sign Up"
           onPress={handleRegister}
-          disabled={isLoading}
+          loading={isLoading}
         />
         <View style={styles.footer}>
           <Typography>Already have an account?</Typography>
