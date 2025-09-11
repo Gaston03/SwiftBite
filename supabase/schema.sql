@@ -159,3 +159,21 @@ CREATE TABLE toppings (
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ
 );
+-- Function to copy role from user_metadata to app_metadata
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  update auth.users
+  set app_metadata = app_metadata || jsonb_build_object('role', new.raw_user_meta_data->>'role')
+  where id = new.id;
+  return new;
+end;
+$$;
+
+-- Trigger to call the function on new user creation
+create or replace trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
