@@ -14,12 +14,8 @@ export interface PhoneNumberSignInData {
 }
 
 export interface SignUpData {
-  firstName: string;
-  lastName: string;
   email: string;
   password: string;
-  countryCode: string;
-  phoneNumber: string;
   role: UserRole;
 }
 
@@ -157,10 +153,6 @@ class AuthService {
       password: data.password,
       options: {
         data: {
-          first_name: data.firstName,
-          last_name: data.lastName,
-          country_code: data.countryCode,
-          phone_number: data.phoneNumber,
           role: data.role,
         },
       },
@@ -176,13 +168,11 @@ class AuthService {
         .insert([
           {
             id: user.id,
-            first_name: data.firstName,
-            last_name: data.lastName,
             email: data.email,
-            country_code: data.countryCode,
-            phone_number: data.phoneNumber,
+            firstName: "",
+            lastName: "",
             role: data.role,
-          },
+          }
         ]);
       if (profileError) {
         // If creating profile fails, we should probably delete the user from auth.users

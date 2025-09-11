@@ -17,7 +17,6 @@ export default function RegisterScreen() {
   const { colors, fonts, sizes } = currentTheme;
   const { signUp, isLoading, error, clearError, completeOnboarding } =
     useAuth();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,10 +28,6 @@ export default function RegisterScreen() {
     }
   }, [clearError, error]);
 
-  const handleTestRegister = () => {
-    router.push("/(customer)/(tabs)/home")
-  }
-
   const handleRegister = async () => {
     if (!role) {
       // This should not happen in the normal flow
@@ -41,12 +36,8 @@ export default function RegisterScreen() {
     }
     try {
       const signUpData: SignUpData = {
-        firstName: name.split(" ")[0],
-        lastName: name.split(" ")[1],
         email,
         password,
-        countryCode: "",
-        phoneNumber: "",
         role: role === "customer" ? UserRole.CUSTOMER : UserRole.DELIVERER,
       };
       await signUp(signUpData);
@@ -105,12 +96,6 @@ export default function RegisterScreen() {
         <Typography style={styles.title}>
           Create Your {role === "customer" ? "Customer" : "Deliverer"} Account
         </Typography>
-        <Input
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
         <Input
           style={styles.input}
           placeholder="Email"
