@@ -5,7 +5,7 @@ import { SplashScreen } from "./SplashScreen";
 
 export const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const {
-    isLoading,
+    isInitializing,
     isAuthenticated,
     onboardingCompleted,
     requiresProfileCompletion,
@@ -13,7 +13,7 @@ export const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoading) {
+    if (isInitializing) {
       return;
     }
 
@@ -30,14 +30,14 @@ export const AppRouter = ({ children }: { children: React.ReactNode }) => {
       // The user should be at their respective home screen.
     }
   }, [
-    isLoading,
+    isInitializing,
     isAuthenticated,
     onboardingCompleted,
     requiresProfileCompletion,
     router,
   ]);
 
-  if (isLoading && !onboardingCompleted) {
+  if (isInitializing) {
     return <SplashScreen />;
   }
 

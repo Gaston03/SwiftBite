@@ -47,7 +47,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userProfile, setUserProfile] = useState<Customer | Deliverer | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const [requiresProfileCompletion, setRequiresProfileCompletion] =
@@ -60,7 +61,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loadUser = useCallback(async () => {
     try {
-      setIsLoading(true);
       setRequiresProfileCompletion(false);
       const {
         data: { session },
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error) {
       console.error("Error loading user:", error);
     } finally {
-      setIsLoading(false);
+      setIsInitializing(false);
     }
   }, []);
 
@@ -284,6 +284,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     userProfile,
     isAuthenticated,
     isLoading,
+    isInitializing,
     onboardingCompleted,
     requiresProfileCompletion,
     error,
