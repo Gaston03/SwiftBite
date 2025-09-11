@@ -175,10 +175,21 @@ class AuthService {
           }
         ]);
       if (profileError) {
-        // If creating profile fails, we should probably delete the user from auth.users
-        // This is a transaction-like behavior that should ideally be handled by a serverless function.
-        // For now, we just return the error.
         console.error("Error creating profile:", profileError);
+
+        // If creating profile fails, delete the user from auth.users
+        const { error: deleteError } = await supabase.functions.invoke('delete-user', {
+          body: { user_id: user.id },
+        });
+
+        if (deleteError) {
+          console.error("Error deleting user:", deleteError);
+          // We are in a bad state here. The user exists in auth but not in the profiles table.
+          // And we failed to delete them.
+          // We should return a more specific error message.
+          return { user, error: new Error("User created but profile creation failed, and user deletion also failed.") };
+        }
+
         return { user, error: profileError };
       }
     }
