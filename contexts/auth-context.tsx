@@ -18,6 +18,7 @@ interface AuthContextType {
   user: User | null;
   userProfile: Customer | Deliverer | null;
   isAuthenticated: boolean;
+  isInitializing: boolean;
   isLoading: boolean;
   onboardingCompleted: boolean;
   requiresProfileCompletion: boolean;
