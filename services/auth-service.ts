@@ -169,8 +169,6 @@ class AuthService {
           {
             id: user.id,
             email: data.email,
-            firstName: "",
-            lastName: "",
             role: data.role,
           }
         ]);
