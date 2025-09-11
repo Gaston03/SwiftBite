@@ -66,11 +66,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         data: { session },
       } = await supabase.auth.getSession();
       if (session) {
-        console.log('==== session.user: ', session.user)
         setUser(session.user);
         const { data: profile } = await authService.getProfile(session.user.id);
         if (profile) {
-          console.log('==== profile: ', profile)
           setUserProfile(profile);
         } else {
           setRequiresProfileCompletion(true);
@@ -78,7 +76,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsAuthenticated(true);
       }
 
-      console.log("===== NO SESSION ====")
       const onboardingCompleted = await AsyncStorage.getItem(
         ONBOARDING_COMPLETED_KEY
       );

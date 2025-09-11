@@ -1,17 +1,18 @@
-import { View, StyleSheet, Alert } from "react-native";
-import { useRouter } from "expo-router";
-import { useTheme } from "@/hooks/use-theme";
-import { Screen } from "@/components/shared/screen";
-import { Input } from "@/components/shared/input";
 import { Button } from "@/components/shared/button";
-import { useAuth } from "@/hooks/use-auth";
-import { useState, useEffect } from "react";
+import { Input } from "@/components/shared/input";
+import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
+import { useAuth } from "@/hooks/use-auth";
+import { useCustomer } from "@/hooks/use-customer";
+import { useDeliverer } from "@/hooks/use-deliverer";
+import { useTheme } from "@/hooks/use-theme";
 import { customerService } from "@/services/customer-service";
 import { delivererService } from "@/services/deliverer-service";
+import { CommonActions } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, View } from "react-native";
 
 export default function CompleteProfileScreen() {
-  const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const {
@@ -22,6 +23,8 @@ export default function CompleteProfileScreen() {
     error,
     clearError,
   } = useAuth();
+  const { updateCustomer } = useCustomer()
+  const { updateDeliverer } = useDeliverer()
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -62,12 +65,13 @@ export default function CompleteProfileScreen() {
         phoneNumber,
         role: user.app_metadata.role,
       };
-
+      const { id, ...data } = commonData
       if (user.app_metadata.role === "customer") {
-        await customerService.createCustomer(commonData);
+        // await customerService.createCustomer(commonData);
+        await updateCustomer(id, data)
       } else if (user.app_metadata.role === "deliverer") {
-        await delivererService.createDeliverer({
-          ...commonData,
+        await updateDeliverer(id, {
+          ...data,
           available: true, // Default value
           rate: 5, // Default value
         });
@@ -87,6 +91,7 @@ export default function CompleteProfileScreen() {
     container: {
       flex: 1,
       justifyContent: "center",
+      gap: sizes.padding,
       padding: sizes.padding,
     },
     title: {
