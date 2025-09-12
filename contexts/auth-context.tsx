@@ -1,3 +1,4 @@
+import { useError } from "@/hooks/use-error";
 import { Customer } from "@/models/customer";
 import { Deliverer } from "@/models/deliverer";
 import {
@@ -9,7 +10,7 @@ import {
 } from "@/services/auth-service";
 import { supabase } from "@/utils/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthError, User } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { createContext, useCallback, useEffect, useState } from "react";
 
 const ONBOARDING_COMPLETED_KEY = "onboarding-completed";
@@ -22,8 +23,6 @@ interface AuthContextType {
   isLoading: boolean;
   onboardingCompleted: boolean;
   requiresProfileCompletion: boolean;
-  error: AuthError | null;
-  clearError: () => void;
   completeOnboarding: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   signInWithEmailAndPassword: (
@@ -44,6 +43,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const { handleError } = useError();
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<Customer | Deliverer | null>(
     null
@@ -54,11 +54,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const [requiresProfileCompletion, setRequiresProfileCompletion] =
     useState(false);
-  const [error, setError] = useState<AuthError | null>(null);
-
-  const clearError = () => {
-    setError(null);
-  };
 
   const loadUser = useCallback(async () => {
     try {
@@ -81,14 +76,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const onboardingCompleted = await AsyncStorage.getItem(
         ONBOARDING_COMPLETED_KEY
       );
-      console.log('onboardingCompleted', onboardingCompleted)
+      console.log("onboardingCompleted", onboardingCompleted);
       setOnboardingCompleted(onboardingCompleted === "true");
     } catch (error) {
-      console.error("Error loading user:", error);
+      handleError(error);
     } finally {
       setIsInitializing(false);
     }
-  }, []);
+  }, [handleError]);
 
   useEffect(() => {
     loadUser();
@@ -135,7 +130,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     } catch (error) {
-      console.log("An error occured: ", error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -145,15 +140,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     data: EmailAndPasswordSignInData
   ): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
       const { error } = await authService.signInWithEmailAndPassword(data);
 
       if (error) {
-        setError(error);
+        handleError(error);
       }
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -163,15 +157,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     data: PhoneNumberSignInData
   ): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
       const { error } = await authService.signInWithPhoneNumber(data);
 
       if (error) {
-        setError(error);
+        handleError(error);
       }
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -181,13 +174,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     data: VerifyPhoneNumberOtpData
   ): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
       const { error } = await authService.verifyPhoneNumberOtp(data);
 
-      if (error) setError(error);
+      if (error) handleError(error);
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -195,12 +187,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUpWithGoogle = async (): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
       const { error } = await authService.signUpWithGoogle();
-      if (error) setError(error);
+      if (error) handleError(error);
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -208,13 +199,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUpWithFacebook = async (): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
-      const { error } =  await authService.signUpWithFacebook();
+      const { error } = await authService.signUpWithFacebook();
 
-      if(error) setError(error)
+      if (error) handleError(error);
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -222,13 +212,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUpWithApple = async (): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
-      const { error } =  await authService.signUpWithApple();
+      const { error } = await authService.signUpWithApple();
 
-      if(error) setError(error)
+      if (error) handleError(error);
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -236,13 +225,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUp = async (data: SignUpData): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
-      const { error } =  await authService.signUp(data);
+      const { error } = await authService.signUp(data);
 
-      if(error) setError(error)
+      if (error) handleError(error);
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -250,13 +238,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async (): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
-      const { error } =  await authService.signOut();
+      const { error } = await authService.signOut();
 
-      if(error) setError(error)
+      if (error) handleError(error);
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -264,13 +251,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetPassword = async (email: string): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
-      const { error } =  await authService.resetPassword(email);
+      const { error } = await authService.resetPassword(email);
 
-      if(error) setError(error)
+      if (error) handleError(error);
     } catch (error: any) {
-      setError(error);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -289,8 +275,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isInitializing,
     onboardingCompleted,
     requiresProfileCompletion,
-    error,
-    clearError,
     completeOnboarding,
     refreshProfile,
     signInWithEmailAndPassword,

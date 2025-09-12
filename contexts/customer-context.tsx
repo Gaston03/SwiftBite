@@ -1,10 +1,10 @@
 import { useAuth } from "@/hooks/use-auth";
+import { useError } from "@/hooks/use-error";
 import { Customer } from "@/models/customer";
 import {
   CreateCustomerData,
   customerService,
 } from "@/services/customer-service";
-import { handleError } from "@/utils/error-handler";
 import { createContext, useEffect, useState } from "react";
 
 interface CustomerContextData {
@@ -24,6 +24,7 @@ export const CustomerProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const { userProfile } = useAuth();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,7 +44,7 @@ export const CustomerProvider = ({
     };
 
     getCustomer();
-  }, [userProfile]);
+  }, [handleError, userProfile]);
 
   const createCustomer = async (data: CreateCustomerData) => {
     try {

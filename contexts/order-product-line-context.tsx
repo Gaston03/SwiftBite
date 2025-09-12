@@ -1,10 +1,10 @@
+import { useError } from "@/hooks/use-error";
 import { OrderProductLine } from "@/models/order-product-line";
 import {
   CreateOrderProductLineData,
   orderProductLineService,
 } from "@/services/order-product-line-service";
-import { handleError } from "@/utils/error-handler";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 
 interface OrderProductLineContextData {
   productLines: OrderProductLine[];
@@ -23,6 +23,7 @@ export const OrderProductLineProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const [productLines, setProductLines] = useState<OrderProductLine[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,19 +43,22 @@ export const OrderProductLineProvider = ({
     }
   };
 
-  const getProductLinesByOrderId = async (orderId: string) => {
-    try {
-      setLoading(true);
-      const data = await orderProductLineService.getProductLinesByOrderId(
-        orderId
-      );
-      setProductLines(data);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const getProductLinesByOrderId = useCallback(
+    async (orderId: string) => {
+      try {
+        setLoading(true);
+        const data = await orderProductLineService.getProductLinesByOrderId(
+          orderId
+        );
+        setProductLines(data);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError]
+  );
 
   return (
     <OrderProductLineContext.Provider

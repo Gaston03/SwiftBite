@@ -1,10 +1,10 @@
+import { useError } from "@/hooks/use-error";
 import { Topping } from "@/models/topping";
 import {
   CreateToppingData,
   toppingService,
 } from "@/services/topping-service";
-import { handleError } from "@/utils/error-handler";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 
 interface ToppingContextData {
   toppings: Topping[];
@@ -25,6 +25,7 @@ export const ToppingProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const [toppings, setToppings] = useState<Topping[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,17 +62,20 @@ export const ToppingProvider = ({
     }
   };
 
-  const getToppingsByProductId = async (productId: string) => {
-    try {
-      setLoading(true);
-      const data = await toppingService.getToppingsByProductId(productId);
-      setToppings(data);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const getToppingsByProductId = useCallback(
+    async (productId: string) => {
+      try {
+        setLoading(true);
+        const data = await toppingService.getToppingsByProductId(productId);
+        setToppings(data);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError]
+  );
 
   return (
     <ToppingContext.Provider

@@ -1,10 +1,10 @@
 import { useAuth } from "@/hooks/use-auth";
+import { useError } from "@/hooks/use-error";
 import { Deliverer } from "@/models/deliverer";
 import {
   CreateDelivererData,
   delivererService,
 } from "@/services/deliverer-service";
-import { handleError } from "@/utils/error-handler";
 import { createContext, useEffect, useState } from "react";
 
 interface DelivererContextData {
@@ -24,6 +24,7 @@ export const DelivererProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const { userProfile } = useAuth();
   const [deliverer, setDeliverer] = useState<Deliverer | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,7 +44,7 @@ export const DelivererProvider = ({
     };
 
     getDeliverer();
-  }, [userProfile]);
+  }, [handleError, userProfile]);
 
   const createDeliverer = async (data: CreateDelivererData) => {
     try {

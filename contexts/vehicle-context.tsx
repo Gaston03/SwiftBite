@@ -1,10 +1,10 @@
+import { useError } from "@/hooks/use-error";
 import { Vehicle } from "@/models/vehicle";
 import {
   CreateVehicleData,
   vehicleService,
 } from "@/services/vehicle-service";
-import { handleError } from "@/utils/error-handler";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 
 interface VehicleContextData {
   vehicle: Vehicle | null;
@@ -25,6 +25,7 @@ export const VehicleProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -61,17 +62,20 @@ export const VehicleProvider = ({
     }
   };
 
-  const getDelivererVehicle = async (delivererId: string) => {
-    try {
-      setLoading(true);
-      const data = await vehicleService.getDelivererVehicle(delivererId);
-      setVehicle(data);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const getDelivererVehicle = useCallback(
+    async (delivererId: string) => {
+      try {
+        setLoading(true);
+        const data = await vehicleService.getDelivererVehicle(delivererId);
+        setVehicle(data);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError]
+  );
 
   return (
     <VehicleContext.Provider
