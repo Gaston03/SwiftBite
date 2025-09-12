@@ -1,10 +1,10 @@
 import { useAuth } from "@/hooks/use-auth";
+import { useError } from "@/hooks/use-error";
 import { PaymentMethod } from "@/models/payment-method";
 import {
   CreatePaymentMethodData,
   paymentMethodService,
 } from "@/services/payment-method-service";
-import { handleError } from "@/utils/error-handler";
 import { createContext, useEffect, useState } from "react";
 
 interface PaymentMethodContextData {
@@ -27,6 +27,7 @@ export const PaymentMethodProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const { userProfile } = useAuth();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +49,7 @@ export const PaymentMethodProvider = ({
     };
 
     getPaymentMethods();
-  }, [userProfile]);
+  }, [handleError, userProfile]);
 
   const createPaymentMethod = async (data: CreatePaymentMethodData) => {
     try {

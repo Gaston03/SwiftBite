@@ -1,31 +1,22 @@
-import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { Screen } from "@/components/shared/screen";
 import { Input } from "@/components/shared/input";
 import { Button } from "@/components/shared/button";
 import { useAuth } from "@/hooks/use-auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Typography } from "@/components/shared/typography";
 
 export default function LoginScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
-  const { signInWithEmailAndPassword, isLoading, error, clearError } =
-    useAuth();
+  const { signInWithEmailAndPassword, isLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    if (error) {
-      Alert.alert("Sign In Error", error.message, [
-        { text: "OK", onPress: () => clearError() },
-      ]);
-    }
-  }, [clearError, error]);
-
-  const handleTestLogin = () => router.push("/(customer)/(tabs)/home")
+  const handleTestLogin = () => router.push("/(customer)/(tabs)/home");
 
   const handleLogin = () => {
     signInWithEmailAndPassword({ email, password });

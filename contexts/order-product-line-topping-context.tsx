@@ -1,6 +1,6 @@
+import { useError } from "@/hooks/use-error";
 import { OrderProductLineTopping } from "@/models/order-product-line-topping";
 import { orderProductLineToppingService } from "@/services/order-product-line-topping-service";
-import { handleError } from "@/utils/error-handler";
 import { createContext, useState } from "react";
 
 interface OrderProductLineToppingContextData {
@@ -22,6 +22,7 @@ export const OrderProductLineToppingProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const [loading, setLoading] = useState(true);
 
   const createProductLineTopping = async (data: OrderProductLineTopping) => {

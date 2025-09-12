@@ -1,10 +1,10 @@
+import { useError } from "@/hooks/use-error";
 import { SBDocument } from "@/models/sb-document";
 import {
   CreateSBDocumentData,
   sbDocumentService,
 } from "@/services/sb-document-service";
-import { handleError } from "@/utils/error-handler";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 
 interface SBDocumentContextData {
   documents: SBDocument[];
@@ -25,6 +25,7 @@ export const SBDocumentProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const [documents, setDocuments] = useState<SBDocument[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -64,17 +65,20 @@ export const SBDocumentProvider = ({
     }
   };
 
-  const getDelivererDocuments = async (ownerId: string) => {
-    try {
-      setLoading(true);
-      const data = await sbDocumentService.getDelivererDocuments(ownerId);
-      setDocuments(data);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const getDelivererDocuments = useCallback(
+    async (ownerId: string) => {
+      try {
+        setLoading(true);
+        const data = await sbDocumentService.getDelivererDocuments(ownerId);
+        setDocuments(data);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError]
+  );
 
   return (
     <SBDocumentContext.Provider

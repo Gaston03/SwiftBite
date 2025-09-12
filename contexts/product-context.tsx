@@ -1,10 +1,10 @@
+import { useError } from "@/hooks/use-error";
 import { Product } from "@/models/product";
 import {
   CreateProductData,
   productService,
 } from "@/services/product-service";
-import { handleError } from "@/utils/error-handler";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 
 interface ProductContextData {
   products: Product[];
@@ -25,6 +25,7 @@ export const ProductProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,19 +62,22 @@ export const ProductProvider = ({
     }
   };
 
-  const getEstablishmentProducts = async (establishmentId: string) => {
-    try {
-      setLoading(true);
-      const data = await productService.getEstablishmentProducts(
-        establishmentId
-      );
-      setProducts(data);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const getEstablishmentProducts = useCallback(
+    async (establishmentId: string) => {
+      try {
+        setLoading(true);
+        const data = await productService.getEstablishmentProducts(
+          establishmentId
+        );
+        setProducts(data);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError]
+  );
 
   return (
     <ProductContext.Provider

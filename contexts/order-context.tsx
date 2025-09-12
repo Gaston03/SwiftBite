@@ -1,8 +1,8 @@
 import { useAuth } from "@/hooks/use-auth";
+import { useError } from "@/hooks/use-error";
 import { UserRole } from "@/models/enums";
 import { Order } from "@/models/order";
 import { CreateOrderData, orderService } from "@/services/order-service";
-import { handleError } from "@/utils/error-handler";
 import { createContext, useEffect, useState } from "react";
 
 interface OrderContextData {
@@ -16,9 +16,12 @@ interface OrderContextData {
   getOrderById: (id: string) => Promise<Order | null>;
 }
 
-export const OrderContext = createContext<OrderContextData>({} as OrderContextData);
+export const OrderContext = createContext<OrderContextData>(
+  {} as OrderContextData
+);
 
 export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
+  const { handleError } = useError();
   const { userProfile } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +48,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     getOrders();
-  }, [userProfile]);
+  }, [handleError, userProfile]);
 
   const placeOrder = async (data: CreateOrderData) => {
     try {
@@ -79,13 +82,13 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const refuseOrder = async (id: string) => {
+  const refuseOrder = async (id:string) => {
     try {
       await orderService.refuseOrder(id);
     } catch (error) {
       handleError(error);
     }
-  };
+  }
 
   const getOrderById = async (id: string) => {
     try {

@@ -1,11 +1,11 @@
+import { useError } from "@/hooks/use-error";
 import { EstablishmentType } from "@/models/enums";
 import { Establishment } from "@/models/establishment";
 import {
   CreateEstablishmentData,
   establishmentService,
 } from "@/services/establishment-service";
-import { handleError } from "@/utils/error-handler";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
 interface EstablishmentContextData {
   establishments: Establishment[];
@@ -33,27 +33,28 @@ export const EstablishmentProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { handleError } = useError();
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [popularEstablishments, setPopularEstablishments] = useState<
     Establishment[]
   >([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getPopularEstablishments = async () => {
-      try {
-        setLoading(true);
-        const data = await establishmentService.getPropularEstablishments();
-        setPopularEstablishments(data);
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getPopularEstablishments = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await establishmentService.getPropularEstablishments();
+      setPopularEstablishments(data);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [handleError]);
 
+  useEffect(() => {
     getPopularEstablishments();
-  }, []);
+  }, [getPopularEstablishments]);
 
   const createEstablishment = async (data: CreateEstablishmentData) => {
     try {
@@ -86,13 +87,13 @@ export const EstablishmentProvider = ({
     try {
       return await establishmentService.getEstablishmentById(id);
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
       handleError(error);
       return null;
     }
   };
 
-  const getAllEstablishments = async () => {
+  const getAllEstablishments = useCallback(async () => {
     try {
       setLoading(true);
       const data = await establishmentService.getAllEstablishments();
@@ -102,21 +103,24 @@ export const EstablishmentProvider = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [handleError]);
 
-  const getEstablishmentsByType = async (type: EstablishmentType) => {
-    try {
-      setLoading(true);
-      const data = await establishmentService.getEstablishmentsByType(type);
-      setEstablishments(data);
-      return data;
-    } catch (error) {
-      handleError(error);
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  };
+  const getEstablishmentsByType = useCallback(
+    async (type: EstablishmentType) => {
+      try {
+        setLoading(true);
+        const data = await establishmentService.getEstablishmentsByType(type);
+        setEstablishments(data);
+        return data;
+      } catch (error) {
+        handleError(error);
+        return [];
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError]
+  );
 
   return (
     <EstablishmentContext.Provider
