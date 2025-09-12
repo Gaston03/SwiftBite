@@ -167,7 +167,7 @@ security definer set search_path = public
 as $$
 begin
   update auth.users
-  set app_metadata = app_metadata || jsonb_build_object('role', new.raw_user_meta_data->>'role')
+  set raw_app_meta_data = raw_app_meta_data || jsonb_build_object('role', new.raw_user_meta_data->>'role')
   where id = new.id;
   return new;
 end;
