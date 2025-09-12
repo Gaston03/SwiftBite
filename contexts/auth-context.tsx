@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loadUser = useCallback(async () => {
     try {
+      // await AsyncStorage.clear()
       setRequiresProfileCompletion(false);
       const {
         data: { session },

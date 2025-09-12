@@ -42,13 +42,13 @@ class AuthService {
       .from("customers")
       .select("*")
       .eq("id", id)
-      .single();
+      .maybeSingle();
     if (!data) {
       ({ data, error } = await supabase
         .from("deliverers")
         .select("*")
         .eq("id", id)
-        .single());
+        .maybeSingle());
     }
     return { data, error };
   };
@@ -61,7 +61,7 @@ class AuthService {
       .from(role === UserRole.CUSTOMER ? "customers" : "deliverers")
       .select("*")
       .eq("id", id)
-      .single();
+      .maybeSingle();
 
     return { data, error };
   };
@@ -159,6 +159,7 @@ class AuthService {
     });
 
     if (error) {
+      console.log('create error: ', error)
       return { user: null, error };
     }
 
