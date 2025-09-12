@@ -6,9 +6,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCustomer } from "@/hooks/use-customer";
 import { useDeliverer } from "@/hooks/use-deliverer";
 import { useTheme } from "@/hooks/use-theme";
-import { customerService } from "@/services/customer-service";
-import { delivererService } from "@/services/deliverer-service";
-import { CommonActions } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 

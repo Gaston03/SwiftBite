@@ -2,8 +2,10 @@ import { ProfileRow } from "@/components/customer/profile-row";
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
+import { useAuth } from "@/hooks/use-auth";
 import { useCustomer } from "@/hooks/use-customer";
 import { useTheme } from "@/hooks/use-theme";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useRouter } from "expo-router";
 import {
   ActivityIndicator,
@@ -12,18 +14,14 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { MOCK_CUSTOMER } from "@/constants/mock-data";
-import { useAuth } from "@/hooks/use-auth";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
-  const { loading } = useCustomer();
-  const { signOut } = useAuth()
-  const customer = MOCK_CUSTOMER
+  const { loading, customer } = useCustomer();
+  const { signOut } = useAuth();
 
   const styles = StyleSheet.create({
     container: {
@@ -65,7 +63,7 @@ export default function ProfileScreen() {
     },
   });
 
-  const handleSignOut = async () => await signOut()
+  const handleSignOut = async () => await signOut();
 
   if (loading) {
     return (
@@ -135,11 +133,7 @@ export default function ProfileScreen() {
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
-        <Button
-            title="Logout"
-            onPress={handleSignOut}
-            variant="primary"
-          />
+          <Button title="Logout" onPress={handleSignOut} variant="primary" />
           <Button
             title="Switch to Deliverer"
             onPress={() => router.push("/(deliverer)/home")}
