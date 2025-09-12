@@ -20,8 +20,8 @@ export default function CompleteProfileScreen() {
     error,
     clearError,
   } = useAuth();
-  const { updateCustomer } = useCustomer()
-  const { updateDeliverer } = useDeliverer()
+  const { createCustomer } = useCustomer();
+  const { createDeliverer } = useDeliverer();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -62,13 +62,11 @@ export default function CompleteProfileScreen() {
         phoneNumber,
         role: user.app_metadata.role,
       };
-      const { id, ...data } = commonData
       if (user.app_metadata.role === "customer") {
-        // await customerService.createCustomer(commonData);
-        await updateCustomer(id, data)
+        await createCustomer(commonData);
       } else if (user.app_metadata.role === "deliverer") {
-        await updateDeliverer(id, {
-          ...data,
+        await createDeliverer({
+          ...commonData,
           available: true, // Default value
           rate: 5, // Default value
         });
