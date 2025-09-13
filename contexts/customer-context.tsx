@@ -10,7 +10,7 @@ import { createContext, useEffect, useState } from "react";
 interface CustomerContextData {
   customer: Customer | null;
   loading: boolean;
-  createCustomer: (data: CreateCustomerData) => Promise<void>;
+  createCustomer: (data: CreateCustomerData) => Promise<Customer | undefined>;
   updateCustomer: (id: string, customer: Partial<Customer>) => Promise<void>;
   deleteCustomer: (id: string) => Promise<void>;
 }

@@ -64,9 +64,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         data: { session },
       } = await supabase.auth.getSession();
       if (session) {
+        console.log("==== session.user: ", session.user);
         setUser(session.user);
         const { data: profile } = await authService.getProfile(session.user.id);
         if (profile) {
+          console.log("==== profile: ", profile);
           setUserProfile(profile);
         } else {
           setRequiresProfileCompletion(true);
@@ -96,6 +98,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsAuthenticated(true);
         authService.getProfile(session.user.id).then(({ data: profile }) => {
           if (profile) {
+            console.log("subscription profile: ", profile);
             setUserProfile(profile);
             setRequiresProfileCompletion(false);
           } else {
@@ -114,12 +117,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [loadUser]);
+  }, []);
 
   const refreshProfile = async (): Promise<void> => {
     setIsLoading(true);
     try {
       const { user } = await authService.getCurrentUser();
+      console.log("===== user: ", user);
       if (user) {
         const role = user.app_metadata?.role;
         if (role) {
@@ -242,7 +246,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const { error } = await authService.signOut();
 
-      if (error) handleError(error);
+      if (error) {
+        handleError(error);
+      } else {
+        setRequiresProfileCompletion(true);
+      }
     } catch (error: any) {
       handleError(error);
     } finally {
