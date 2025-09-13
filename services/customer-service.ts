@@ -8,18 +8,21 @@ export type CreateCustomerData = Omit<
 >;
 
 class CustomerService {
-  createCustomer = async (data: CreateCustomerData): Promise<void> => {
-    const { error } = await supabase
+  createCustomer = async (data: CreateCustomerData): Promise<Customer> => {
+    const { data: newCustomer, error } = await supabase
       .from("customers")
-      .insert(keysToSnakeCase(data));
+      .insert(keysToSnakeCase(data))
+      .select()
+      .single();
 
     if (error) {
       throw error;
     }
+    return keysToCamelCase(newCustomer);
   };
 
   updateCustomer = async (
-    id: string,
+    id:string,
     customer: Partial<Customer>
   ): Promise<void> => {
     const { error } = await supabase

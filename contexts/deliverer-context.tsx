@@ -48,7 +48,7 @@ export const DelivererProvider = ({
 
   const createDeliverer = async (data: CreateDelivererData) => {
     try {
-      await delivererService.createDeliverer(data);
+      return await delivererService.createDeliverer(data);
     } catch (error) {
       handleError(error);
     }
