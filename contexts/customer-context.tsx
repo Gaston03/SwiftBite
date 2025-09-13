@@ -48,7 +48,7 @@ export const CustomerProvider = ({
 
   const createCustomer = async (data: CreateCustomerData) => {
     try {
-      await customerService.createCustomer(data);
+      return await customerService.createCustomer(data);
     } catch (error) {
       handleError(error);
     }

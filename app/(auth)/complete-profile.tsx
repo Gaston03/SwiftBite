@@ -12,14 +12,7 @@ import { Alert, StyleSheet, View } from "react-native";
 export default function CompleteProfileScreen() {
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
-  const {
-    user,
-    isLoading,
-    refreshProfile,
-    completeOnboarding,
-    error,
-    clearError,
-  } = useAuth();
+  const { user, isLoading, updateUserProfile, completeOnboarding } = useAuth();
   const { createCustomer } = useCustomer();
   const { createDeliverer } = useDeliverer();
 
@@ -27,14 +20,6 @@ export default function CompleteProfileScreen() {
   const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
-  useEffect(() => {
-    if (error) {
-      Alert.alert("Profile Error", error.message, [
-        { text: "OK", onPress: () => clearError() },
-      ]);
-    }
-  }, [clearError, error]);
 
   useEffect(() => {
     if (user?.app_metadata.name) {
@@ -62,23 +47,27 @@ export default function CompleteProfileScreen() {
         phoneNumber,
         role: user.app_metadata.role,
       };
+      let newProfile;
       if (user.app_metadata.role === "customer") {
-        await createCustomer(commonData);
+        newProfile = await createCustomer(commonData);
       } else if (user.app_metadata.role === "deliverer") {
-        await createDeliverer({
+        newProfile = await createDeliverer({
           ...commonData,
           available: true, // Default value
           rate: 5, // Default value
         });
       }
 
+      if (newProfile) {
+        updateUserProfile(newProfile);
+      }
+
       await completeOnboarding();
-      await refreshProfile();
-      // The root redirector will handle navigation
     } catch (error: any) {
-      // This will be caught by the AuthContext, but we can also set it here
-      // for services that don't throw AuthError specifically.
-      Alert.alert("Profile Error", error.message || "An unknown error occurred.");
+      Alert.alert(
+        "Profile Error",
+        error.message || "An unknown error occurred."
+      );
     }
   };
 

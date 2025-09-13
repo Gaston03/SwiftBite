@@ -15,14 +15,17 @@ export type CreateDelivererData = Omit<
 >;
 
 class DelivererService {
-  createDeliverer = async (data: CreateDelivererData): Promise<void> => {
-    const { error } = await supabase
+  createDeliverer = async (data: CreateDelivererData): Promise<Deliverer> => {
+    const { data: newDeliverer, error } = await supabase
       .from("deliverers")
-      .insert(keysToSnakeCase(data));
+      .insert(keysToSnakeCase(data))
+      .select()
+      .single();
 
     if (error) {
       throw error;
     }
+    return keysToCamelCase(newDeliverer);
   };
 
   updateDeliverer = async (

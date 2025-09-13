@@ -23,6 +23,7 @@ interface AuthContextType {
   isLoading: boolean;
   onboardingCompleted: boolean;
   requiresProfileCompletion: boolean;
+  updateUserProfile: (profile: Customer | Deliverer) => void;
   completeOnboarding: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   signInWithEmailAndPassword: (
@@ -267,6 +268,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await AsyncStorage.setItem(ONBOARDING_COMPLETED_KEY, "true");
   };
 
+  const updateUserProfile = (profile: Customer | Deliverer) => {
+    setUserProfile(profile);
+  };
+
   const value: AuthContextType = {
     user,
     userProfile,
@@ -275,6 +280,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isInitializing,
     onboardingCompleted,
     requiresProfileCompletion,
+    updateUserProfile,
     completeOnboarding,
     refreshProfile,
     signInWithEmailAndPassword,
