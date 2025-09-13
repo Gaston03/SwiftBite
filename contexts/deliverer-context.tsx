@@ -10,7 +10,7 @@ import { createContext, useEffect, useState } from "react";
 interface DelivererContextData {
   deliverer: Deliverer | null;
   loading: boolean;
-  createDeliverer: (data: CreateDelivererData) => Promise<void>;
+  createDeliverer: (data: CreateDelivererData) => Promise<Deliverer | undefined>;
   updateDeliverer: (id: string, deliverer: Partial<Deliverer>) => Promise<void>;
   deleteDeliverer: (id: string) => Promise<void>;
 }

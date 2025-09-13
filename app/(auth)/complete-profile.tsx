@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCustomer } from "@/hooks/use-customer";
 import { useDeliverer } from "@/hooks/use-deliverer";
 import { useTheme } from "@/hooks/use-theme";
+import { UserRole } from "@/models/enums";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
@@ -48,9 +49,9 @@ export default function CompleteProfileScreen() {
         role: user.app_metadata.role,
       };
       let newProfile;
-      if (user.app_metadata.role === "customer") {
+      if (user.app_metadata.role === UserRole.CUSTOMER) {
         newProfile = await createCustomer(commonData);
-      } else if (user.app_metadata.role === "deliverer") {
+      } else if (user.app_metadata.role === UserRole.DELIVERER) {
         newProfile = await createDeliverer({
           ...commonData,
           available: true, // Default value
@@ -126,7 +127,7 @@ export default function CompleteProfileScreen() {
           style={styles.button}
           title="Save and Continue"
           onPress={handleCompleteProfile}
-          disabled={isLoading}
+          loading={isLoading}
         />
       </View>
     </Screen>
