@@ -108,12 +108,12 @@ export default function ProfileScreen() {
             <ProfileRow
               icon="card-outline"
               label="Payment Methods"
-              onPress={() => {}}
+              onPress={() => router.push("/(customer)/profile/payment-methods")}
             />
             <ProfileRow
               icon="person-outline"
               label="My Details"
-              onPress={() => {}}
+              onPress={() => router.push("/(customer)/profile/details")}
             />
             <ProfileRow
               icon="help-circle-outline"

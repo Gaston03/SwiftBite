@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import Checkbox from 'expo-checkbox';
+import { Checkbox } from 'expo-checkbox';
 import { useTheme } from '@/hooks/use-theme';
 
 type ToppingRowProps = {

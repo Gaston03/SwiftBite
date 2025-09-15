@@ -7,6 +7,7 @@ import { MOCK_CATEGORIES } from "@/constants/mock-data";
 import { useCustomer } from "@/hooks/use-customer";
 import { useEstablishment } from "@/hooks/use-establishment";
 import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/shared/button";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
@@ -66,12 +67,19 @@ export default function CustomerHomeScreen() {
           <Typography variant="body3" style={{ color: colors.gray }}>
             Delivering to
           </Typography>
-          <View style={styles.locationContainer}>
-            <Typography variant="h3" style={styles.locationText}>
-              {customer?.address?.city}, {customer?.address?.area}
-            </Typography>
-            <Ionicons name="chevron-down" size={24} color={colors.primary} />
-          </View>
+          {customer?.address ? (
+            <View style={styles.locationContainer}>
+              <Typography variant="h3" style={styles.locationText}>
+                {customer?.address?.city}, {customer?.address?.area}
+              </Typography>
+              <Ionicons name="chevron-down" size={24} color={colors.primary} />
+            </View>
+          ) : (
+            <Button
+              title="Add Address"
+              onPress={() => router.push("/(customer)/address/add")}
+            />
+          )}
         </View>
         <Ionicons
           name={theme === "dark" ? "sunny" : "moon"}
