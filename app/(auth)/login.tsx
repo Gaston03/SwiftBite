@@ -16,8 +16,6 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleTestLogin = () => router.push("/(customer)/(tabs)/home");
-
   const handleLogin = () => {
     signInWithEmailAndPassword({ email, password });
   };
@@ -76,7 +74,7 @@ export default function LoginScreen() {
           style={styles.button}
           title="Sign In"
           onPress={handleLogin}
-          disabled={isLoading}
+          loading={isLoading}
         />
         <View style={styles.footer}>
           <Typography>Don&apos;t have an account?</Typography>

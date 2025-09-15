@@ -20,7 +20,7 @@ class DelivererService {
       .from("deliverers")
       .insert(keysToSnakeCase(data))
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw error;
@@ -55,7 +55,7 @@ class DelivererService {
       .from("deliverers")
       .select("*")
       .eq("id", id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw error;

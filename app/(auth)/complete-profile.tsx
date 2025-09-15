@@ -13,8 +13,8 @@ import { Alert, StyleSheet, View } from "react-native";
 export default function CompleteProfileScreen() {
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
-  const { user, isLoading, updateUserProfile, completeOnboarding } = useAuth();
-  const { createCustomer } = useCustomer();
+  const { user, updateUserProfile, completeOnboarding } = useAuth();
+  const { loading, createCustomer } = useCustomer();
   const { createDeliverer } = useDeliverer();
 
   const [firstName, setFirstName] = useState("");
@@ -127,7 +127,7 @@ export default function CompleteProfileScreen() {
           style={styles.button}
           title="Save and Continue"
           onPress={handleCompleteProfile}
-          loading={isLoading}
+          loading={loading}
         />
       </View>
     </Screen>

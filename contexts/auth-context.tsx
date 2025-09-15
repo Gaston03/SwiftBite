@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useError } from "@/hooks/use-error";
 import { Customer } from "@/models/customer";
 import { Deliverer } from "@/models/deliverer";
@@ -86,7 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setIsInitializing(false);
     }
-  }, [handleError]);
+  }, []);
 
   useEffect(() => {
     loadUser();
