@@ -47,10 +47,13 @@ export const CustomerProvider = ({
   }, [handleError, userProfile]);
 
   const createCustomer = async (data: CreateCustomerData) => {
+    setLoading(true)
     try {
       return await customerService.createCustomer(data);
     } catch (error) {
       handleError(error);
+    } finally {
+      setLoading(false)
     }
   };
 

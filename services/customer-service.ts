@@ -13,7 +13,7 @@ class CustomerService {
       .from("customers")
       .insert(keysToSnakeCase(data))
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw error;
@@ -48,7 +48,7 @@ class CustomerService {
       .from("customers")
       .select("*")
       .eq("id", id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw error;

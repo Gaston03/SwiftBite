@@ -15,9 +15,6 @@ export const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('====== isAuthenticated: ', isAuthenticated)
-    console.log('====== onboardingCompleted: ', onboardingCompleted)
-    console.log('====== requiresProfileCompletion: ', requiresProfileCompletion)
     if (isInitializing) {
       return;
     }
@@ -31,10 +28,6 @@ export const AppRouter = ({ children }: { children: React.ReactNode }) => {
     } else if (isAuthenticated && !requiresProfileCompletion) {
       if (user?.app_metadata.role === UserRole.CUSTOMER) {
         router.push("/(customer)/(tabs)/home")
-        // User is authenticated and profile is complete
-        // We can handle role-based redirection here if needed,
-        // but for now, we'll let the existing navigation handle it.
-        // The user should be at their respective home screen.
       } else {
         router.push("/(deliverer)/home")
       }
