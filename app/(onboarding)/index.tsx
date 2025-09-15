@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { useTheme } from '@/hooks/use-theme';
@@ -67,40 +67,48 @@ const Slide = ({ item }) => {
 };
 
 const Paginator = ({ data, scrollX }) => {
-  const { currentTheme } = useTheme();
-  const { colors, sizes } = currentTheme;
-
   const styles = StyleSheet.create({
     paginatorContainer: {
-        flexDirection: 'row',
-        height: 64,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    dot: {
-        height: 10,
-        borderRadius: 5,
-        backgroundColor: colors.primary,
-        marginHorizontal: 8,
+      flexDirection: 'row',
+      height: 64,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });
 
   return (
     <View style={styles.paginatorContainer}>
-      {data.map((_, i) => {
-        const style = useAnimatedStyle(() => {
-          const inputRange = [(i - 1) * sizes.width, i * sizes.width, (i + 1) * sizes.width];
-          const dotWidth = interpolate(scrollX.value, inputRange, [10, 20, 10], Extrapolate.CLAMP);
-          const opacity = interpolate(scrollX.value, inputRange, [0.3, 1, 0.3], Extrapolate.CLAMP);
-          return {
-            width: dotWidth,
-            opacity,
-          };
-        });
-        return <Animated.View style={[styles.dot, style]} key={i.toString()} />;
-      })}
+      {data.map((_, i) => (
+        <Dot key={i.toString()} index={i} scrollX={scrollX} />
+      ))}
     </View>
   );
+};
+
+const Dot = ({ index, scrollX }) => {
+  const { currentTheme } = useTheme();
+  const { colors, sizes } = currentTheme;
+
+  const styles = StyleSheet.create({
+    dot: {
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: colors.primary,
+      marginHorizontal: 8,
+    },
+  });
+
+  const style = useAnimatedStyle(() => {
+    const inputRange = [(index - 1) * sizes.width, index * sizes.width, (index + 1) * sizes.width];
+    const dotWidth = interpolate(scrollX.value, inputRange, [10, 20, 10], Extrapolate.CLAMP);
+    const opacity = interpolate(scrollX.value, inputRange, [0.3, 1, 0.3], Extrapolate.CLAMP);
+    return {
+      width: dotWidth,
+      opacity,
+    };
+  });
+
+  return <Animated.View style={[styles.dot, style]} />;
 };
 
 const NextButton = ({ scrollTo, isLastSlide }) => {
