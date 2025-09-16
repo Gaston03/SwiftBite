@@ -2,7 +2,7 @@ import { PaymentMethod } from "@/models/payment-method";
 import { supabase } from "@/utils/supabase";
 import { keysToCamelCase, keysToSnakeCase } from "@/utils/case-converter";
 
-export type CreatePaymentMethodData = Omit<PaymentMethod, "id" | "isDefault">;
+export type CreatePaymentMethodData = Omit<PaymentMethod, "id">;
 
 class PaymentMethodService {
   createPaymentMethod = async (

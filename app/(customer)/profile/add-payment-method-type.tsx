@@ -14,9 +14,14 @@ export default function AddPaymentMethodTypeScreen() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
       padding: sizes.padding,
-      gap: sizes.padding,
+      gap: sizes.padding3,
     },
+    buttons: {
+      gap: sizes.padding
+    }
   });
 
   const handleSelectType = (type: PaymentMethodType) => {
@@ -30,16 +35,18 @@ export default function AddPaymentMethodTypeScreen() {
     <Screen>
       <View style={styles.container}>
         <Typography variant="h2">Select a payment method type</Typography>
-        <Button
-          title="Credit Card"
-          onPress={() => handleSelectType(PaymentMethodType.CREDIT_CARD)}
-          variant="primary"
-        />
-        <Button
-          title="Mobile Money"
-          onPress={() => handleSelectType(PaymentMethodType.MOBILE_MONEY)}
-          variant="primary"
-        />
+        <View style={styles.buttons}>
+          <Button
+            title="Credit Card"
+            onPress={() => handleSelectType(PaymentMethodType.CREDIT_CARD)}
+            variant="primary"
+          />
+          <Button
+            title="Mobile Money"
+            onPress={() => handleSelectType(PaymentMethodType.MOBILE_MONEY)}
+            variant="primary"
+          />
+        </View>
       </View>
     </Screen>
   );

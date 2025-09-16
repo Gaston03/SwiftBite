@@ -28,7 +28,7 @@ export default function PaymentMethodsScreen() {
       alignItems: "center",
       paddingVertical: sizes.padding,
       borderBottomWidth: 1,
-      borderBottomColor: colors.card,
+      // borderBottomColor: colors.card,
     },
   });
 
@@ -37,7 +37,7 @@ export default function PaymentMethodsScreen() {
       <Typography>
         **** **** **** {item.last4} - {item.brand}
       </Typography>
-      <Typography>{item.isDefault && "(Default)"}</Typography>
+      {/* <Typography>{item.isDefault && "(Default)"}</Typography> */}
     </View>
   );
 
@@ -54,7 +54,7 @@ export default function PaymentMethodsScreen() {
       <View style={styles.buttonContainer}>
         <Button
           title="Add New Card"
-          onPress={() => router.push("/(customer)/profile/add-payment-method")}
+          onPress={() => router.push("/(customer)/profile/add-payment-method-type")}
           variant="primary"
           loading={loading}
         />
