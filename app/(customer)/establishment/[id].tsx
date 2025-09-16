@@ -42,6 +42,9 @@ export default function EstablishmentDetailsScreen() {
   const { sizes, colors, fonts } = currentTheme;
 
   const styles = StyleSheet.create({
+    container: {
+      flex: 1
+    },
     center: {
       flex: 1,
       justifyContent: "center",
@@ -143,7 +146,7 @@ export default function EstablishmentDetailsScreen() {
   }
 
   return (
-    <Screen>
+    <Screen withPadding={false}>
       <Stack.Screen
         options={{
           title: establishment.name,

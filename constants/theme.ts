@@ -28,39 +28,41 @@ export const SIZES = {
   height,
 };
 
+const FONT_FAMILLY = 'SpaceMono-Regular'
+
 export const FONTS = {
-  largeTitle: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.largeTitle, lineHeight: 55 },
-  h1: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.h1, lineHeight: 36 },
-  h2: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.h2, lineHeight: 30 },
-  h3: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.h3, lineHeight: 22 },
-  h4: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.h4, lineHeight: 22 },
-  body1: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.body1, lineHeight: 36 },
-  body2: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.body2, lineHeight: 30 },
-  body3: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.body3, lineHeight: 22 },
-  body4: { fontFamily: 'SpaceMono-Regular', fontSize: SIZES.body4, lineHeight: 22 },
+  largeTitle: { fontFamily: FONT_FAMILLY, fontSize: SIZES.largeTitle, lineHeight: 55 },
+  h1: { fontFamily: FONT_FAMILLY, fontSize: SIZES.h1, lineHeight: 36 },
+  h2: { fontFamily: FONT_FAMILLY, fontSize: SIZES.h2, lineHeight: 30 },
+  h3: { fontFamily: FONT_FAMILLY, fontSize: SIZES.h3, lineHeight: 22 },
+  h4: { fontFamily: FONT_FAMILLY, fontSize: SIZES.h4, lineHeight: 22 },
+  body1: { fontFamily: FONT_FAMILLY, fontSize: SIZES.body1, lineHeight: 36 },
+  body2: { fontFamily: FONT_FAMILLY, fontSize: SIZES.body2, lineHeight: 30 },
+  body3: { fontFamily: FONT_FAMILLY, fontSize: SIZES.body3, lineHeight: 22 },
+  body4: { fontFamily: FONT_FAMILLY, fontSize: SIZES.body4, lineHeight: 22 },
 };
 
 const darkColors = {
-  primary: '#FF5722', // Deep Orange
-  secondary: '#212121',
-  tertiary: '#424242',
+  primary: '#ff7e5f', // Deep Orange
+  secondary: '#463a41',
+  tertiary: '#392f35',
   white: '#FFFFFF',
   black: '#000000',
   gray: '#9E9E9E',
   lightGray: '#F5F5F5',
-  background: '#121212',
+  background: '#2a2024',
   text: '#FFFFFF',
 };
 
 const lightColors = {
-  primary: '#FF5722',
-  secondary: '#FFFFFF',
-  tertiary: '#F5F5F5',
+  primary: '#ff7e5f',
+  secondary: '#ffedea',
+  tertiary: '#fff0eb',
   white: '#FFFFFF',
   black: '#000000',
   gray: '#616161',
   lightGray: '#E0E0E0',
-  background: '#FFFFFF',
+  background: '#fff9f5',
   text: '#000000',
 };
 

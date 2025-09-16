@@ -5,6 +5,7 @@ import { Typography } from "@/components/shared/typography";
 import { useCustomer } from "@/hooks/use-customer";
 import { useTheme } from "@/hooks/use-theme";
 import { Customer } from "@/models/customer";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -18,6 +19,7 @@ export default function MyDetailsScreen() {
     email: customer?.email,
     phoneNumber: customer?.phoneNumber,
   });
+  const router = useRouter()
 
   const styles = StyleSheet.create({
     form: {
@@ -34,6 +36,7 @@ export default function MyDetailsScreen() {
   const handleUpdate = async () => {
     if (!customer) return;
     await updateCustomer(customer.id, form);
+    router.back()
   };
 
   return (
@@ -53,8 +56,7 @@ export default function MyDetailsScreen() {
         <Input
           placeholder="Email"
           value={form.email}
-          onChangeText={(email) => setForm({ ...form, email })}
-          disabled
+          editable={false}
         />
         <Input
           placeholder="Phone Number"

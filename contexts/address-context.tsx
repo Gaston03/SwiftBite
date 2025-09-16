@@ -29,30 +29,30 @@ export const AddressProvider = ({
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getAddresses = async () => {
-      try {
-        if (!userProfile) return;
-        setLoading(true);
-        const data = await addressService.getAddressesByCustomerId(
-          userProfile.id
-        );
-        setAddresses(data);
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const refreshAddress = async () => {
+    try {
+      if (!userProfile) return;
+      setLoading(true);
+      const data = await addressService.getAddressesByCustomerId(
+        userProfile.id
+      );
+      setAddresses(data);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    getAddresses();
-  }, [handleError, userProfile]);
+  useEffect(() => {
+    refreshAddress();
+  }, []);
 
   const createAddress = async (data: CreateAddressData) => {
     setLoading(true);
     try {
       const newAddress = await addressService.createAddress(data);
-      setAddresses([...addresses, newAddress]);
+      await refreshAddress();
       return newAddress;
     } catch (error) {
       handleError(error);

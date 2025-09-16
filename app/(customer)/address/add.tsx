@@ -9,21 +9,27 @@ import { Address } from "@/models/address";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 
 export default function AddAddressScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { sizes } = currentTheme;
   const { customer } = useCustomer();
-  const { loading, createAddress} = useAddress()
+  const { loading, createAddress } = useAddress();
   const [address, setAddress] = useState({
     city: "",
     area: "",
     zipCode: "",
     instructions: "",
+    latitude: -25.441105,
+    longitude: -49.276352,
   });
 
   const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
     form: {
       flex: 1,
       padding: sizes.padding,
@@ -33,6 +39,11 @@ export default function AddAddressScreen() {
       flex: 1,
       justifyContent: "flex-end",
     },
+    map: {
+      height: 350,
+      // borderRadius: sizes.borderRadius,
+      overflow: "hidden",
+    },
   });
 
   const handleAddAddress = async () => {
@@ -40,47 +51,72 @@ export default function AddAddressScreen() {
 
     const newAddress: Omit<Address, "id"> = {
       ...address,
-      latitude: 0, // Mocked for now
-      longitude: 0, // Mocked for now
       customerId: customer.id,
     };
     await createAddress(newAddress);
+    
     router.back();
   };
 
   return (
-    <Screen>
-      <View style={styles.form}>
-        <Typography variant="h2">Add a new address</Typography>
-        <Input
-          placeholder="City"
-          value={address.city}
-          onChangeText={(city) => setAddress({ ...address, city })}
-        />
-        <Input
-          placeholder="Area"
-          value={address.area}
-          onChangeText={(area) => setAddress({ ...address, area })}
-        />
-        <Input
-          placeholder="Zip Code"
-          value={address.zipCode}
-          onChangeText={(zipCode) => setAddress({ ...address, zipCode })}
-        />
-        <Input
-          placeholder="Instructions (optional)"
-          value={address.instructions}
-          onChangeText={(instructions) =>
-            setAddress({ ...address, instructions })
-          }
-        />
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Add Address"
-            onPress={handleAddAddress}
-            variant="primary"
-            loading={loading}
+    <Screen withPadding={false}>
+      <View style={styles.container}>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: address.latitude,
+            longitude: address.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          <Marker
+            coordinate={{
+              latitude: address.latitude,
+              longitude: address.longitude,
+            }}
+            draggable
+            onDragEnd={(e) =>
+              setAddress({
+                ...address,
+                latitude: e.nativeEvent.coordinate.latitude,
+                longitude: e.nativeEvent.coordinate.longitude,
+              })
+            }
           />
+        </MapView>
+        <View style={styles.form}>
+          <Typography variant="h2">Add a new address</Typography>
+          <Input
+            placeholder="City"
+            value={address.city}
+            onChangeText={(city) => setAddress({ ...address, city })}
+          />
+          <Input
+            placeholder="Area"
+            value={address.area}
+            onChangeText={(area) => setAddress({ ...address, area })}
+          />
+          <Input
+            placeholder="Zip Code"
+            value={address.zipCode}
+            onChangeText={(zipCode) => setAddress({ ...address, zipCode })}
+          />
+          <Input
+            placeholder="Instructions (optional)"
+            value={address.instructions}
+            onChangeText={(instructions) =>
+              setAddress({ ...address, instructions })
+            }
+          />
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Add Address"
+              onPress={handleAddAddress}
+              variant="primary"
+              loading={loading}
+            />
+          </View>
         </View>
       </View>
     </Screen>

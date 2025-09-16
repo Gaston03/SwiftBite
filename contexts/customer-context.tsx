@@ -39,6 +39,7 @@ export const CustomerProvider = ({
         const data = await customerService.getCustomer(userProfile.id);
         setCustomer(data);
       } catch (error) {
+        console.log('error', error)
         handleError(error);
       } finally {
         setLoading(false);
@@ -59,17 +60,28 @@ export const CustomerProvider = ({
     try {
       return await customerService.createCustomer(data);
     } catch (error) {
+      console.log('error', error)
       handleError(error);
     } finally {
       setLoading(false)
     }
   };
 
-  const updateCustomer = async (id: string, customer: Partial<Customer>) => {
+  const updateCustomer = async (id: string, newCustomer: Partial<Customer>) => {
+    setLoading(true)
     try {
-      await customerService.updateCustomer(id, customer);
+      await customerService.updateCustomer(id, newCustomer);
+
+      const updatedCustomer: Customer = {
+        ...customer,
+        ...newCustomer
+      } as Customer
+      setCustomer(updatedCustomer)
     } catch (error) {
+      console.log('error', error)
       handleError(error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -77,6 +89,7 @@ export const CustomerProvider = ({
     try {
       await customerService.deleteCustomer(id);
     } catch (error) {
+      console.log('error', error)
       handleError(error);
     }
   };

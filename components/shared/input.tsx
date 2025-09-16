@@ -1,7 +1,11 @@
-import { TextInput, StyleSheet, TextInputProps } from 'react-native';
-import { useTheme } from '@/hooks/use-theme';
+import { TextInput, StyleSheet, TextInputProps } from "react-native";
+import { useTheme } from "@/hooks/use-theme";
 
-export function Input(props: TextInputProps) {
+type InputProps = TextInputProps & {
+  textarea?: boolean;
+};
+
+export function Input({ textarea, ...props }: InputProps) {
   const { currentTheme } = useTheme();
   const { colors, sizes, fonts } = currentTheme;
 
@@ -20,6 +24,9 @@ export function Input(props: TextInputProps) {
     <TextInput
       style={[styles.input, props.style]}
       placeholderTextColor={colors.gray}
+      multiline={textarea}
+      numberOfLines={!textarea ? 1 : 5}
+      textAlignVertical='top'
       {...props}
     />
   );
