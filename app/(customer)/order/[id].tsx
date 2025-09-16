@@ -7,7 +7,57 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Typography } from "@/components/shared/typography";
 import MapView, { Marker } from "react-native-maps";
-import { CartItemRow } from "@/components/customer/cart-item-row";
+import { OrderProductLine } from "@/models/order-product-line";
+import { useProduct } from "@/hooks/use-product";
+import { Product } from "@/models/product";
+
+const OrderProductLineRow = ({ item }: { item: OrderProductLine }) => {
+  const { getProductById } = useProduct();
+  const [product, setProduct] = useState<Product | null>(null);
+  const { currentTheme } = useTheme();
+  const { colors, sizes } = currentTheme;
+
+  useEffect(() => {
+    getProductById(item.productId).then(setProduct);
+  }, [item.productId, getProductById]);
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: sizes.padding,
+    },
+    infoContainer: {
+      flex: 1,
+    },
+    description: {
+      color: colors.gray,
+    },
+    price: {
+      marginLeft: "auto",
+    },
+  });
+
+  if (!product) {
+    return null;
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.infoContainer}>
+        <Typography variant="h4">
+          {item.quantity}x {product.name}
+        </Typography>
+        <Typography style={styles.description} numberOfLines={1}>
+          {item.selectedToppings?.map((t) => t.name).join(", ")}
+        </Typography>
+      </View>
+      <Typography variant="h4" style={styles.price}>
+        ${(item.totalPrice).toFixed(2)}
+      </Typography>
+    </View>
+  );
+};
 
 export default function OrderTrackingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -106,7 +156,7 @@ export default function OrderTrackingScreen() {
             Order Summary
           </Typography>
           {order.productLines.map((item) => (
-            <CartItemRow item={item} key={item.id} />
+            <OrderProductLineRow item={item} key={item.id} />
           ))}
         </View>
 

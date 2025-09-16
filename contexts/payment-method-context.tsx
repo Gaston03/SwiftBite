@@ -37,7 +37,7 @@ export const PaymentMethodProvider = ({
       try {
         if (!userProfile) return;
         setLoading(true);
-        const data = await paymentMethodService.getPaymentMethodsByOwnerId(
+        const data = await paymentMethodService.getPaymentMethodsByCustomerId(
           userProfile.id
         );
         setPaymentMethods(data);
@@ -53,7 +53,10 @@ export const PaymentMethodProvider = ({
 
   const createPaymentMethod = async (data: CreatePaymentMethodData) => {
     try {
-      await paymentMethodService.createPaymentMethod(data);
+      const newPaymentMethod = await paymentMethodService.createPaymentMethod(
+        data
+      );
+      setPaymentMethods((prev) => [...prev, newPaymentMethod]);
     } catch (error) {
       handleError(error);
     }

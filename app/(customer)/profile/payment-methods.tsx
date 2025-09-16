@@ -53,8 +53,10 @@ export default function PaymentMethodsScreen() {
       />
       <View style={styles.buttonContainer}>
         <Button
-          title="Add New Card"
-          onPress={() => router.push("/(customer)/profile/add-payment-method")}
+          title="Add New Payment Method"
+          onPress={() =>
+            router.push("/(customer)/profile/add-payment-method-type")
+          }
           variant="primary"
           loading={loading}
         />
