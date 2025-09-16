@@ -2,36 +2,37 @@ import { PaymentMethod } from "@/models/payment-method";
 import { supabase } from "@/utils/supabase";
 import { keysToCamelCase, keysToSnakeCase } from "@/utils/case-converter";
 
-export type CreatePaymentMethodData = Omit<
-  PaymentMethod,
-  "id" | "createdAt" | "updatedAt"
->;
+export type CreatePaymentMethodData = Omit<PaymentMethod, "id" | "isDefault">;
 
 class PaymentMethodService {
   createPaymentMethod = async (
     data: CreatePaymentMethodData
-  ): Promise<void> => {
-    const { error } = await supabase
+  ): Promise<PaymentMethod> => {
+    const { data: newPaymentMethod, error } = await supabase
       .from("payment_methods")
-      .insert(keysToSnakeCase(data));
+      .insert(keysToSnakeCase(data))
+      .select()
+      .single();
 
     if (error) {
       throw error;
     }
+    return keysToCamelCase(newPaymentMethod);
   };
 
-  updatePaymentMethod = async (
-    id: string,
-    data: Partial<PaymentMethod>
-  ): Promise<void> => {
-    const { error } = await supabase
+  getPaymentMethodsByCustomerId = async (
+    customerId: string
+  ): Promise<PaymentMethod[]> => {
+    const { data, error } = await supabase
       .from("payment_methods")
-      .update(keysToSnakeCase(data))
-      .eq("id", id);
+      .select("*")
+      .eq("customer_id", customerId);
 
     if (error) {
       throw error;
     }
+
+    return keysToCamelCase(data);
   };
 
   deletePaymentMethod = async (id: string): Promise<void> => {
@@ -45,33 +46,29 @@ class PaymentMethodService {
     }
   };
 
-  getPaymentMethodById = async (id: string): Promise<PaymentMethod | null> => {
-    const { data, error } = await supabase
+  setDefaultPaymentMethod = async (
+    id: string,
+    customerId: string
+  ): Promise<void> => {
+    // First, set all other payment methods for the customer to isDefault: false
+    const { error: updateError } = await supabase
       .from("payment_methods")
-      .select("*")
-      .eq("id", id)
-      .single();
+      .update({ is_default: false })
+      .eq("customer_id", customerId);
 
-    if (error) {
-      throw error;
+    if (updateError) {
+      throw updateError;
     }
 
-    return keysToCamelCase(data);
-  };
-
-  getPaymentMethodsByOwnerId = async (
-    ownerId: string
-  ): Promise<PaymentMethod[]> => {
-    const { data, error } = await supabase
+    // Then, set the selected payment method to isDefault: true
+    const { error: setError } = await supabase
       .from("payment_methods")
-      .select("*")
-      .eq("owner_id", ownerId);
+      .update({ is_default: true })
+      .eq("id", id);
 
-    if (error) {
-      throw error;
+    if (setError) {
+      throw setError;
     }
-
-    return keysToCamelCase(data || []);
   };
 }
 

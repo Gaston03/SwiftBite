@@ -4,7 +4,7 @@ import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { MOCK_CATEGORIES } from "@/constants/mock-data";
-import { useCustomer } from "@/hooks/use-customer";
+import { useUser } from "@/hooks/use-user";
 import { useEstablishment } from "@/hooks/use-establishment";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/shared/button";
@@ -17,7 +17,7 @@ export default function CustomerHomeScreen() {
   const { theme, currentTheme, toggleTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const { popularEstablishments, loading } = useEstablishment();
-  const { customer } = useCustomer();
+  const { customer } = useUser();
 
   const handleCategoryPress = (type: string) => {
     router.push(`/(customer)/establishments/${type}`);

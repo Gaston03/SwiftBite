@@ -1,14 +1,9 @@
-import { PaymentMethodType } from "./enums";
-
 export interface PaymentMethod {
   id: string;
-  ownerId: string;
-  type: PaymentMethodType;
-  countryCode?: string;
-  phone?: string;
-  ownerFirstName?: string;
-  ownerLastName?: string;
-  cardLast4Digits?: string;
-  createdAt: Date;
-  updatedAt?: Date;
+  customerId: string;
+  last4: string;
+  brand: string;
+  expMonth: number;
+  expYear: number;
+  isDefault: boolean;
 }

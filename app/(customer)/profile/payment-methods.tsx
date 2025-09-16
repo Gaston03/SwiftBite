@@ -1,16 +1,18 @@
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { usePaymentMethod } from "@/hooks/use-payment-method";
+import { useUser } from "@/hooks/use-user";
 import { useTheme } from "@/hooks/use-theme";
 import { PaymentMethod } from "@/models/payment-method";
 import { FlashList } from "@shopify/flash-list";
+import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 export default function PaymentMethodsScreen() {
+  const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, sizes } = currentTheme;
-  const { paymentMethods, loading } = usePaymentMethod();
+  const { paymentMethods, loading } = useUser();
 
   const styles = StyleSheet.create({
     list: {
@@ -52,7 +54,7 @@ export default function PaymentMethodsScreen() {
       <View style={styles.buttonContainer}>
         <Button
           title="Add New Card"
-          onPress={() => {}}
+          onPress={() => router.push("/(customer)/profile/add-payment-method")}
           variant="primary"
           loading={loading}
         />
