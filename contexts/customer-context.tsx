@@ -5,7 +5,8 @@ import {
   CreateCustomerData,
   customerService,
 } from "@/services/customer-service";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { AddressProvider, AddressContext } from "./address-context";
 
 interface CustomerContextData {
   customer: Customer | null;
@@ -28,6 +29,7 @@ export const CustomerProvider = ({
   const { userProfile } = useAuth();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
+  const { addresses } = useContext(AddressContext);
 
   useEffect(() => {
     const getCustomer = async () => {
@@ -45,6 +47,12 @@ export const CustomerProvider = ({
 
     getCustomer();
   }, [handleError, userProfile]);
+
+  useEffect(() => {
+    if (customer && addresses) {
+      setCustomer({ ...customer, address: addresses[0] });
+    }
+  }, [addresses]);
 
   const createCustomer = async (data: CreateCustomerData) => {
     setLoading(true)
@@ -87,3 +95,13 @@ export const CustomerProvider = ({
     </CustomerContext.Provider>
   );
 };
+
+export const CustomerProviderWithAddress = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
+  <AddressProvider>
+    <CustomerProvider>{children}</CustomerProvider>
+  </AddressProvider>
+);
