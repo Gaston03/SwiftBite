@@ -1,3 +1,4 @@
+import { useAddress } from "@/hooks/use-address";
 import { useAuth } from "@/hooks/use-auth";
 import { useError } from "@/hooks/use-error";
 import { Deliverer } from "@/models/deliverer";
@@ -10,7 +11,9 @@ import { createContext, useEffect, useState } from "react";
 interface DelivererContextData {
   deliverer: Deliverer | null;
   loading: boolean;
-  createDeliverer: (data: CreateDelivererData) => Promise<Deliverer | undefined>;
+  createDeliverer: (
+    data: CreateDelivererData
+  ) => Promise<Deliverer | undefined>;
   updateDeliverer: (id: string, deliverer: Partial<Deliverer>) => Promise<void>;
   deleteDeliverer: (id: string) => Promise<void>;
 }
@@ -28,6 +31,7 @@ export const DelivererProvider = ({
   const { userProfile } = useAuth();
   const [deliverer, setDeliverer] = useState<Deliverer | null>(null);
   const [loading, setLoading] = useState(true);
+  const { addresses } = useAddress();
 
   useEffect(() => {
     const getDeliverer = async () => {
@@ -45,6 +49,12 @@ export const DelivererProvider = ({
 
     getDeliverer();
   }, [handleError, userProfile]);
+
+  useEffect(() => {
+    if (deliverer && addresses) {
+      setDeliverer({ ...deliverer, address: addresses[0] });
+    }
+  }, [addresses, deliverer]);
 
   const createDeliverer = async (data: CreateDelivererData) => {
     try {
