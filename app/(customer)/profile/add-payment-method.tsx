@@ -10,7 +10,7 @@ import { CreatePaymentMethodData } from "@/services/payment-method-service";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { CardView, CreditCardInput } from "react-native-credit-card-input";
+import { CreditCardInput } from "react-native-credit-card-input";
 
 export default function AddPaymentMethodScreen() {
   const router = useRouter();
@@ -72,16 +72,6 @@ export default function AddPaymentMethodScreen() {
 
   const renderCreditCardForm = () => (
     <>
-      <CardView
-        brand={cardData?.values.type}
-        number={cardData?.values.number}
-        expiry={cardData?.values.expiry}
-        cvc={cardData?.values.cvc}
-        name={cardData?.values.name}
-        postalCode={cardData?.values.postalCode}
-        imageFront={require("@/assets/images/card-front.png")}
-        imageBack={require("@/assets/images/card-back.png")}
-      />
       <CreditCardInput
         onChange={(data) => setCardData(data)}
         requiresName
