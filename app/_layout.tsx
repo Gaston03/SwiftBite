@@ -8,6 +8,7 @@ import { ErrorProvider } from "@/contexts/error-context";
 import { EstablishmentProvider } from "@/contexts/establishment-context";
 import { ProductProvider } from "@/contexts/product-context";
 import { ThemeProvider } from "@/contexts/theme-context";
+import { PaymentMethodProvider } from "@/contexts/payment-method-context";
 import { ToppingProvider } from "@/contexts/topping-context";
 import { Stack } from "expo-router";
 import "react-native-get-random-values";
@@ -24,26 +25,28 @@ export default function RootLayout() {
                   <EstablishmentProvider>
                     <ProductProvider>
                       <ToppingProvider>
-                        <AppRouter>
-                          <Stack>
-                            <Stack.Screen
-                              name="(onboarding)"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(auth)"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(customer)"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(deliverer)"
-                              options={{ headerShown: false }}
-                            />
-                          </Stack>
-                        </AppRouter>
+                        <PaymentMethodProvider>
+                          <AppRouter>
+                            <Stack>
+                              <Stack.Screen
+                                name="(onboarding)"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(auth)"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(customer)"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(deliverer)"
+                                options={{ headerShown: false }}
+                              />
+                            </Stack>
+                          </AppRouter>
+                        </PaymentMethodProvider>
                       </ToppingProvider>
                     </ProductProvider>
                   </EstablishmentProvider>

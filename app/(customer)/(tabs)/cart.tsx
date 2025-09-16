@@ -5,7 +5,7 @@ import { PaymentMethodSelectionModal } from "@/components/customer/payment-metho
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { useCart } from "@/contexts/cart-context";
+import { CartItem, useCart } from "@/contexts/cart-context";
 import { useAddress } from "@/hooks/use-address";
 import { useAuth } from "@/hooks/use-auth";
 import { useCustomer } from "@/hooks/use-customer";
@@ -153,7 +153,7 @@ export default function CartScreen() {
     {
       title: "Order Summary",
       data: items,
-      renderItem: ({ item }: { item: any }) => <CartItemRow item={item} />,
+      renderItem: ({ item }: { item: CartItem }) => <CartItemRow item={item} />,
     },
     {
       title: "Delivery Details",
