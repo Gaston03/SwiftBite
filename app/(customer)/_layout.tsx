@@ -21,6 +21,7 @@ export default function CustomerLayout() {
       screenOptions={{
         headerTransparent: true,
         headerTintColor: colors.text,
+        title: "",
         headerTitleStyle: {
           ...fonts.h3,
           color: colors.text,
