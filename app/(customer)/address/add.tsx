@@ -2,6 +2,7 @@ import { Button } from "@/components/shared/button";
 import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
+import { useAddress } from "@/hooks/use-address";
 import { useCustomer } from "@/hooks/use-customer";
 import { useTheme } from "@/hooks/use-theme";
 import { Address } from "@/models/address";
@@ -13,7 +14,7 @@ export default function AddAddressScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { sizes } = currentTheme;
-  const { addAddress, loading } = useCustomer();
+  const { createAddress, loading } = useAddress();
   const [address, setAddress] = useState({
     city: "",
     area: "",
@@ -33,13 +34,17 @@ export default function AddAddressScreen() {
     },
   });
 
+  const { customer } = useCustomer();
   const handleAddAddress = async () => {
+    if (!customer) return;
+
     const newAddress: Omit<Address, "id"> = {
       ...address,
       latitude: 0, // Mocked for now
       longitude: 0, // Mocked for now
+      customerId: customer.id,
     };
-    await addAddress(newAddress);
+    await createAddress(newAddress);
     router.back();
   };
 

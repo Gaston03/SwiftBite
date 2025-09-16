@@ -6,4 +6,5 @@ export interface Address {
   longitude: number;
   latitude: number;
   instructions?: string;
+  customerId: string;
 }
