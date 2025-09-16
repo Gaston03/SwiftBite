@@ -16,7 +16,7 @@ export default function MyDetailsScreen() {
     firstName: customer?.firstName,
     lastName: customer?.lastName,
     email: customer?.email,
-    phone: customer?.phone,
+    phoneNumber: customer?.phoneNumber,
   });
 
   const styles = StyleSheet.create({
@@ -33,7 +33,7 @@ export default function MyDetailsScreen() {
 
   const handleUpdate = async () => {
     if (!customer) return;
-    await updateCustomer(form);
+    await updateCustomer(customer.id, form);
   };
 
   return (
@@ -58,8 +58,8 @@ export default function MyDetailsScreen() {
         />
         <Input
           placeholder="Phone Number"
-          value={form.phone}
-          onChangeText={(phone) => setForm({ ...form, phone })}
+          value={form.phoneNumber}
+          onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber })}
         />
         <View style={styles.buttonContainer}>
           <Button
