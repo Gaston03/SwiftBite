@@ -3,17 +3,24 @@ import { supabase } from "@/utils/supabase";
 import { keysToCamelCase, keysToSnakeCase } from "@/utils/case-converter";
 import { OrderStatus } from "@/models/enums";
 
-export type CreateOrderData = Omit<Order, "id" | "createdAt" | "updatedAt">;
+export type CreateOrderData = Omit<
+  Order,
+  "id" | "createdAt" | "updatedAt" | "createAt"
+>;
 
 class OrderService {
-  placeOrder = async (data: CreateOrderData): Promise<void> => {
-    const { error } = await supabase
+  placeOrder = async (data: CreateOrderData): Promise<Order> => {
+    const { data: newOrder, error } = await supabase
       .from("orders")
-      .insert(keysToSnakeCase(data));
+      .insert(keysToSnakeCase(data))
+      .select()
+      .single();
 
     if (error) {
       throw error;
     }
+
+    return keysToCamelCase(newOrder);
   };
 
   replaceOrder = async (orderId: string): Promise<void> => {

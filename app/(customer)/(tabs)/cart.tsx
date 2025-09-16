@@ -10,28 +10,32 @@ import { useAddress } from "@/hooks/use-address";
 import { useAuth } from "@/hooks/use-auth";
 import { useCustomer } from "@/hooks/use-customer";
 import { useEstablishment } from "@/hooks/use-establishment";
+import { useOrder } from "@/hooks/use-order";
 import { useTheme } from "@/hooks/use-theme";
 import { Address } from "@/models/address";
 import { Customer } from "@/models/customer";
-import { PaymentMethodType } from "@/models/enums";
+import { OrderStatus, PaymentMethodType } from "@/models/enums";
 import { PaymentMethod } from "@/models/payment-method";
+import { CreateOrderData } from "@/services/order-service";
 import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
 export default function CartScreen() {
-  const { items, total } = useCart();
+  const { items, total, clearCart } = useCart();
   const { currentTheme } = useTheme();
   const { userProfile } = useAuth();
   const { addresses } = useAddress();
   const { customer } = useCustomer();
   const { getEstablishmentById } = useEstablishment();
+  const { placeOrder, loading } = useOrder();
   const { colors, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
   const [deliveryFee, setDeliveryFee] = useState(0);
   const serviceFee = 1.5;
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchDeliveryFee() {
@@ -50,10 +54,8 @@ export default function CartScreen() {
   }, [items]);
 
   const [isAddressModalVisible, setAddressModalVisible] = useState(false);
-  const [
-    isPaymentMethodModalVisible,
-    setPaymentMethodModalVisible,
-  ] = useState(false);
+  const [isPaymentMethodModalVisible, setPaymentMethodModalVisible] =
+    useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(
     (userProfile as Customer)?.address
   );
@@ -71,19 +73,39 @@ export default function CartScreen() {
     setPaymentMethodModalVisible(false);
   };
 
+  const handlePurchase = async () => {
+    if (!customer || !selectedAddress) return;
+
+    const orderData: CreateOrderData = {
+      customerId: customer.id,
+      establishmentId: items[0].product.establishmentId,
+      status: OrderStatus.PENDING,
+      deliveryFee,
+      totalPrice: total + deliveryFee + serviceFee,
+      deliveringAddress: selectedAddress,
+      productLines: items,
+    };
+
+    const newOrder = await placeOrder(orderData);
+    if (newOrder) {
+      clearCart();
+      router.push(`/(customer)/order/${newOrder.id}`);
+    }
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      paddingTop: headerHeight,
     },
-    scrollViewContent: {
+    list: {
+      paddingTop: headerHeight,
+      paddingHorizontal: sizes.padding,
+    },
+    listContent: {
       paddingBottom: 120, // Space for the footer
     },
     section: {
-      paddingHorizontal: sizes.padding,
-      paddingVertical: sizes.padding / 2,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.tertiary,
+      marginBottom: sizes.padding,
     },
     sectionTitle: {
       textTransform: "uppercase",
@@ -97,6 +119,8 @@ export default function CartScreen() {
       right: 0,
       padding: sizes.padding,
       backgroundColor: colors.background,
+      borderTopWidth: 1,
+      borderTopColor: colors.tertiary,
     },
     emptyContainer: {
       flex: 1,
@@ -112,6 +136,7 @@ export default function CartScreen() {
     allergiesContainer: {
       flexDirection: "row",
       alignItems: "center",
+      paddingVertical: sizes.base,
     },
     allergiesText: {
       marginLeft: sizes.base,
@@ -124,6 +149,63 @@ export default function CartScreen() {
     },
   });
 
+  const sections = [
+    {
+      title: "Order Summary",
+      data: items,
+      renderItem: ({ item }: { item: any }) => <CartItemRow item={item} />,
+    },
+    {
+      title: "Delivery Details",
+      data: [
+        {
+          icon: "flag-outline",
+          title: "Delivery Address",
+          content: `${selectedAddress?.area}, ${selectedAddress?.city}`,
+          onPress: () => setAddressModalVisible(true),
+        },
+        {
+          icon: "time-outline",
+          title: "Delivery Time",
+          content: "As soon as possible (25-35 min)",
+        },
+        {
+          icon: "card-outline",
+          title: "Payment Method",
+          content:
+            selectedPaymentMethod?.type === PaymentMethodType.CREDIT_CARD
+              ? `Credit Card **** ${selectedPaymentMethod?.last4}`
+              : "Cash",
+          onPress: () => setPaymentMethodModalVisible(true),
+        },
+      ],
+      renderItem: ({ item }: { item: any }) => <CartSectionRow {...item} />,
+    },
+    {
+      title: "Costs",
+      data: [
+        {
+          label: "Delivery Fee",
+          value: deliveryFee,
+        },
+        {
+          label: "Service Fee",
+          value: serviceFee,
+        },
+        {
+          label: "Items Total",
+          value: total,
+        },
+      ],
+      renderItem: ({ item }: { item: any }) => (
+        <View style={styles.summaryRow}>
+          <Typography>{item.label}</Typography>
+          <Typography>${item.value.toFixed(2)}</Typography>
+        </View>
+      ),
+    },
+  ];
+
   return (
     <Screen>
       <Stack.Screen options={{ title: "My Cart" }} />
@@ -134,6 +216,7 @@ export default function CartScreen() {
             onClose={() => setAddressModalVisible(false)}
             addresses={addresses}
             onSelect={handleSelectAddress}
+            onAddAddress={() => router.push("/(customer)/address/add")}
           />
           <PaymentMethodSelectionModal
             visible={isPaymentMethodModalVisible}
@@ -141,17 +224,24 @@ export default function CartScreen() {
             paymentMethods={customer?.paymentMethods || []}
             onSelect={handleSelectPaymentMethod}
           />
-          <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            <View style={styles.section}>
-              <Typography variant="h3" style={styles.sectionTitle}>
-                Order Summary
-              </Typography>
-              {items.map((item) => (
-                <CartItemRow item={item} key={item.id} />
-              ))}
-            </View>
-
-            <View style={styles.section}>
+          <FlatList
+            data={sections}
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
+            keyExtractor={(item) => item.title}
+            renderItem={({ item }) => (
+              <View style={styles.section}>
+                <Typography variant="h3" style={styles.sectionTitle}>
+                  {item.title}
+                </Typography>
+                <FlatList
+                  data={item.data}
+                  keyExtractor={(subItem, index) => `${subItem.id}-${index}`}
+                  renderItem={item.renderItem}
+                />
+              </View>
+            )}
+            ListFooterComponent={() => (
               <View style={styles.allergiesContainer}>
                 <Ionicons
                   name="alert-circle-outline"
@@ -162,53 +252,8 @@ export default function CartScreen() {
                   Add allergies
                 </Typography>
               </View>
-            </View>
-
-            <View style={styles.section}>
-              <CartSectionRow
-                icon="flag-outline"
-                title="Delivery Address"
-                content={`${selectedAddress?.area}, ${selectedAddress?.city}`}
-                onPress={() => setAddressModalVisible(true)}
-              />
-            </View>
-
-            <View style={styles.section}>
-              <CartSectionRow
-                icon="time-outline"
-                title="Delivery Time"
-                content="As soon as possible (25-35 min)"
-              />
-            </View>
-
-            <View style={styles.section}>
-              <CartSectionRow
-                icon="card-outline"
-                title="Payment Method"
-                content={
-                  selectedPaymentMethod?.type === PaymentMethodType.CREDIT_CARD
-                    ? `Credit Card **** ${selectedPaymentMethod?.last4}`
-                    : "Cash"
-                }
-                onPress={() => setPaymentMethodModalVisible(true)}
-              />
-            </View>
-
-            <View style={styles.section}>
-              <View style={styles.summaryRow}>
-                <Typography>Delivery Fee</Typography>
-                <Typography>${deliveryFee.toFixed(2)}</Typography>
-              </View>
-              <View style={styles.summaryRow}>
-                <Typography>Service Fee</Typography>
-                <Typography>${serviceFee.toFixed(2)}</Typography>
-              </View>
-              <View style={styles.summaryRow}>
-                <Typography>Items Total</Typography>
-                <Typography>${total.toFixed(2)}</Typography>
-              </View>
-            </View>
-          </ScrollView>
+            )}
+          />
           <View style={styles.footer}>
             <Button
               title={`Confirm Purchase - ${(
@@ -216,8 +261,10 @@ export default function CartScreen() {
                 deliveryFee +
                 serviceFee
               ).toFixed(2)}`}
-              variant="ghost"
+              variant="primary"
               fullWidth
+              onPress={handlePurchase}
+              loading={loading}
             />
           </View>
         </View>

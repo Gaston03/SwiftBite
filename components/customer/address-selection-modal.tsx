@@ -9,6 +9,7 @@ interface AddressSelectionModalProps {
   visible: boolean;
   onClose: () => void;
   onSelect: (address: Address) => void;
+  onAddAddress: () => void;
   addresses: Address[];
 }
 
@@ -16,6 +17,7 @@ export function AddressSelectionModal({
   visible,
   onClose,
   onSelect,
+  onAddAddress,
   addresses,
 }: AddressSelectionModalProps) {
   const { currentTheme } = useTheme();
@@ -67,7 +69,11 @@ export function AddressSelectionModal({
             )}
           />
           <View style={styles.buttonContainer}>
-            <Button title="Add New Address" variant="secondary" />
+            <Button
+              title="Add New Address"
+              variant="secondary"
+              onPress={onAddAddress}
+            />
             <Button title="Close" onPress={onClose} variant="ghost" />
           </View>
         </View>
