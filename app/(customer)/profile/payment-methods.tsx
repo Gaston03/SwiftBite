@@ -1,7 +1,7 @@
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { useUser } from "@/hooks/use-user";
+import { usePaymentMethod } from "@/hooks/use-payment-method";
 import { useTheme } from "@/hooks/use-theme";
 import { PaymentMethod } from "@/models/payment-method";
 import { FlashList } from "@shopify/flash-list";
@@ -12,7 +12,7 @@ export default function PaymentMethodsScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { colors, sizes } = currentTheme;
-  const { paymentMethods, loading } = useUser();
+  const { paymentMethods, loading } = usePaymentMethod();
 
   const styles = StyleSheet.create({
     list: {

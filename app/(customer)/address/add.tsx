@@ -2,7 +2,8 @@ import { Button } from "@/components/shared/button";
 import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { useUser } from "@/hooks/use-user";
+import { useAddress } from "@/hooks/use-address";
+import { useCustomer } from "@/hooks/use-customer";
 import { useTheme } from "@/hooks/use-theme";
 import { Address } from "@/models/address";
 import { useRouter } from "expo-router";
@@ -13,7 +14,8 @@ export default function AddAddressScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { sizes } = currentTheme;
-  const { createAddress, loading, customer } = useUser();
+  const { customer } = useCustomer();
+  const { loading, createAddress} = useAddress()
   const [address, setAddress] = useState({
     city: "",
     area: "",
