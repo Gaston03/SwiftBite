@@ -7,6 +7,7 @@ import { useCustomer } from "@/hooks/use-customer";
 import { useDeliverer } from "@/hooks/use-deliverer";
 import { useTheme } from "@/hooks/use-theme";
 import { UserRole } from "@/models/enums";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
@@ -21,6 +22,8 @@ export default function CompleteProfileScreen() {
   const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const router = useRouter()
 
   useEffect(() => {
     if (user?.app_metadata.name) {
@@ -64,6 +67,12 @@ export default function CompleteProfileScreen() {
       }
 
       await completeOnboarding();
+
+      if (user?.app_metadata.role === UserRole.CUSTOMER) {
+        router.push("/(customer)/(tabs)/home")
+      } else {
+        router.push("/(deliverer)/home")
+      }
     } catch (error: any) {
       Alert.alert(
         "Profile Error",
