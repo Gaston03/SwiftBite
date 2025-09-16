@@ -3,7 +3,7 @@ import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { useAuth } from "@/hooks/use-auth";
-import { useCustomer } from "@/hooks/use-customer";
+import { useUser } from "@/hooks/use-user";
 import { useTheme } from "@/hooks/use-theme";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useRouter } from "expo-router";
@@ -20,7 +20,7 @@ export default function ProfileScreen() {
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
-  const { loading, customer } = useCustomer();
+  const { loading, customer } = useUser();
   const { signOut } = useAuth();
 
   const styles = StyleSheet.create({

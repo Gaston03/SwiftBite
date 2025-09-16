@@ -16,7 +16,13 @@ export default function AuthLayout() {
         },
       }}
     >
-      <Stack.Screen name="select-role" options={{ title: 'Select Role' }} />
+      <Stack.Screen name="select-role" options={{ title: "Select Role" }} />
+      <Stack.Screen name="login" options={{ title: "Login" }} />
+      <Stack.Screen name="register" options={{ title: "Register" }} />
+      <Stack.Screen
+        name="complete-profile"
+        options={{ title: "Complete Profile" }}
+      />
     </Stack>
   );
 }

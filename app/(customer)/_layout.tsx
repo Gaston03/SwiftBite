@@ -1,4 +1,4 @@
-import { CustomerProviderWithAddress } from "@/contexts/customer-context";
+import { UserProvider } from "@/contexts/user-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useTheme } from "@/hooks/use-theme";
 import { Redirect, Stack } from "expo-router";
@@ -18,7 +18,7 @@ export default function CustomerLayout() {
   }
 
   return (
-    <CustomerProviderWithAddress>
+    <UserProvider>
       <Stack
         screenOptions={{
           headerTransparent: true,
@@ -35,17 +35,33 @@ export default function CustomerLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="establishments/[type]"
-          options={{ headerBackTitle: "Back" }}
+          options={{ headerBackTitle: "Back", title: "Establishments" }}
         />
         <Stack.Screen
           name="establishment/[id]"
-          options={{ headerBackTitle: "Back" }}
+          options={{ headerBackTitle: "Back", title: "Establishment" }}
         />
         <Stack.Screen
           name="product/[id]"
-          options={{ headerBackTitle: "Back" }}
+          options={{ headerBackTitle: "Back", title: "Product" }}
+        />
+        <Stack.Screen
+          name="address/add"
+          options={{ headerBackTitle: "Back", title: "Add Address" }}
+        />
+        <Stack.Screen
+          name="profile/details"
+          options={{ headerBackTitle: "Back", title: "My Details" }}
+        />
+        <Stack.Screen
+          name="profile/payment-methods"
+          options={{ headerBackTitle: "Back", title: "Payment Methods" }}
+        />
+        <Stack.Screen
+          name="profile/add-payment-method"
+          options={{ headerBackTitle: "Back", title: "Add Payment Method" }}
         />
       </Stack>
-    </CustomerProviderWithAddress>
+    </UserProvider>
   );
 }
