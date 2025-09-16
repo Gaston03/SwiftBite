@@ -1,19 +1,22 @@
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { useUser } from "@/hooks/use-user";
+import { useCustomer } from "@/hooks/use-customer";
+import { usePaymentMethod } from "@/hooks/use-payment-method";
 import { useTheme } from "@/hooks/use-theme";
 import { CreatePaymentMethodData } from "@/services/payment-method-service";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { CreditCardInput } from "react-native-credit-card-input-plus-cr";
+import { CreditCardInput } from "react-native-credit-card-input";
 
 export default function AddPaymentMethodScreen() {
   const router = useRouter();
   const { currentTheme } = useTheme();
   const { sizes } = currentTheme;
-  const { createPaymentMethod, loading, customer } = useUser();
+  // const { createPaymentMethod, loading, customer } = useUser();
+  const { customer } = useCustomer()
+  const { loading, createPaymentMethod } = usePaymentMethod()
   const [cardData, setCardData] = useState<any>(null);
 
   const styles = StyleSheet.create({

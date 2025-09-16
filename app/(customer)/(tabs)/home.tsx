@@ -4,20 +4,20 @@ import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { MOCK_CATEGORIES } from "@/constants/mock-data";
-import { useUser } from "@/hooks/use-user";
 import { useEstablishment } from "@/hooks/use-establishment";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/shared/button";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { useCustomer } from "@/hooks/use-customer";
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
   const { theme, currentTheme, toggleTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const { popularEstablishments, loading } = useEstablishment();
-  const { customer } = useUser();
+  const { customer } = useCustomer();
 
   const handleCategoryPress = (type: string) => {
     router.push(`/(customer)/establishments/${type}`);
