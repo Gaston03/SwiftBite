@@ -1,3 +1,4 @@
+import { InteractiveCreditCard } from "@/components/customer/interactive-credit-card";
 import { Button } from "@/components/shared/button";
 import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
@@ -10,7 +11,7 @@ import { CreatePaymentMethodData } from "@/services/payment-method-service";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { CreditCardInput } from "react-native-credit-card-input";
+import { LiteCreditCardInput } from "react-native-credit-card-input";
 
 export default function AddPaymentMethodScreen() {
   const router = useRouter();
@@ -72,12 +73,14 @@ export default function AddPaymentMethodScreen() {
 
   const renderCreditCardForm = () => (
     <>
-      <CreditCardInput
-        onChange={(data) => setCardData(data)}
-        requiresName
-        requiresCVC
-        requiresPostalCode
+      <InteractiveCreditCard
+        name={cardData?.values.name}
+        number={cardData?.values.number}
+        expiry={cardData?.values.expiry}
+        cvc={cardData?.values.cvc}
+        type={cardData?.values.type}
       />
+      <LiteCreditCardInput onChange={(data) => setCardData(data)} />
       <View style={styles.buttonContainer}>
         <Button
           title="Add Payment Method"
