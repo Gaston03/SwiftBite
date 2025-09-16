@@ -6,7 +6,9 @@ import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { useCart } from "@/contexts/cart-context";
+import { useAddress } from "@/hooks/use-address";
 import { useAuth } from "@/hooks/use-auth";
+import { useCustomer } from "@/hooks/use-customer";
 import { useEstablishment } from "@/hooks/use-establishment";
 import { useTheme } from "@/hooks/use-theme";
 import { Address } from "@/models/address";
@@ -19,46 +21,12 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
-// Mock Data
-const mockAddresses: Address[] = [
-  {
-    id: "1",
-    area: "123 Main St",
-    city: "New York",
-    zipCode: "10001",
-    latitude: 40.7128,
-    longitude: -74.006,
-  },
-  {
-    id: "2",
-    area: "456 Market St",
-    city: "San Francisco",
-    zipCode: "94102",
-    latitude: 37.7749,
-    longitude: -122.4194,
-  },
-];
-
-const mockPaymentMethods: PaymentMethod[] = [
-  {
-    id: "1",
-    type: PaymentMethodType.CASH,
-    ownerId: "1",
-    createdAt: new Date(),
-  },
-  {
-    id: "2",
-    type: PaymentMethodType.CREDIT_CARD,
-    cardLast4Digits: "1234",
-    ownerId: "1",
-    createdAt: new Date(),
-  },
-];
-
 export default function CartScreen() {
   const { items, total } = useCart();
   const { currentTheme } = useTheme();
   const { userProfile } = useAuth();
+  const { addresses } = useAddress();
+  const { customer } = useCustomer();
   const { getEstablishmentById } = useEstablishment();
   const { colors, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
@@ -69,7 +37,7 @@ export default function CartScreen() {
     async function fetchDeliveryFee() {
       if (items.length > 0) {
         const establishmentId = items[0].product.establishmentId;
-        const establishment = await getEstablishmentById(establishmentId)
+        const establishment = await getEstablishmentById(establishmentId);
         if (establishment) {
           setDeliveryFee(establishment.deliveryFee);
         }
@@ -78,7 +46,7 @@ export default function CartScreen() {
       }
     }
     fetchDeliveryFee();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   const [isAddressModalVisible, setAddressModalVisible] = useState(false);
@@ -164,13 +132,13 @@ export default function CartScreen() {
           <AddressSelectionModal
             visible={isAddressModalVisible}
             onClose={() => setAddressModalVisible(false)}
-            addresses={mockAddresses}
+            addresses={addresses}
             onSelect={handleSelectAddress}
           />
           <PaymentMethodSelectionModal
             visible={isPaymentMethodModalVisible}
             onClose={() => setPaymentMethodModalVisible(false)}
-            paymentMethods={mockPaymentMethods}
+            paymentMethods={customer?.paymentMethods || []}
             onSelect={handleSelectPaymentMethod}
           />
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -219,7 +187,7 @@ export default function CartScreen() {
                 title="Payment Method"
                 content={
                   selectedPaymentMethod?.type === PaymentMethodType.CREDIT_CARD
-                    ? `Credit Card **** ${selectedPaymentMethod?.cardLast4Digits}`
+                    ? `Credit Card **** ${selectedPaymentMethod?.last4}`
                     : "Cash"
                 }
                 onPress={() => setPaymentMethodModalVisible(true)}

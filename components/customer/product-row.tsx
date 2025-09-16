@@ -14,7 +14,7 @@ export function ProductRow({ product, onPress }: ProductRowProps) {
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'row',
-      paddingVertical: sizes.padding,
+      padding: sizes.padding,
       borderBottomWidth: 1,
       borderBottomColor: colors.tertiary,
     },
@@ -39,7 +39,7 @@ export function ProductRow({ product, onPress }: ProductRowProps) {
     image: {
       width: 80,
       height: 80,
-      borderRadius: sizes.radius * 2,
+      borderRadius: '100%',
     },
   });
 

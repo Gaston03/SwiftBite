@@ -41,12 +41,14 @@ class AddressService {
   };
 
   getAddressesByCustomerId = async (customerId: string): Promise<Address[]> => {
+    console.log('customerId', customerId)
     const { data, error } = await supabase
       .from("addresses")
       .select("*")
       .eq("customer_id", customerId);
 
     if (error) {
+      console.log('error', error)
       throw error;
     }
 
