@@ -35,6 +35,22 @@ class PaymentMethodService {
     return keysToCamelCase(data);
   };
 
+  updatePaymentMethod = async (
+    id: string,
+    data: Partial<PaymentMethod>
+  ): Promise<void> => {
+    const { error } = await supabase
+      .from("payment_methods")
+      .update(keysToSnakeCase(data))
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    return keysToCamelCase(data);
+  };
+
   deletePaymentMethod = async (id: string): Promise<void> => {
     const { error } = await supabase
       .from("payment_methods")

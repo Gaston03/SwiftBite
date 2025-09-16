@@ -43,19 +43,24 @@ export const PaymentMethodProvider = ({
         setPaymentMethods(data);
       } catch (error) {
         handleError(error);
+        console.log('error', error)
       } finally {
         setLoading(false);
       }
     };
 
     getPaymentMethods();
-  }, [handleError, userProfile]);
+  }, []);
 
   const createPaymentMethod = async (data: CreatePaymentMethodData) => {
+    setLoading(true)
     try {
       await paymentMethodService.createPaymentMethod(data);
     } catch (error) {
       handleError(error);
+      console.log('error', error)
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -67,6 +72,7 @@ export const PaymentMethodProvider = ({
       await paymentMethodService.updatePaymentMethod(id, paymentMethod);
     } catch (error) {
       handleError(error);
+      console.log('error', error)
     }
   };
 
@@ -75,6 +81,7 @@ export const PaymentMethodProvider = ({
       await paymentMethodService.deletePaymentMethod(id);
     } catch (error) {
       handleError(error);
+      console.log('error', error)
     }
   };
 
