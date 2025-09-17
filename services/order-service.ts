@@ -82,7 +82,7 @@ class OrderService {
   getOrderById = async (id: string): Promise<Order | null> => {
     const { data, error } = await supabase
       .from("orders")
-      .select("*")
+      .select("*, productLines:order_product_lines(*, product:products(*))")
       .eq("id", id)
       .single();
 
@@ -98,7 +98,7 @@ class OrderService {
   ): Promise<Order[]> => {
     const { data, error } = await supabase
       .from("orders")
-      .select("*")
+      .select("*, productLines:order_product_lines(*, product:products(*))")
       .eq("establishment_id", establishmentId);
 
     if (error) {
@@ -111,7 +111,7 @@ class OrderService {
   getCustomerOrders = async (customerId: string): Promise<Order[]> => {
     const { data, error } = await supabase
       .from("orders")
-      .select("*")
+      .select("*, productLines:order_product_lines(*, product:products(*))")
       .eq("customer_id", customerId);
 
     if (error) {
@@ -124,7 +124,7 @@ class OrderService {
   getDelivererOrders = async (delivererId: string): Promise<Order[]> => {
     const { data, error } = await supabase
       .from("orders")
-      .select("*")
+      .select("*, productLines:order_product_lines(*, product:products(*))")
       .eq("deliverer_id", delivererId);
 
     if (error) {
