@@ -32,19 +32,19 @@ export function AddressSelectionModal({
     },
     modalContent: {
       width: "90%",
+      gap: sizes.padding2,
       backgroundColor: colors.background,
       borderRadius: sizes.borderRadius,
       padding: sizes.padding,
     },
     title: {
-      marginBottom: sizes.padding,
       textAlign: "center",
     },
     addressContainer: {
-      marginBottom: sizes.base,
+      marginBottom: sizes.padding / 2,
     },
     buttonContainer: {
-      marginTop: sizes.padding,
+      gap: sizes.padding / 2,
     },
   });
 

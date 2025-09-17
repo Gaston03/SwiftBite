@@ -17,7 +17,6 @@ export default function AddPaymentMethodScreen() {
   const { type } = useLocalSearchParams<{ type: PaymentMethodType }>()
   const { currentTheme } = useTheme();
   const { sizes } = currentTheme;
-  // const { createPaymentMethod, loading, customer } = useUser();
   const { customer } = useCustomer()
   const { loading, createPaymentMethod } = usePaymentMethod()
   const [cardData, setCardData] = useState<any>(null);
@@ -39,7 +38,7 @@ export default function AddPaymentMethodScreen() {
   });
 
   const handleAddPaymentMethod = async () => {
-    if (!customer || !cardData?.valid) return;
+    if (!customer) return;
 
     let newPaymentMethod: CreatePaymentMethodData;
     if (type === PaymentMethodType.CREDIT_CARD) {

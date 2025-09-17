@@ -43,7 +43,7 @@ export enum PaymentMethodType {
   CREDIT_CARD = "CREDIT_CARD",
   CASH = "CASH",
   MOBILE_MONEY = "MOBILE_MONEY",
-  PAYCAR = "PAYCARD",
+  PAYCARD = "PAYCARD",
 }
 
 export enum UserRole {

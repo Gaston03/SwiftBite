@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCustomer } from "@/hooks/use-customer";
 import { useEstablishment } from "@/hooks/use-establishment";
 import { useOrder } from "@/hooks/use-order";
+import { usePaymentMethod } from "@/hooks/use-payment-method";
 import { useTheme } from "@/hooks/use-theme";
 import { Address } from "@/models/address";
 import { Customer } from "@/models/customer";
@@ -28,6 +29,7 @@ export default function CartScreen() {
   const { currentTheme } = useTheme();
   const { userProfile } = useAuth();
   const { addresses } = useAddress();
+  const { paymentMethods } = usePaymentMethod()
   const { customer } = useCustomer();
   const { getEstablishmentById } = useEstablishment();
   const { placeOrder, loading } = useOrder();
@@ -172,7 +174,7 @@ export default function CartScreen() {
           content:
             selectedPaymentMethod?.type === PaymentMethodType.CREDIT_CARD
               ? `Credit Card **** ${selectedPaymentMethod?.last4}`
-              : "Cash",
+              : `Mobile money ${selectedPaymentMethod?.phoneNumber}`,
           onPress: () => setPaymentMethodModalVisible(true),
         },
       ],
@@ -218,7 +220,7 @@ export default function CartScreen() {
           <PaymentMethodSelectionModal
             visible={isPaymentMethodModalVisible}
             onClose={() => setPaymentMethodModalVisible(false)}
-            paymentMethods={customer?.paymentMethods || []}
+            paymentMethods={paymentMethods}
             onSelect={handleSelectPaymentMethod}
           />
           <SectionList

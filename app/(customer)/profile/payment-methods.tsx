@@ -3,6 +3,7 @@ import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { usePaymentMethod } from "@/hooks/use-payment-method";
 import { useTheme } from "@/hooks/use-theme";
+import { PaymentMethodType } from "@/models/enums";
 import { PaymentMethod } from "@/models/payment-method";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
@@ -35,7 +36,9 @@ export default function PaymentMethodsScreen() {
   const renderItem = ({ item }: { item: PaymentMethod }) => (
     <View style={styles.row}>
       <Typography>
-        **** **** **** {item.last4} - {item.brand}
+        {item.type === PaymentMethodType.CREDIT_CARD
+          ? `**** **** **** ${item.last4} - ${item.brand}`
+          : `${item.phoneNumber} - ${item.provider}`}
       </Typography>
       {/* <Typography>{item.isDefault && "(Default)"}</Typography> */}
     </View>
@@ -49,12 +52,16 @@ export default function PaymentMethodsScreen() {
         keyExtractor={(item) => item.id}
         estimatedItemSize={50}
         contentContainerStyle={styles.list}
-        ListHeaderComponent={<Typography variant="h2">Payment Methods</Typography>}
+        ListHeaderComponent={
+          <Typography variant="h2">Payment Methods</Typography>
+        }
       />
       <View style={styles.buttonContainer}>
         <Button
           title="Add New Card"
-          onPress={() => router.push("/(customer)/profile/add-payment-method-type")}
+          onPress={() =>
+            router.push("/(customer)/profile/add-payment-method-type")
+          }
           variant="primary"
           loading={loading}
         />
