@@ -21,7 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { SectionList, StyleSheet, View } from "react-native";
 
 export default function CartScreen() {
   const { items, total, clearCart } = useCart();
@@ -103,9 +103,6 @@ export default function CartScreen() {
     },
     listContent: {
       paddingBottom: 120, // Space for the footer
-    },
-    section: {
-      marginBottom: sizes.padding,
     },
     sectionTitle: {
       textTransform: "uppercase",
@@ -224,22 +221,21 @@ export default function CartScreen() {
             paymentMethods={customer?.paymentMethods || []}
             onSelect={handleSelectPaymentMethod}
           />
-          <FlatList
-            data={sections}
+          <SectionList
+            sections={sections}
             style={styles.list}
             contentContainerStyle={styles.listContent}
-            keyExtractor={(item) => item.title}
-            renderItem={({ item }) => (
-              <View style={styles.section}>
-                <Typography variant="h3" style={styles.sectionTitle}>
-                  {item.title}
-                </Typography>
-                <FlatList
-                  data={item.data}
-                  keyExtractor={(subItem, index) => `${subItem.id}-${index}`}
-                  renderItem={item.renderItem}
-                />
-              </View>
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            renderItem={({ item, section }) => {
+              if (section.renderItem) {
+                return section.renderItem({ item });
+              }
+              return null;
+            }}
+            renderSectionHeader={({ section: { title } }) => (
+              <Typography variant="h3" style={styles.sectionTitle}>
+                {title}
+              </Typography>
             )}
             ListFooterComponent={() => (
               <View style={styles.allergiesContainer}>

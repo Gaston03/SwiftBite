@@ -8,18 +8,10 @@ import { View, StyleSheet } from "react-native";
 import { Typography } from "@/components/shared/typography";
 import MapView, { Marker } from "react-native-maps";
 import { OrderProductLine } from "@/models/order-product-line";
-import { useProduct } from "@/hooks/use-product";
-import { Product } from "@/models/product";
 
 const OrderProductLineRow = ({ item }: { item: OrderProductLine }) => {
-  const { getProductById } = useProduct();
-  const [product, setProduct] = useState<Product | null>(null);
   const { currentTheme } = useTheme();
   const { colors, sizes } = currentTheme;
-
-  useEffect(() => {
-    getProductById(item.productId).then(setProduct);
-  }, [item.productId, getProductById]);
 
   const styles = StyleSheet.create({
     container: {
@@ -38,15 +30,11 @@ const OrderProductLineRow = ({ item }: { item: OrderProductLine }) => {
     },
   });
 
-  if (!product) {
-    return null;
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
         <Typography variant="h4">
-          {item.quantity}x {product.name}
+          {item.quantity}x {item.product.name}
         </Typography>
         <Typography style={styles.description} numberOfLines={1}>
           {item.selectedToppings?.map((t) => t.name).join(", ")}

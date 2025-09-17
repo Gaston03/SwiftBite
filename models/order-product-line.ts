@@ -1,3 +1,4 @@
+import { Product } from './product';
 import { Topping } from './topping';
 
 export interface OrderProductLine {
@@ -11,5 +12,6 @@ export interface OrderProductLine {
   createdAt: Date;
   updatedAt?: Date;
 
+  product: Product;
   selectedToppings?: Topping[];
 }
