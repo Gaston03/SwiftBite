@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useCart } from '@/contexts/cart-context';
+import { useOrder } from '@/contexts/order-context';
 import { useTheme } from '@/hooks/use-theme';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
 
 type CartTabIconProps = {
   focused: boolean;
@@ -10,7 +10,7 @@ type CartTabIconProps = {
 };
 
 export function CartTabIcon({ focused, color, size }: CartTabIconProps) {
-  const { itemCount } = useCart();
+  const { itemCount } = useOrder();
   const { currentTheme } = useTheme();
   const { colors, fonts } = currentTheme;
 

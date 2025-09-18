@@ -1,4 +1,4 @@
-import { CartItem, useCart } from "@/contexts/cart-context";
+import { CartItem, useOrder } from "@/contexts/order-context";
 import { useTheme } from "@/hooks/use-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -9,7 +9,7 @@ type CartItemRowProps = {
 };
 
 export function CartItemRow({ item }: CartItemRowProps) {
-  const { updateItemQuantity } = useCart();
+  const { updateItemQuantity } = useOrder();
   const { currentTheme } = useTheme();
   const { colors, sizes } = currentTheme;
 

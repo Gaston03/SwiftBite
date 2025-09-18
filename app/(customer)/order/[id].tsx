@@ -1,13 +1,12 @@
 import { Screen } from "@/components/shared/screen";
 import { useOrder } from "@/hooks/use-order";
 import { useTheme } from "@/hooks/use-theme";
-import { Order } from "@/models/order";
+import { Order, OrderProductLine } from "@/models/order";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Typography } from "@/components/shared/typography";
 import MapView, { Marker } from "react-native-maps";
-import { OrderProductLine } from "@/models/order";
 
 const OrderProductLineRow = ({ item }: { item: OrderProductLine }) => {
   const { currentTheme } = useTheme();

@@ -5,7 +5,7 @@ import { PaymentMethodSelectionModal } from "@/components/customer/payment-metho
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { CartItem, useCart } from "@/contexts/cart-context";
+import { CartItem } from "@/contexts/order-context";
 import { useAddress } from "@/hooks/use-address";
 import { useAuth } from "@/hooks/use-auth";
 import { useCustomer } from "@/hooks/use-customer";
@@ -15,12 +15,8 @@ import { usePaymentMethod } from "@/hooks/use-payment-method";
 import { useTheme } from "@/hooks/use-theme";
 import { Address } from "@/models/address";
 import { Customer } from "@/models/customer";
-import { OrderStatus, PaymentMethodType } from "@/models/enums";
+import { PaymentMethodType } from "@/models/enums";
 import { PaymentMethod } from "@/models/payment-method";
-import {
-  CreateOrderData,
-  CreateOrderProductLineData,
-} from "@/services/order-service";
 import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useRouter } from "expo-router";
@@ -28,17 +24,18 @@ import { useEffect, useState } from "react";
 import { SectionList, StyleSheet, View } from "react-native";
 
 export default function CartScreen() {
-  const { items, total, clearCart } = useCart();
+  // const { items, total, clearCart } = useOrder();
   const { currentTheme } = useTheme();
   const { userProfile } = useAuth();
   const { addresses } = useAddress();
-  const { paymentMethods } = usePaymentMethod()
+  const { paymentMethods } = usePaymentMethod();
   const { customer } = useCustomer();
   const { getEstablishmentById } = useEstablishment();
-  const { placeOrder, loading } = useOrder();
+  const { loading, items, total, clearCart, placeOrder } = useOrder();
   const { colors, sizes } = currentTheme;
   const headerHeight = useHeaderHeight();
   const [deliveryFee, setDeliveryFee] = useState(0);
+  const [deliveryTime, setDeliveryTime] = useState("");
   const serviceFee = 1.5;
   const router = useRouter();
 
@@ -49,9 +46,11 @@ export default function CartScreen() {
         const establishment = await getEstablishmentById(establishmentId);
         if (establishment) {
           setDeliveryFee(establishment.deliveryFee);
+          setDeliveryTime(establishment.deliveryTime);
         }
       } else {
         setDeliveryFee(0);
+        setDeliveryTime("");
       }
     }
     fetchDeliveryFee();
@@ -81,29 +80,35 @@ export default function CartScreen() {
   const handlePurchase = async () => {
     if (!customer || !selectedAddress) return;
 
-    const productLines: CreateOrderProductLineData[] = items.map((item) => {
-      const selectedToppingIds = Object.keys(item.selectedToppings).filter(
-        (toppingId) => item.selectedToppings[toppingId]
-      );
+    // const productLines: CreateOrderProductLineData[] = items.map((item) => {
+    //   const selectedToppingIds = Object.keys(item.selectedToppings).filter(
+    //     (toppingId) => item.selectedToppings[toppingId]
+    //   );
 
-      return {
-        productId: item.product.id,
-        quantity: item.quantity,
-        unitPrice: item.price,
-        selectedToppings: selectedToppingIds,
-      };
-    });
+    //   return {
+    //     productId: item.product.id,
+    //     quantity: item.quantity,
+    //     unitPrice: item.price,
+    //     selectedToppings: selectedToppingIds,
+    //   };
+    // });
 
-    const orderData: CreateOrderData = {
+    const data = {
       customerId: customer.id,
       establishmentId: items[0].product.establishmentId,
       deliveryFee,
+      deliveryTime,
       totalPrice: total + deliveryFee + serviceFee,
-      deliveringAddressId: selectedAddress?.id || "",
-      productLines: [] /* items */,
+      deliveringAddressId: selectedAddress?.id,
     };
 
-    const newOrder = await placeOrder(orderData);
+    const newOrder = await placeOrder(
+      data.deliveryFee,
+      data.totalPrice,
+      data.deliveringAddressId || "",
+      data.establishmentId,
+      data.deliveryTime
+    );
     if (newOrder) {
       clearCart();
       router.push(`/(customer)/order/${newOrder.id}`);
