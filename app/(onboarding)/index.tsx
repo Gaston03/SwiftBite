@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Screen } from '@/components/shared/screen';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { useTheme } from '@/hooks/use-theme';
