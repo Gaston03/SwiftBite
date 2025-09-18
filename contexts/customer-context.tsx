@@ -39,7 +39,7 @@ export const CustomerProvider = ({
         const data = await customerService.getCustomer(userProfile.id);
         setCustomer(data);
       } catch (error) {
-        console.log('error', error)
+        console.log("error", error);
         handleError(error);
       } finally {
         setLoading(false);
@@ -51,40 +51,43 @@ export const CustomerProvider = ({
 
   useEffect(() => {
     if (customer && addresses) {
-      setCustomer(prev => ({
-        ...prev,
+      setCustomer(
+        (prev) =>
+          ({
+            ...prev,
         address: addresses[0]
       } as Customer));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addresses]);
 
   const createCustomer = async (data: CreateCustomerData) => {
-    setLoading(true)
+    setLoading(true);
     try {
       return await customerService.createCustomer(data);
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
       handleError(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const updateCustomer = async (id: string, newCustomer: Partial<Customer>) => {
-    setLoading(true)
+    setLoading(true);
     try {
       await customerService.updateCustomer(id, newCustomer);
 
       const updatedCustomer: Customer = {
         ...customer,
-        ...newCustomer
-      } as Customer
-      setCustomer(updatedCustomer)
+        ...newCustomer,
+      } as Customer;
+      setCustomer(updatedCustomer);
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
       handleError(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -92,7 +95,7 @@ export const CustomerProvider = ({
     try {
       await customerService.deleteCustomer(id);
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
       handleError(error);
     }
   };

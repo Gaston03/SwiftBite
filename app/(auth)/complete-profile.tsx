@@ -9,13 +9,16 @@ import { useTheme } from "@/hooks/use-theme";
 import { UserRole } from "@/models/enums";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet } from "react-native";
+import * as Location from "expo-location";
+import { useAddress } from "@/hooks/use-address";
 
 export default function CompleteProfileScreen() {
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const { user, updateUserProfile, completeOnboarding } = useAuth();
   const { loading, createCustomer } = useCustomer();
+  const { createAddress } = useAddress()
   const { createDeliverer } = useDeliverer();
 
   const [firstName, setFirstName] = useState("");
@@ -23,7 +26,7 @@ export default function CompleteProfileScreen() {
   const [countryCode, setCountryCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (user?.app_metadata.name) {
@@ -64,14 +67,43 @@ export default function CompleteProfileScreen() {
 
       if (newProfile) {
         updateUserProfile(newProfile);
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Permission denied",
+            "Permission to access location was denied"
+          );
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        const { latitude, longitude } = location.coords;
+
+        let reverseGeocode = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
+
+        if (reverseGeocode.length > 0) {
+          const { city, postalCode, street, region } = reverseGeocode[0];
+          await createAddress({
+            city: city || "Unknown",
+            area: street || region || "Unknown",
+            zipCode: postalCode || "Unknown",
+            instructions: "",
+            latitude,
+            longitude,
+            customerId: newProfile.id,
+          });
+        }
       }
 
       await completeOnboarding();
 
       if (user?.app_metadata.role === UserRole.CUSTOMER) {
-        router.push("/(customer)/(tabs)/home")
+        router.push("/(customer)/(tabs)/home");
       } else {
-        router.push("/(deliverer)/home")
+        router.push("/(deliverer)/home");
       }
     } catch (error: any) {
       Alert.alert(
