@@ -89,7 +89,7 @@ export default function ProfileScreen() {
           <View style={styles.header}>
             <Image
               source={{
-                uri: `https://placehold.co/100x100/FF5722/FFFFFF/png?text=${customer.firstName.at(
+                uri: `https://placehold.co/100x100/FF7E5F/FFFFFF/png?text=${customer.firstName.at(
                   0
                 )}${customer.lastName.at(0)}`,
               }}

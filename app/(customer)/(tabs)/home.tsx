@@ -46,7 +46,7 @@ export default function CustomerHomeScreen() {
     },
     locationText: {
       ...fonts.h3,
-      color: colors.text,
+      color: colors.primaryText,
       marginRight: sizes.base,
     },
     searchBar: {
@@ -62,7 +62,7 @@ export default function CustomerHomeScreen() {
     },
     themeToggleIcon: {
       ...fonts.h1,
-      color: colors.text,
+      color: colors.primaryText,
     },
   });
 

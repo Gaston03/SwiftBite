@@ -2,9 +2,7 @@ import { Button } from "@/components/shared/button";
 import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { useAddress } from "@/hooks/use-address";
 import { useAuth } from "@/hooks/use-auth";
-import { useCustomer } from "@/hooks/use-customer";
 import { useTheme } from "@/hooks/use-theme";
 import { UserRole } from "@/models/enums";
 import { SignUpData } from "@/services/auth-service";
@@ -18,8 +16,6 @@ export default function RegisterScreen() {
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const { signUp, isLoading, completeOnboarding } = useAuth();
-  // const { createAddress } = useAddress();
-  // const { customer } = useCustomer();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
