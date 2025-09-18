@@ -40,6 +40,7 @@ export const PaymentMethodProvider = ({
         const data = await paymentMethodService.getPaymentMethodsByCustomerId(
           userProfile.id
         );
+        console.log('data', data)
         setPaymentMethods(data);
       } catch (error) {
         handleError(error);
@@ -50,12 +51,13 @@ export const PaymentMethodProvider = ({
     };
 
     getPaymentMethods();
-  }, []);
+  }, [handleError, userProfile]);
 
   const createPaymentMethod = async (data: CreatePaymentMethodData) => {
     setLoading(true)
     try {
-      await paymentMethodService.createPaymentMethod(data);
+      const createdPaymentMethod = await paymentMethodService.createPaymentMethod(data);
+      setPaymentMethods(prev => [...prev, createdPaymentMethod])
     } catch (error) {
       handleError(error);
       console.log('error', error)

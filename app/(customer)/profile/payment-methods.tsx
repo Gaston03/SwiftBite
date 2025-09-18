@@ -50,7 +50,6 @@ export default function PaymentMethodsScreen() {
         data={paymentMethods}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        estimatedItemSize={50}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
           <Typography variant="h2">Payment Methods</Typography>
