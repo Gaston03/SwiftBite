@@ -20,7 +20,6 @@ import {
 import { useCustomer } from "@/hooks/use-customer";
 import { useOrder } from "@/hooks/use-order";
 import { OrderStatus } from "@/models/enums";
-import { useState } from "react";
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
@@ -29,7 +28,6 @@ export default function CustomerHomeScreen() {
   const { popularEstablishments, loading } = useEstablishment();
   const { customer } = useCustomer();
   const { orders } = useOrder();
-  const [serviceType, setServiceType] = useState<"Food" | "Ride">("Food");
 
   const activeOrder = orders.find(
     (order) =>
@@ -90,29 +88,6 @@ export default function CustomerHomeScreen() {
       color: colors.primaryText,
       fontWeight: "bold",
     },
-    toggleContainer: {
-      flexDirection: "row",
-      justifyContent: "center",
-      marginBottom: sizes.padding,
-      backgroundColor: colors.card,
-      borderRadius: sizes.radius,
-    },
-    toggleButton: {
-      flex: 1,
-      padding: sizes.padding,
-      alignItems: "center",
-      borderRadius: sizes.radius,
-    },
-    activeToggleButton: {
-      backgroundColor: colors.primary,
-    },
-    toggleButtonText: {
-      ...fonts.body2,
-      color: colors.text,
-    },
-    activeToggleButtonText: {
-      color: colors.white,
-    },
   });
 
   return (
@@ -155,58 +130,25 @@ export default function CustomerHomeScreen() {
             />
           )}
         </View>
-        <Ionicons
-          name={theme === "dark" ? "sunny" : "moon"}
-          style={styles.themeToggleIcon}
-          onPress={toggleTheme}
-        />
-      </View>
-
-      <View style={styles.toggleContainer}>
-        <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            serviceType === "Food" && styles.activeToggleButton,
-          ]}
-          onPress={() => setServiceType("Food")}
-        >
-          <Typography
-            style={[
-              styles.toggleButtonText,
-              serviceType === "Food" && styles.activeToggleButtonText,
-            ]}
-          >
-            Food
-          </Typography>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            serviceType === "Ride" && styles.activeToggleButton,
-          ]}
-          onPress={() => setServiceType("Ride")}
-        >
-          <Typography
-            style={[
-              styles.toggleButtonText,
-              serviceType === "Ride" && styles.activeToggleButtonText,
-            ]}
-          >
-            Ride
-          </Typography>
-        </TouchableOpacity>
-      </View>
-
-      {serviceType === "Food" ? (
-        <>
-          <Input
-            placeholder="What are you looking for?"
-            style={styles.searchBar}
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Ionicons
+            name="car-sport-outline"
+            style={styles.themeToggleIcon}
+            onPress={() => router.push("/(customer)/ride")}
           />
+          <Ionicons
+            name={theme === "dark" ? "sunny" : "moon"}
+            style={[styles.themeToggleIcon, { marginLeft: sizes.padding }]}
+            onPress={toggleTheme}
+          />
+        </View>
+      </View>
 
-          <Typography variant="h2" style={styles.sectionTitle}>
-            Categories
-          </Typography>
+      <Input placeholder="What are you looking for?" style={styles.searchBar} />
+
+      <Typography variant="h2" style={styles.sectionTitle}>
+        Categories
+      </Typography>
 
       <FlatList
         data={MOCK_CATEGORIES}
@@ -242,13 +184,6 @@ export default function CustomerHomeScreen() {
           showsVerticalScrollIndicator={false}
           scrollEnabled={false} // To avoid nested scrollviews warning
         />
-      )}
-        </>
-      ) : (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Typography variant="h1" style={{ marginBottom: sizes.padding }}>Ready to Ride?</Typography>
-          <Button title="Let's Go" onPress={() => router.push('/(customer)/ride')} />
-        </View>
       )}
     </Screen>
   );

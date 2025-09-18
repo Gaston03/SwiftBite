@@ -6,7 +6,7 @@ import { useRide } from "@/hooks/use-ride";
 import { useTheme } from "@/hooks/use-theme";
 import { VehicleType } from "@/models/enums";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -31,6 +31,10 @@ export default function RideDetailsScreen() {
   const router = useRouter();
   const { createRide } = useRide();
   const { userProfile } = useAuth();
+  const { originId, destinationId } = useLocalSearchParams<{
+    originId: string;
+    destinationId: string;
+  }>();
   const [selectedRide, setSelectedRide] = useState<VehicleType | null>(null);
 
   const styles = StyleSheet.create({
@@ -59,7 +63,7 @@ export default function RideDetailsScreen() {
   });
 
   const handleRequestRide = async () => {
-    if (!selectedRide || !userProfile) return;
+    if (!selectedRide || !userProfile || !originId || !destinationId) return;
 
     const rideOption = RIDE_OPTIONS.find((r) => r.type === selectedRide);
     if (!rideOption) return;
@@ -67,9 +71,8 @@ export default function RideDetailsScreen() {
     const newRide = await createRide({
       customerId: userProfile.id,
       vehicleType: selectedRide,
-      // These are placeholders, you should get them from the previous screen
-      originAddressId: "f5b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b",
-      destinationAddressId: "f5b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b",
+      originAddressId: originId,
+      destinationAddressId: destinationId,
       price: rideOption.price,
     });
 
