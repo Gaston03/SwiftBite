@@ -1,6 +1,21 @@
 import { Address } from "./address";
 import { OrderStatus } from "./enums";
-import { OrderProductLine } from "./order-product-line.js";
+import { Product } from "./product";
+import { Topping } from "./topping";
+
+export interface OrderProductLine {
+  id: string;
+  orderId: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  specialInstructions?: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  product: Product;
+  selectedToppings: Topping[];
+}
 
 export interface Order {
   id: string;
@@ -11,13 +26,9 @@ export interface Order {
   createdAt: Date;
   deliveryFee: number;
   totalPrice: number;
+  deliveringAddressId?: string;
   deliveringAddress?: Address;
   estimatedDeliveryTime?: string;
-  createAt: Date;
   updatedAt?: Date;
-
-  // customer: Customer;
-  // establishment: Establishment;
-  // deliverer?: Deliverer;
   productLines: OrderProductLine[];
 }

@@ -3,7 +3,7 @@ import { useError } from "@/hooks/use-error";
 import { UserRole } from "@/models/enums";
 import { Order } from "@/models/order";
 import { CreateOrderData, orderService } from "@/services/order-service";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
 interface OrderContextData {
   orders: Order[];
@@ -14,6 +14,7 @@ interface OrderContextData {
   acceptOrder: (id: string) => Promise<void>;
   refuseOrder: (id: string) => Promise<void>;
   getOrderById: (id: string) => Promise<Order | null>;
+  fetchOrders: () => Promise<void>;
 }
 
 export const OrderContext = createContext<OrderContextData>(
@@ -26,47 +27,47 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getOrders = async () => {
-      try {
-        if (!userProfile) return;
-        setLoading(true);
-        let data: Order[] = [];
-        if (userProfile.role === UserRole.CUSTOMER) {
-          data = await orderService.getCustomerOrders(userProfile.id);
-        } else if (userProfile.role === UserRole.DELIVERER) {
-          data = await orderService.getDelivererOrders(userProfile.id);
-        } else {
-          data = await orderService.getEstablishmentOrders(userProfile.id);
-        }
-        setOrders(data);
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getOrders();
-  }, [handleError, userProfile]);
-
-  const placeOrder = async (data: CreateOrderData) => {
-    setLoading(true)
+  const fetchOrders = useCallback(async () => {
     try {
-      const newOrder = await orderService.placeOrder(data);
-      setOrders((prev) => [...prev, newOrder]);
-      return newOrder
+      if (!userProfile) return;
+      setLoading(true);
+      let data: Order[] = [];
+      if (userProfile.role === UserRole.CUSTOMER) {
+        data = await orderService.getCustomerOrders(userProfile.id);
+      } else if (userProfile.role === UserRole.DELIVERER) {
+        data = await orderService.getDelivererOrders(userProfile.id);
+      } else {
+        data = await orderService.getEstablishmentOrders(userProfile.id);
+      }
+      setOrders(data);
     } catch (error) {
-      console.log('error', error)
       handleError(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
+    }
+  }, [handleError, userProfile]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const placeOrder = async (data: CreateOrderData) => {
+    setLoading(true);
+    try {
+      const newOrder = await orderService.placeOrder(data);
+      await fetchOrders();
+      return newOrder;
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateOrder = async (id: string, order: Partial<Order>) => {
     try {
       await orderService.updateOrder(id, order);
+      await fetchOrders();
     } catch (error) {
       handleError(error);
     }
@@ -75,6 +76,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const deleteOrder = async (id: string) => {
     try {
       await orderService.deleteOrder(id);
+      await fetchOrders();
     } catch (error) {
       handleError(error);
     }
@@ -83,6 +85,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const acceptOrder = async (id: string) => {
     try {
       await orderService.acceptOrder(id);
+      await fetchOrders();
     } catch (error) {
       handleError(error);
     }
@@ -91,6 +94,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const refuseOrder = async (id: string) => {
     try {
       await orderService.refuseOrder(id);
+      await fetchOrders();
     } catch (error) {
       handleError(error);
     }
@@ -116,6 +120,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         acceptOrder,
         refuseOrder,
         getOrderById,
+        fetchOrders,
       }}
     >
       {children}
