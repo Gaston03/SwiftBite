@@ -83,7 +83,6 @@ export default function CompleteProfileScreen() {
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
       justifyContent: "center",
       gap: sizes.padding,
       padding: sizes.padding,
@@ -103,42 +102,40 @@ export default function CompleteProfileScreen() {
   });
 
   return (
-    <Screen>
-      <View style={styles.container}>
-        <Typography style={styles.title}>Complete Your Profile</Typography>
-        <Input
-          style={styles.input}
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
-        />
-        <Input
-          style={styles.input}
-          placeholder="Last Name"
-          value={lastName}
-          onChangeText={setLastName}
-        />
-        <Input
-          style={styles.input}
-          placeholder="Country Code (e.g., +1)"
-          value={countryCode}
-          onChangeText={setCountryCode}
-          keyboardType="phone-pad"
-        />
-        <Input
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-        />
-        <Button
-          style={styles.button}
-          title="Save and Continue"
-          onPress={handleCompleteProfile}
-          loading={loading}
-        />
-      </View>
+    <Screen style={styles.container}>
+      <Typography style={styles.title}>Complete Your Profile</Typography>
+      <Input
+        style={styles.input}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+      />
+      <Input
+        style={styles.input}
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
+      />
+      <Input
+        style={styles.input}
+        placeholder="Country Code (e.g., +1)"
+        value={countryCode}
+        onChangeText={setCountryCode}
+        keyboardType="phone-pad"
+      />
+      <Input
+        style={styles.input}
+        placeholder="Phone Number"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+        keyboardType="phone-pad"
+      />
+      <Button
+        style={styles.button}
+        title="Save and Continue"
+        onPress={handleCompleteProfile}
+        loading={loading}
+      />
     </Screen>
   );
 }

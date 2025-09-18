@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Screen } from '@/components/shared/screen';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { useTheme } from '@/hooks/use-theme';
@@ -174,12 +175,11 @@ export default function OnboardingScreen() {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.background,
     },
   });
 
   return (
-    <View style={styles.container}>
+    <Screen style={styles.container}>
       <View style={{ flex: 3 }}>
         <Animated.FlatList
           data={onboardingSlides}

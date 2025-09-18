@@ -1,20 +1,31 @@
-import { ScrollView, StyleSheet, View, ViewProps } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '@/hooks/use-theme';
+import { ScrollView, StyleSheet, View, ViewProps } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme } from "@/hooks/use-theme";
 
 interface ScreenProps extends ViewProps {
   scrollable?: boolean;
   withPadding?: boolean;
 }
 
-export function Screen({ scrollable = false, withPadding = true, children, style, ...props }: ScreenProps) {
+export function Screen({
+  scrollable = false,
+  withPadding = true,
+  children,
+  style,
+  ...props
+}: ScreenProps) {
   const { currentTheme } = useTheme();
   const { colors } = currentTheme;
+  const insets = useSafeAreaInsets();
 
   const styles = StyleSheet.create({
-    safeArea: {
+    root: {
       flex: 1,
       backgroundColor: colors.background,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
     },
     container: {
       flex: 1,
@@ -25,9 +36,13 @@ export function Screen({ scrollable = false, withPadding = true, children, style
   });
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.root}>
       {scrollable ? (
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} {...props}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}
+          {...props}
+        >
           {children}
         </ScrollView>
       ) : (
@@ -35,6 +50,6 @@ export function Screen({ scrollable = false, withPadding = true, children, style
           {children}
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
