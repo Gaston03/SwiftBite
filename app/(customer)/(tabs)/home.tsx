@@ -9,7 +9,13 @@ import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/shared/button";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useCustomer } from "@/hooks/use-customer";
 
 export default function CustomerHomeScreen() {
@@ -68,12 +74,15 @@ export default function CustomerHomeScreen() {
             Delivering to
           </Typography>
           {customer?.address ? (
-            <View style={styles.locationContainer}>
+            <TouchableOpacity
+              style={styles.locationContainer}
+              onPress={() => router.push("/(customer)/address/update")}
+            >
               <Typography variant="h3" style={styles.locationText}>
                 {customer?.address?.city}, {customer?.address?.area}
               </Typography>
               <Ionicons name="chevron-down" size={24} color={colors.primary} />
-            </View>
+            </TouchableOpacity>
           ) : (
             <Button
               title="Add Address"

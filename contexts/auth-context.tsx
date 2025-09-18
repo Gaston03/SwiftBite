@@ -35,7 +35,7 @@ interface AuthContextType {
   signUpWithGoogle: () => Promise<void>;
   signUpWithFacebook: () => Promise<void>;
   signUpWithApple: () => Promise<void>;
-  signUp: (data: SignUpData) => Promise<void>;
+  signUp: (data: SignUpData) => Promise<User | null>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
 }
@@ -224,14 +224,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signUp = async (data: SignUpData): Promise<void> => {
+  const signUp = async (data: SignUpData): Promise<User | null> => {
     setIsLoading(true);
     try {
-      const { error } = await authService.signUp(data);
+      const { user, error } = await authService.signUp(data);
 
-      if (error) handleError(error);
+      if (error) {
+        handleError(error);
+        return null;
+      }
+      return user;
     } catch (error: any) {
       handleError(error);
+      return null;
     } finally {
       setIsLoading(false);
     }

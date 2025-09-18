@@ -9,6 +9,9 @@ import { SignUpData } from "@/services/auth-service";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import * as Location from "expo-location";
+import { useAddress } from "@/hooks/use-address";
+import { useCustomer } from "@/hooks/use-customer";
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -17,6 +20,8 @@ export default function RegisterScreen() {
   const { colors, fonts, sizes } = currentTheme;
   const { signUp, isLoading, error, clearError, completeOnboarding } =
     useAuth();
+  const { createAddress } = useAddress();
+  const { customer } = useCustomer();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,7 +39,6 @@ export default function RegisterScreen() {
       return;
     }
     if (!role) {
-      // This should not happen in the normal flow
       console.error("Role is missing.");
       return;
     }
@@ -44,22 +48,44 @@ export default function RegisterScreen() {
         password,
         role: role === "customer" ? UserRole.CUSTOMER : UserRole.DELIVERER,
       };
-      await signUp(signUpData);
+      const user = await signUp(signUpData);
+      if (role === "customer" && user) {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Permission denied",
+            "Permission to access location was denied"
+          );
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        const { latitude, longitude } = location.coords;
+
+        let reverseGeocode = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
+
+        if (reverseGeocode.length > 0) {
+          const { city, postalCode, street, region } = reverseGeocode[0];
+          await createAddress({
+            city: city || "Unknown",
+            area: street || "Unknown",
+            zipCode: postalCode || "Unknown",
+            instructions: "",
+            latitude,
+            longitude,
+            customerId: user.id,
+          });
+        }
+      }
       await completeOnboarding();
-      // The root redirector should handle navigation to the home screen.
-      // But we can give it a push just in case.
-      // if (role === "customer") {
-      //   router.replace("/(customer)/(tabs)/home");
-      // } else {
-      //   router.replace("/(deliverer)/home");
-      // }
     } catch (error) {
-      console.log('error: ', error)
+      console.log("error: ", error);
       Alert.alert("Registration Error", error as string, [
         { text: "OK", onPress: () => clearError() },
       ]);
-      // The error is caught and set in the AuthContext, so we don't need to do anything here.
-      // The useEffect hook will handle displaying the alert.
     }
   };
 
