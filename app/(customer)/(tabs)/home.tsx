@@ -12,11 +12,14 @@ import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useCustomer } from "@/hooks/use-customer";
+import { useOrder } from "@/hooks/use-order";
+import { OrderStatus } from "@/models/enums";
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
@@ -24,6 +27,14 @@ export default function CustomerHomeScreen() {
   const { colors, fonts, sizes } = currentTheme;
   const { popularEstablishments, loading } = useEstablishment();
   const { customer } = useCustomer();
+  const { orders } = useOrder();
+
+  const activeOrder = orders.find(
+    (order) =>
+      order.status !== OrderStatus.DELIVERED &&
+      order.status !== OrderStatus.CANCELLED &&
+      order.status !== OrderStatus.REFUSED
+  );
 
   const handleCategoryPress = (type: string) => {
     router.push(`/(customer)/establishments/${type}`);
@@ -64,10 +75,35 @@ export default function CustomerHomeScreen() {
       ...fonts.h1,
       color: colors.text,
     },
+    activeOrderBanner: {
+      backgroundColor: colors.primary,
+      padding: sizes.padding,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      borderRadius: sizes.radius,
+      marginBottom: sizes.padding,
+    },
+    activeOrderText: {
+      color: colors.white,
+      fontWeight: "bold",
+    },
   });
 
   return (
     <Screen scrollable>
+      {activeOrder && (
+        <Pressable
+          onPress={() => router.push(`/(customer)/order/${activeOrder.id}`)}
+        >
+          <View style={styles.activeOrderBanner}>
+            <Typography style={styles.activeOrderText}>
+              You have an ongoing order. Tap to view.
+            </Typography>
+            <Ionicons name="arrow-forward" size={24} color={colors.white} />
+          </View>
+        </Pressable>
+      )}
       <View style={styles.header}>
         <View>
           <Typography variant="body3" style={{ color: colors.gray }}>
