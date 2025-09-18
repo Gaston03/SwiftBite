@@ -176,6 +176,7 @@ class OrderService {
       .from("orders")
       .select(
         `*,
+        deliveringAddress:addresses(*),
         productLines:order_product_lines(
           *,
           product:products(*),
@@ -201,6 +202,7 @@ class OrderService {
       .from("orders")
       .select(
         `*,
+        deliveringAddress:addresses(*),
         productLines:order_product_lines(
         *,
         product:products(*),
@@ -223,6 +225,7 @@ class OrderService {
       .from("orders")
       .select(
         `*,
+        deliveringAddress:addresses(*),
         productLines:order_product_lines(
         *,
         product:products(*),
@@ -245,6 +248,7 @@ class OrderService {
       .from("orders")
       .select(
         `*,
+        deliveringAddress:addresses(*),
         productLines:order_product_lines(
         *,
         product:products(*),
