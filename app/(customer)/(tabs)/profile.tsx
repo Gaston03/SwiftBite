@@ -105,7 +105,12 @@ export default function ProfileScreen() {
             <ProfileRow
               icon="list"
               label="My Orders"
-              onPress={() => router.navigate("/(customer)/(tabs)/cart")}
+              onPress={() => router.navigate("/(customer)/orders")}
+            />
+            <ProfileRow
+              icon="car-outline"
+              label="My Rides"
+              onPress={() => router.navigate("/(customer)/rides")}
             />
             <ProfileRow
               icon="card-outline"

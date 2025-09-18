@@ -8,6 +8,7 @@ import { EstablishmentProvider } from "@/contexts/establishment-context";
 import { OrderProvider } from "@/contexts/order-context";
 import { PaymentMethodProvider } from "@/contexts/payment-method-context";
 import { ProductProvider } from "@/contexts/product-context";
+import { RideProvider } from "@/contexts/ride-context";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { ToppingProvider } from "@/contexts/topping-context";
 import { Stack } from "expo-router";
@@ -23,14 +24,15 @@ export default function RootLayout() {
             <AddressProvider>
               <CustomerProvider>
                 <DelivererProvider>
-                  <OrderProvider>
-                    <EstablishmentProvider>
-                      <ProductProvider>
-                        <ToppingProvider>
-                          <PaymentMethodProvider>
-                            <AppRouter>
-                              <Stack>
-                                <Stack.Screen
+                  <RideProvider>
+                    <OrderProvider>
+                      <EstablishmentProvider>
+                        <ProductProvider>
+                          <ToppingProvider>
+                            <PaymentMethodProvider>
+                              <AppRouter>
+                                <Stack>
+                                  <Stack.Screen
                                   name="(onboarding)"
                                   options={{ headerShown: false }}
                                 />
@@ -53,6 +55,7 @@ export default function RootLayout() {
                       </ProductProvider>
                     </EstablishmentProvider>
                   </OrderProvider>
+                  </RideProvider>
                 </DelivererProvider>
               </CustomerProvider>
             </AddressProvider>
