@@ -1,19 +1,33 @@
 import { useAuth } from "@/hooks/use-auth";
+import { useOrder } from "@/hooks/use-order";
 import { useTheme } from "@/hooks/use-theme";
+import { OrderStatus } from "@/models/enums";
 import { Redirect, Stack } from "expo-router";
 import { View } from "react-native";
 
 export default function CustomerLayout() {
   const { currentTheme } = useTheme();
   const { colors, fonts } = currentTheme;
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { orders, loading: areOrdersLoading } = useOrder();
 
-  if (isLoading) {
+  const activeOrder = orders.find(
+    (order) =>
+      order.status !== OrderStatus.DELIVERED &&
+      order.status !== OrderStatus.CANCELLED &&
+      order.status !== OrderStatus.REFUSED
+  );
+
+  if (isAuthLoading || areOrdersLoading) {
     return null; // Or a loading spinner
   }
 
   if (!isAuthenticated) {
     return <Redirect href="/(auth)/login" />;
+  }
+
+  if (activeOrder) {
+    return <Redirect href={`/(customer)/order/${activeOrder.id}`} />;
   }
 
   return (
