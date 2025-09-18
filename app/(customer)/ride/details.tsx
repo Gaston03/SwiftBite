@@ -1,7 +1,6 @@
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { useAddress } from "@/hooks/use-address";
 import { useRide } from "@/hooks/use-ride";
 import { useTheme } from "@/hooks/use-theme";
 import { VehicleType } from "@/models/enums";
@@ -33,15 +32,27 @@ export default function RideDetailsScreen() {
   const router = useRouter();
   const { createRide } = useRide();
   const { userProfile } = useAuth();
-  const { addresses } = useAddress();
-  const { originId, destinationId } = useLocalSearchParams<{
-    originId: string;
-    destinationId: string;
+  const params = useLocalSearchParams<{
+    originLatitude: string;
+    originLongitude: string;
+    originDescription: string;
+    destinationLatitude: string;
+    destinationLongitude: string;
+    destinationDescription: string;
   }>();
   const [selectedRide, setSelectedRide] = useState<VehicleType | null>(null);
 
-  const origin = addresses.find((a) => a.id === originId);
-  const destination = addresses.find((a) => a.id === destinationId);
+  const origin = {
+    latitude: parseFloat(params.originLatitude),
+    longitude: parseFloat(params.originLongitude),
+    description: params.originDescription,
+  };
+
+  const destination = {
+    latitude: parseFloat(params.destinationLatitude),
+    longitude: parseFloat(params.destinationLongitude),
+    description: params.destinationDescription,
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -72,7 +83,7 @@ export default function RideDetailsScreen() {
   });
 
   const handleRequestRide = async () => {
-    if (!selectedRide || !userProfile || !originId || !destinationId) return;
+    if (!selectedRide || !userProfile || !origin || !destination) return;
 
     const rideOption = RIDE_OPTIONS.find((r) => r.type === selectedRide);
     if (!rideOption) return;
@@ -80,8 +91,12 @@ export default function RideDetailsScreen() {
     const newRide = await createRide({
       customerId: userProfile.id,
       vehicleType: selectedRide,
-      originAddressId: originId,
-      destinationAddressId: destinationId,
+      originLatitude: origin.latitude,
+      originLongitude: origin.longitude,
+      originDescription: origin.description,
+      destinationLatitude: destination.latitude,
+      destinationLongitude: destination.longitude,
+      destinationDescription: destination.description,
       price: rideOption.price,
     });
 

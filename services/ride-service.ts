@@ -6,8 +6,12 @@ import { RideStatus, VehicleType } from "@/models/enums";
 export type CreateRideData = {
   customerId: string;
   vehicleType: VehicleType;
-  originAddressId: string;
-  destinationAddressId: string;
+  originLatitude: number;
+  originLongitude: number;
+  originDescription: string;
+  destinationLatitude: number;
+  destinationLongitude: number;
+  destinationDescription: string;
   price: number;
   estimatedDuration?: string;
   distance?: number;
@@ -21,9 +25,7 @@ class RideService {
       .select(
         `*,
         customer:customers(*),
-        deliverer:deliverers(*),
-        originAddress:addresses!rides_origin_address_id_fkey(*),
-        destinationAddress:addresses!rides_destination_address_id_fkey(*)
+        deliverer:deliverers(*)
       `
       )
       .single();
@@ -52,9 +54,7 @@ class RideService {
       .select(
         `*,
         customer:customers(*),
-        deliverer:deliverers(*),
-        originAddress:addresses!rides_origin_address_id_fkey(*),
-        destinationAddress:addresses!rides_destination_address_id_fkey(*)
+        deliverer:deliverers(*)
       `
       )
       .eq("id", id)
@@ -77,9 +77,7 @@ class RideService {
       .select(
         `*,
         customer:customers(*),
-        deliverer:deliverers(*),
-        originAddress:addresses!rides_origin_address_id_fkey(*),
-        destinationAddress:addresses!rides_destination_address_id_fkey(*)
+        deliverer:deliverers(*)
       `
       )
       .eq("customer_id", customerId);
@@ -97,9 +95,7 @@ class RideService {
       .select(
         `*,
         customer:customers(*),
-        deliverer:deliverers(*),
-        originAddress:addresses!rides_origin_address_id_fkey(*),
-        destinationAddress:addresses!rides_destination_address_id_fkey(*)
+        deliverer:deliverers(*)
       `
       )
       .eq("deliverer_id", delivererId);

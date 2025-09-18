@@ -1,25 +1,82 @@
 import { Button } from "@/components/shared/button";
+import { Input } from "@/components/shared/input";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
 import { useTheme } from "@/hooks/use-theme";
 import { useRouter } from "expo-router";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { useState } from "react";
-import { Address } from "@/models/address";
-import { AddressSelectionModal } from "@/components/customer/address-selection-modal";
-import { useAddress } from "@/hooks/use-address";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import { useState, useEffect } from "react";
+import * as Location from "expo-location";
+
+interface LocationInfo {
+  latitude: number;
+  longitude: number;
+  description: string;
+}
+
+const MOCK_PLACES: LocationInfo[] = [
+  {
+    latitude: 37.78825,
+    longitude: -122.4324,
+    description: "San Francisco, CA, USA",
+  },
+  {
+    latitude: 34.052235,
+    longitude: -118.243683,
+    description: "Los Angeles, CA, USA",
+  },
+  {
+    latitude: 40.712776,
+    longitude: -74.005974,
+    description: "New York, NY, USA",
+  },
+];
 
 export default function RideSearchScreen() {
   const { currentTheme } = useTheme();
   const { colors, sizes } = currentTheme;
   const router = useRouter();
-  const { addresses } = useAddress();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selecting, setSelecting] = useState<"origin" | "destination" | null>(
-    null
-  );
-  const [origin, setOrigin] = useState<Address | null>(null);
-  const [destination, setDestination] = useState<Address | null>(null);
+  const [origin, setOrigin] = useState<LocationInfo | null>(null);
+  const [destination, setDestination] = useState<LocationInfo | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<LocationInfo[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      const [address] = await Location.reverseGeocodeAsync(location.coords);
+      setOrigin({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        description: address
+          ? `${address.street}, ${address.city}`
+          : "Current Location",
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = MOCK_PLACES.filter((place) =>
+        place.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchQuery]);
 
   const styles = StyleSheet.create({
     container: {
@@ -28,29 +85,25 @@ export default function RideSearchScreen() {
     },
     input: {
       marginBottom: sizes.base,
-      borderWidth: 1,
-      borderColor: colors.border,
+    },
+    suggestionItem: {
       padding: sizes.padding,
-      borderRadius: sizes.radius,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
     },
   });
-
-  const handleSelectAddress = (address: Address) => {
-    if (selecting === "origin") {
-      setOrigin(address);
-    } else {
-      setDestination(address);
-    }
-    setModalVisible(false);
-  };
 
   const handleDone = () => {
     if (origin && destination) {
       router.push({
         pathname: "/(customer)/ride/details",
         params: {
-          originId: origin.id,
-          destinationId: destination.id,
+          originLatitude: origin.latitude,
+          originLongitude: origin.longitude,
+          originDescription: origin.description,
+          destinationLatitude: destination.latitude,
+          destinationLongitude: destination.longitude,
+          destinationDescription: destination.description,
         },
       });
     }
@@ -62,37 +115,41 @@ export default function RideSearchScreen() {
         <Typography variant="h1" style={{ marginBottom: sizes.padding }}>
           Where are you going?
         </Typography>
-        <TouchableOpacity
+        <Input
+          placeholder="From"
           style={styles.input}
-          onPress={() => {
-            setModalVisible(true);
-            setSelecting("origin");
-          }}
-        >
-          <Typography>{origin ? origin.area : "From"}</Typography>
-        </TouchableOpacity>
-        <TouchableOpacity
+          value={origin ? origin.description : "Loading..."}
+          editable={false}
+        />
+        <Input
+          placeholder="To"
           style={styles.input}
-          onPress={() => {
-            setModalVisible(true);
-            setSelecting("destination");
-          }}
-        >
-          <Typography>{destination ? destination.area : "To"}</Typography>
-        </TouchableOpacity>
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        <FlatList
+          data={suggestions}
+          keyExtractor={(item) => item.description}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.suggestionItem}
+              onPress={() => {
+                setDestination(item);
+                setSearchQuery(item.description);
+                setSuggestions([]);
+              }}
+            >
+              <Typography>{item.description}</Typography>
+            </TouchableOpacity>
+          )}
+        />
         <Button
           title="Done"
           onPress={handleDone}
           disabled={!origin || !destination}
         />
+        {errorMsg && <Typography>{errorMsg}</Typography>}
       </View>
-      <AddressSelectionModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSelect={handleSelectAddress}
-        onAddAddress={() => router.push("/(customer)/address/add")}
-        addresses={addresses}
-      />
     </Screen>
   );
 }
