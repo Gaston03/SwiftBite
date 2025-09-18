@@ -6,6 +6,7 @@ import { CustomerProvider } from "@/contexts/customer-context";
 import { DelivererProvider } from "@/contexts/deliverer-context";
 import { ErrorProvider } from "@/contexts/error-context";
 import { EstablishmentProvider } from "@/contexts/establishment-context";
+import { OrderProvider } from "@/contexts/order-context";
 import { PaymentMethodProvider } from "@/contexts/payment-method-context";
 import { ProductProvider } from "@/contexts/product-context";
 import { ThemeProvider } from "@/contexts/theme-context";
@@ -26,26 +27,28 @@ export default function RootLayout() {
                     <ProductProvider>
                       <ToppingProvider>
                         <PaymentMethodProvider>
-                          <AppRouter>
-                            <Stack>
-                              <Stack.Screen
-                                name="(onboarding)"
-                                options={{ headerShown: false }}
-                              />
-                              <Stack.Screen
-                                name="(auth)"
-                                options={{ headerShown: false }}
-                              />
-                              <Stack.Screen
-                                name="(customer)"
-                                options={{ headerShown: false }}
-                              />
-                              <Stack.Screen
-                                name="(deliverer)"
-                                options={{ headerShown: false }}
-                              />
-                            </Stack>
-                          </AppRouter>
+                          <OrderProvider>
+                            <AppRouter>
+                              <Stack>
+                                <Stack.Screen
+                                  name="(onboarding)"
+                                  options={{ headerShown: false }}
+                                />
+                                <Stack.Screen
+                                  name="(auth)"
+                                  options={{ headerShown: false }}
+                                />
+                                <Stack.Screen
+                                  name="(customer)"
+                                  options={{ headerShown: false }}
+                                />
+                                <Stack.Screen
+                                  name="(deliverer)"
+                                  options={{ headerShown: false }}
+                                />
+                              </Stack>
+                            </AppRouter>
+                          </OrderProvider>
                         </PaymentMethodProvider>
                       </ToppingProvider>
                     </ProductProvider>

@@ -11,7 +11,7 @@ export interface Order {
   createdAt: Date;
   deliveryFee: number;
   totalPrice: number;
-  deliveringAddress: Address;
+  deliveringAddress?: Address;
   estimatedDeliveryTime?: string;
   createAt: Date;
   updatedAt?: Date;
