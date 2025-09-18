@@ -27,8 +27,9 @@ export interface Order {
   deliveryFee: number;
   totalPrice: number;
   deliveringAddressId?: string;
-  deliveringAddress?: Address;
   estimatedDeliveryTime?: string;
   updatedAt?: Date;
+  
+  deliveringAddress?: Address;
   productLines: OrderProductLine[];
 }

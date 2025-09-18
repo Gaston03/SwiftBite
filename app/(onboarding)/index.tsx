@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { useTheme } from '@/hooks/use-theme';
 import Animated, { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, interpolate, Extrapolate } from 'react-native-reanimated';
+import { Screen } from '@/components/shared/screen';
 
 const onboardingSlides = [
   {
@@ -198,6 +199,6 @@ export default function OnboardingScreen() {
       </View>
       <Paginator data={onboardingSlides} scrollX={scrollX} />
       <NextButton scrollTo={scrollTo} isLastSlide={currentIndex === onboardingSlides.length - 1} />
-    </View>
+    </Screen>
   );
 }

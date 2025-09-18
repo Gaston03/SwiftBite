@@ -1,10 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useError } from "@/hooks/use-error";
 import { Address } from "@/models/address";
-import {
-  CreateAddressData,
-  addressService,
-} from "@/services/address-service";
+import { CreateAddressData, addressService } from "@/services/address-service";
 import { createContext, useEffect, useState } from "react";
 
 interface AddressContextData {
@@ -45,8 +42,23 @@ export const AddressProvider = ({
   };
 
   useEffect(() => {
-    refreshAddress();
-  }, []);
+    const getAddress = async () => {
+      try {
+        if (!userProfile) return;
+        setLoading(true);
+        const data = await addressService.getAddressesByCustomerId(
+          userProfile.id
+        );
+        setAddresses(data);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getAddress();
+  }, [handleError, userProfile]);
 
   const createAddress = async (data: CreateAddressData) => {
     setLoading(true);

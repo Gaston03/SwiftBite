@@ -62,7 +62,7 @@ export default function CartScreen() {
   const [isPaymentMethodModalVisible, setPaymentMethodModalVisible] =
     useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(
-    (userProfile as Customer)?.address
+    addresses[0]
   );
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     PaymentMethod | undefined
@@ -99,8 +99,8 @@ export default function CartScreen() {
       establishmentId: items[0].product.establishmentId,
       deliveryFee,
       totalPrice: total + deliveryFee + serviceFee,
-      deliveringAddressId: selectedAddress.id,
-      productLines,
+      deliveringAddressId: selectedAddress?.id || "",
+      productLines: [] /* items */,
     };
 
     const newOrder = await placeOrder(orderData);
