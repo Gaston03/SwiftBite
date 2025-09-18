@@ -7,7 +7,7 @@ const toCamelCase = (str: string) =>
 export const keysToSnakeCase = (obj: any): any => {
   if (Array.isArray(obj)) {
     return obj.map((v) => keysToSnakeCase(v));
-  } else if (obj !== null && obj.constructor === Object) {
+  } else if (obj && obj.constructor === Object) {
     return Object.keys(obj).reduce(
       (acc, key) => ({
         ...acc,
@@ -22,7 +22,7 @@ export const keysToSnakeCase = (obj: any): any => {
 export const keysToCamelCase = (obj: any): any => {
   if (Array.isArray(obj)) {
     return obj.map((v) => keysToCamelCase(v));
-  } else if (obj !== null && obj.constructor === Object) {
+  } else if (obj && obj.constructor === Object) {
     return Object.keys(obj).reduce(
       (acc, key) => ({
         ...acc,
