@@ -53,7 +53,7 @@ export const CustomerProvider = ({
     if (customer && addresses) {
       setCustomer({ ...customer, address: addresses[0] });
     }
-  }, [addresses, customer]);
+  }, [addresses]);
 
   const createCustomer = async (data: CreateCustomerData) => {
     setLoading(true)
