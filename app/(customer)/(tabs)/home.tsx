@@ -85,7 +85,7 @@ export default function CustomerHomeScreen() {
       marginBottom: sizes.padding,
     },
     activeOrderText: {
-      color: colors.white,
+      color: colors.primaryText,
       fontWeight: "bold",
     },
   });
@@ -100,7 +100,7 @@ export default function CustomerHomeScreen() {
             <Typography style={styles.activeOrderText}>
               You have an ongoing order. Tap to view.
             </Typography>
-            <Ionicons name="arrow-forward" size={24} color={colors.white} />
+            <Ionicons name="arrow-forward" size={24} color={colors.primaryText} />
           </View>
         </Pressable>
       )}
