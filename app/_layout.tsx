@@ -20,9 +20,9 @@ export default function RootLayout() {
       <ErrorProvider>
         <ThemeProvider>
           <AuthProvider>
-            <CustomerProvider>
-              <DelivererProvider>
-                <AddressProvider>
+            <AddressProvider>
+              <CustomerProvider>
+                <DelivererProvider>
                   <OrderProvider>
                     <EstablishmentProvider>
                       <ProductProvider>
@@ -53,9 +53,9 @@ export default function RootLayout() {
                       </ProductProvider>
                     </EstablishmentProvider>
                   </OrderProvider>
-                </AddressProvider>
-              </DelivererProvider>
-            </CustomerProvider>
+                </DelivererProvider>
+              </CustomerProvider>
+            </AddressProvider>
           </AuthProvider>
         </ThemeProvider>
       </ErrorProvider>

@@ -51,7 +51,10 @@ export const CustomerProvider = ({
 
   useEffect(() => {
     if (customer && addresses) {
-      setCustomer({ ...customer, address: addresses[0] });
+      setCustomer(prev => ({
+        ...prev,
+        address: addresses[0]
+      } as Customer));
     }
   }, [addresses]);
 

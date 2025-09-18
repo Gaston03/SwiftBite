@@ -72,7 +72,7 @@ export default function CustomerHomeScreen() {
               <Typography variant="h3" style={styles.locationText}>
                 {customer?.address?.city}, {customer?.address?.area}
               </Typography>
-              <Ionicons name="chevron-down" size={24} color={colors.primary} />
+              <Ionicons name="chevron-forward-circle" size={24} color={colors.primary} />
             </View>
           ) : (
             <Button
