@@ -8,7 +8,7 @@ import { createContext, useEffect, useState } from "react";
 interface OrderContextData {
   orders: Order[];
   loading: boolean;
-  placeOrder: (data: CreateOrderData) => Promise<void>;
+  placeOrder: (data: CreateOrderData) => Promise<Order | undefined>;
   updateOrder: (id: string, order: Partial<Order>) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
   acceptOrder: (id: string) => Promise<void>;
@@ -55,7 +55,9 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const newOrder = await orderService.placeOrder(data);
       setOrders((prev) => [...prev, newOrder]);
+      return newOrder
     } catch (error) {
+      console.log('error', error)
       handleError(error);
     } finally {
       setLoading(false)

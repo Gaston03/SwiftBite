@@ -76,7 +76,8 @@ export default function CartScreen() {
   };
 
   const handlePurchase = async () => {
-    if (!customer || !selectedAddress) return;
+    if (!customer) return;
+    console.log('customer', customer)
 
     const orderData: CreateOrderData = {
       customerId: customer.id,
@@ -85,9 +86,10 @@ export default function CartScreen() {
       deliveryFee,
       totalPrice: total + deliveryFee + serviceFee,
       deliveringAddress: selectedAddress,
-      productLines: items,
+      productLines: [] /* items */,
     };
 
+    console.log('orderData', orderData)
     const newOrder = await placeOrder(orderData);
     if (newOrder) {
       clearCart();
