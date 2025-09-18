@@ -185,7 +185,17 @@ class OrderService {
       throw error;
     }
 
-    return keysToCamelCase(data);
+    if (!data) {
+      return null;
+    }
+
+    const order = keysToCamelCase(data);
+
+    order.productLines.forEach((pl: any) => {
+      pl.selectedToppings = pl.selectedToppings.map((st: any) => st.topping);
+    });
+
+    return order;
   };
 
   getEstablishmentOrders = async (
@@ -210,7 +220,19 @@ class OrderService {
       throw error;
     }
 
-    return keysToCamelCase(data || []);
+    if (!data) {
+      return [];
+    }
+
+    const orders = keysToCamelCase(data);
+
+    orders.forEach((order: any) => {
+      order.productLines.forEach((pl: any) => {
+        pl.selectedToppings = pl.selectedToppings.map((st: any) => st.topping);
+      });
+    });
+
+    return orders;
   };
 
   getCustomerOrders = async (customerId: string): Promise<Order[]> => {
@@ -233,7 +255,19 @@ class OrderService {
       throw error;
     }
 
-    return keysToCamelCase(data || []);
+    if (!data) {
+      return [];
+    }
+
+    const orders = keysToCamelCase(data);
+
+    orders.forEach((order: any) => {
+      order.productLines.forEach((pl: any) => {
+        pl.selectedToppings = pl.selectedToppings.map((st: any) => st.topping);
+      });
+    });
+
+    return orders;
   };
 
   getDelivererOrders = async (delivererId: string): Promise<Order[]> => {
@@ -256,7 +290,19 @@ class OrderService {
       throw error;
     }
 
-    return keysToCamelCase(data || []);
+    if (!data) {
+      return [];
+    }
+
+    const orders = keysToCamelCase(data);
+
+    orders.forEach((order: any) => {
+      order.productLines.forEach((pl: any) => {
+        pl.selectedToppings = pl.selectedToppings.map((st: any) => st.topping);
+      });
+    });
+
+    return orders;
   };
 }
 

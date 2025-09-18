@@ -39,7 +39,7 @@ const CategoryCard = ({ item, onPress, index }: CategoryCardProps) => {
 
   const styles = StyleSheet.create({
     categoryCard: {
-      backgroundColor: colors.tertiary,
+      backgroundColor: colors.secondary,
       borderRadius: sizes.radius,
       padding: sizes.padding / 2,
       alignItems: "center",
@@ -56,7 +56,7 @@ const CategoryCard = ({ item, onPress, index }: CategoryCardProps) => {
     },
     categoryName: {
       ...fonts.body4,
-      color: colors.text,
+      color: colors.secondaryText,
       textAlign: "center",
     },
   });

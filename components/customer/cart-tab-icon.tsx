@@ -36,7 +36,7 @@ export function CartTabIcon({ focused, color, size }: CartTabIconProps) {
       borderColor: colors.background,
     },
     badgeText: {
-      color: colors.white,
+      color: colors.primaryText,
       ...fonts.body4,
       fontWeight: 'bold',
     },

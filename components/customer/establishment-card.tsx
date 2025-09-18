@@ -1,8 +1,8 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { Establishment } from "@/models/establishment";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/hooks/use-theme";
 import { EstablishmentStatus } from "@/models/enums";
+import { Establishment } from "@/models/establishment";
+import { Ionicons } from "@expo/vector-icons";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type EstablishmentCardProps = {
   establishment: Establishment;
@@ -21,12 +21,12 @@ export function EstablishmentCard({
       case EstablishmentStatus.OPEN:
         return {
           backgroundColor: "#4CAF50",
-          color: colors.white,
+          color: colors.primaryText,
         };
       case EstablishmentStatus.CLOSED:
         return {
           backgroundColor: "#F44336",
-          color: colors.white,
+          color: colors.primaryText,
         };
       case EstablishmentStatus.TEMPORARILY_UNAVAILABLE:
         return {
@@ -36,14 +36,14 @@ export function EstablishmentCard({
       default:
         return {
           backgroundColor: colors.gray,
-          color: colors.white,
+          color: colors.primaryText,
         };
     }
   };
 
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: colors.tertiary,
+      backgroundColor: colors.secondary,
       borderRadius: sizes.radius * 2,
       marginBottom: sizes.padding,
       overflow: "hidden",

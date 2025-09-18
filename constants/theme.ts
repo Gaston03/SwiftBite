@@ -45,8 +45,9 @@ export const FONTS = {
 const darkColors = {
   primary: '#ff7e5f', // Deep Orange
   secondary: '#463a41',
+  secondaryText: "#f2e9e4",
   tertiary: '#392f35',
-  white: '#FFFFFF',
+  primaryText: '#FFFFFF',
   black: '#000000',
   gray: '#9E9E9E',
   lightGray: '#F5F5F5',
@@ -56,9 +57,10 @@ const darkColors = {
 
 const lightColors = {
   primary: '#ff7e5f',
+  primaryText: "ffffff",
   secondary: '#ffedea',
+  secondaryText: "#b35340",
   tertiary: '#fff0eb',
-  white: '#FFFFFF',
   black: '#000000',
   gray: '#616161',
   lightGray: '#E0E0E0',

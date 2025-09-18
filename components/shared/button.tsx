@@ -1,14 +1,14 @@
+import { useTheme } from "@/hooks/use-theme";
 import {
+  ActivityIndicator,
   Pressable,
+  PressableProps,
   StyleSheet,
   Text,
-  PressableProps,
-  ActivityIndicator,
 } from "react-native";
-import { useTheme } from "@/hooks/use-theme";
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 
@@ -57,7 +57,7 @@ export function Button({
       backgroundColor: colors.primary,
     },
     secondary: {
-      backgroundColor: colors.tertiary,
+      backgroundColor: colors.secondary,
     },
     ghost: {
       backgroundColor: colors.gray,
@@ -66,10 +66,10 @@ export function Button({
       ...fonts.h4,
     },
     primaryText: {
-      color: colors.white,
+      color: colors.primaryText,
     },
     secondaryText: {
-      color: colors.white,
+      color: colors.secondaryText,
     },
     ghostText: {
       color: colors.text,
@@ -96,7 +96,7 @@ export function Button({
         {...props}
       >
         {loading ? (
-          <ActivityIndicator color={colors.white} />
+          <ActivityIndicator color={colors.primaryText} />
         ) : (
           <Text style={[styles.text, textVariantStyle[variant]]}>{title}</Text>
         )}
