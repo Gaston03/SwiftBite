@@ -8,6 +8,7 @@ import {
   orderService,
 } from "@/services/order-service";
 import { Product } from "@/models/product";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createContext,
   ReactNode,
@@ -17,8 +18,7 @@ import {
   useState,
 } from "react";
 
-const CUSTOMER_ONGOING_ORDER_KEY = "customer-ongoing-order"
-const DELIVERER_ONGOING_ORDER_KEY = "deliverer-ongoing-order"
+const CART_STORAGE_KEY = "swift-bite-cart-items";
 
 export interface CartItem {
   id: string; // Unique ID for the cart item (e.g., product.id + sorted topping ids)
@@ -67,6 +67,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isCartLoaded, setIsCartLoaded] = useState(false);
   const [total, setTotal] = useState(0);
   const [itemCount, setItemCount] = useState(0);
 
@@ -94,6 +95,33 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const storedCart = await AsyncStorage.getItem(CART_STORAGE_KEY);
+        if (storedCart) {
+          setItems(JSON.parse(storedCart));
+        }
+      } catch (e) {
+        console.error("Failed to load cart from storage", e);
+      } finally {
+        setIsCartLoaded(true);
+      }
+    }
+
+    loadCart();
+  }, []);
+
+  useEffect(() => {
+    if (isCartLoaded) {
+      try {
+        AsyncStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      } catch (e) {
+        console.error("Failed to save cart to storage", e);
+      }
+    }
+  }, [items, isCartLoaded]);
 
   useEffect(() => {
     const newTotal = items.reduce(
@@ -167,8 +195,13 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
   };
 
-  const clearCart = () => {
+  const clearCart = async () => {
     setItems([]);
+    try {
+      await AsyncStorage.removeItem(CART_STORAGE_KEY);
+    } catch (e) {
+      console.error("Failed to clear cart from storage", e);
+    }
   };
 
   const placeOrder = async (
