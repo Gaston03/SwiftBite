@@ -13,52 +13,55 @@ import { ThemeProvider } from "@/contexts/theme-context";
 import { ToppingProvider } from "@/contexts/topping-context";
 import { Stack } from "expo-router";
 import "react-native-get-random-values";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   return (
-    <ErrorProvider>
-      <ThemeProvider>
-        <AuthProvider>
-          <CustomerProvider>
-            <DelivererProvider>
-              <AddressProvider>
-                <CartProvider>
-                  <EstablishmentProvider>
-                    <ProductProvider>
-                      <ToppingProvider>
-                        <PaymentMethodProvider>
-                          <OrderProvider>
-                            <AppRouter>
-                              <Stack>
-                                <Stack.Screen
-                                  name="(onboarding)"
-                                  options={{ headerShown: false }}
-                                />
-                                <Stack.Screen
-                                  name="(auth)"
-                                  options={{ headerShown: false }}
-                                />
-                                <Stack.Screen
-                                  name="(customer)"
-                                  options={{ headerShown: false }}
-                                />
-                                <Stack.Screen
-                                  name="(deliverer)"
-                                  options={{ headerShown: false }}
-                                />
-                              </Stack>
-                            </AppRouter>
-                          </OrderProvider>
-                        </PaymentMethodProvider>
-                      </ToppingProvider>
-                    </ProductProvider>
-                  </EstablishmentProvider>
-                </CartProvider>
-              </AddressProvider>
-            </DelivererProvider>
-          </CustomerProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </ErrorProvider>
+    <SafeAreaProvider>
+      <ErrorProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <CustomerProvider>
+              <DelivererProvider>
+                <AddressProvider>
+                  <CartProvider>
+                    <EstablishmentProvider>
+                      <ProductProvider>
+                        <ToppingProvider>
+                          <PaymentMethodProvider>
+                            <OrderProvider>
+                              <AppRouter>
+                                <Stack>
+                                  <Stack.Screen
+                                    name="(onboarding)"
+                                    options={{ headerShown: false }}
+                                  />
+                                  <Stack.Screen
+                                    name="(auth)"
+                                    options={{ headerShown: false }}
+                                  />
+                                  <Stack.Screen
+                                    name="(customer)"
+                                    options={{ headerShown: false }}
+                                  />
+                                  <Stack.Screen
+                                    name="(deliverer)"
+                                    options={{ headerShown: false }}
+                                  />
+                                </Stack>
+                              </AppRouter>
+                            </OrderProvider>
+                          </PaymentMethodProvider>
+                        </ToppingProvider>
+                      </ProductProvider>
+                    </EstablishmentProvider>
+                  </CartProvider>
+                </AddressProvider>
+              </DelivererProvider>
+            </CustomerProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </ErrorProvider>
+    </SafeAreaProvider>
   );
 }
