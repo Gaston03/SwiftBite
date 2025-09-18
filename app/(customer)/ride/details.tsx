@@ -1,7 +1,7 @@
 import { Button } from "@/components/shared/button";
 import { Screen } from "@/components/shared/screen";
 import { Typography } from "@/components/shared/typography";
-import { useAuth } from "@/hooks/use-auth";
+import { useAddress } from "@/hooks/use-address";
 import { useRide } from "@/hooks/use-ride";
 import { useTheme } from "@/hooks/use-theme";
 import { VehicleType } from "@/models/enums";
@@ -9,6 +9,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { useAuth } from "@/hooks/use-auth";
 
 const RIDE_OPTIONS = [
   {
@@ -31,34 +33,41 @@ export default function RideDetailsScreen() {
   const router = useRouter();
   const { createRide } = useRide();
   const { userProfile } = useAuth();
+  const { addresses } = useAddress();
   const { originId, destinationId } = useLocalSearchParams<{
     originId: string;
     destinationId: string;
   }>();
   const [selectedRide, setSelectedRide] = useState<VehicleType | null>(null);
 
+  const origin = addresses.find((a) => a.id === originId);
+  const destination = addresses.find((a) => a.id === destinationId);
+
   const styles = StyleSheet.create({
-    itemContainer: {
-      flexDirection: "row",
-      alignItems: "center",
+    container: {
+      flex: 1,
+    },
+    map: {
+      flex: 1,
+    },
+    bottomContainer: {
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: colors.background,
       padding: sizes.padding,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.card,
+      borderTopLeftRadius: sizes.radius,
+      borderTopRightRadius: sizes.radius,
+    },
+    itemContainer: {
+      alignItems: "center",
+      marginRight: sizes.padding,
+      padding: sizes.padding,
+      borderRadius: sizes.radius,
     },
     selectedItem: {
       backgroundColor: colors.primary,
-    },
-    iconContainer: {
-      marginRight: sizes.padding,
-    },
-    detailsContainer: {
-      flex: 1,
-    },
-    price: {
-      ...fonts.h3,
-    },
-    buttonContainer: {
-      padding: sizes.padding,
     },
   });
 
@@ -82,34 +91,52 @@ export default function RideDetailsScreen() {
   };
 
   return (
-    <Screen>
-      <FlatList
-        data={RIDE_OPTIONS}
-        keyExtractor={(item) => item.type}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.itemContainer,
-              selectedRide === item.type && styles.selectedItem,
-            ]}
-            onPress={() => setSelectedRide(item.type)}
-          >
-            <View style={styles.iconContainer}>
-              <Ionicons name={item.icon as any} size={40} color={selectedRide === item.type ? colors.white : colors.text} />
-            </View>
-            <View style={styles.detailsContainer}>
-              <Typography variant="h3" style={{color: selectedRide === item.type ? colors.white : colors.text}}>{item.name}</Typography>
-            </View>
-            <Typography style={{...styles.price, color: selectedRide === item.type ? colors.white : colors.text}}>${item.price.toFixed(2)}</Typography>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Request Ride"
-          onPress={handleRequestRide}
-          disabled={!selectedRide}
-        />
+    <Screen withPadding={false}>
+      <View style={styles.container}>
+        <MapView
+          style={styles.map}
+          initialRegion={
+            origin
+              ? {
+                  latitude: origin.latitude,
+                  longitude: origin.longitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }
+              : undefined
+          }
+        >
+          {origin && <Marker coordinate={origin} title="Origin" />}
+          {destination && (
+            <Marker coordinate={destination} title="Destination" />
+          )}
+        </MapView>
+        <View style={styles.bottomContainer}>
+          <FlatList
+            data={RIDE_OPTIONS}
+            keyExtractor={(item) => item.type}
+            horizontal
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.itemContainer,
+                  selectedRide === item.type && styles.selectedItem,
+                ]}
+                onPress={() => setSelectedRide(item.type)}
+              >
+                <Ionicons name={item.icon as any} size={40} color={selectedRide === item.type ? colors.white : colors.text} />
+                <Typography variant="h3" style={{color: selectedRide === item.type ? colors.white : colors.text}}>{item.name}</Typography>
+                <Typography style={{color: selectedRide === item.type ? colors.white : colors.text}}>${item.price.toFixed(2)}</Typography>
+              </TouchableOpacity>
+            )}
+          />
+          <Button
+            title="Request Ride"
+            onPress={handleRequestRide}
+            disabled={!selectedRide}
+            style={{ marginTop: sizes.padding }}
+          />
+        </View>
       </View>
     </Screen>
   );

@@ -1,115 +1,73 @@
 import { Screen } from "@/components/shared/screen";
-import { Typography } from "@/components/shared/typography";
 import { useTheme } from "@/hooks/use-theme";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-import { Button } from "@/components/shared/button";
+import { StyleSheet, View } from "react-native";
+import MapView from "react-native-maps";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Address } from "@/models/address";
-import { AddressSelectionModal } from "@/components/customer/address-selection-modal";
-import { useAddress } from "@/hooks/use-address";
+import { Card } from "@/components/shared/card";
+import { Typography } from "@/components/shared/typography";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function RideScreen() {
   const { currentTheme } = useTheme();
   const { colors, sizes } = currentTheme;
   const router = useRouter();
-  const { addresses } = useAddress();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selecting, setSelecting] = useState<"origin" | "destination" | null>(
-    null
-  );
-  const [origin, setOrigin] = useState<Address | null>(null);
-  const [destination, setDestination] = useState<Address | null>(null);
 
   const styles = StyleSheet.create({
-    map: {
-      height: "60%",
-      width: "100%",
-    },
     container: {
       flex: 1,
-      padding: sizes.padding,
     },
-    input: {
-      marginBottom: sizes.base,
-      borderWidth: 1,
-      borderColor: colors.border,
+    map: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    bottomCard: {
+      position: "absolute",
+      bottom: sizes.padding,
+      left: sizes.padding,
+      right: sizes.padding,
+    },
+    whereToButton: {
+      flexDirection: "row",
+      alignItems: "center",
       padding: sizes.padding,
+      backgroundColor: colors.card,
       borderRadius: sizes.radius,
+      elevation: 5,
+      shadowColor: colors.text,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    iconContainer: {
+      marginRight: sizes.padding,
     },
   });
 
-  const handleSelectAddress = (address: Address) => {
-    if (selecting === "origin") {
-      setOrigin(address);
-    } else {
-      setDestination(address);
-    }
-    setModalVisible(false);
-  };
-
-  const handleFindRide = () => {
-    if (origin && destination) {
-      router.push({
-        pathname: "/(customer)/ride/details",
-        params: {
-          originId: origin.id,
-          destinationId: destination.id,
-        },
-      });
-    }
-  };
-
   return (
-    <Screen>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      >
-        {origin && <Marker coordinate={origin} />}
-        {destination && <Marker coordinate={destination} />}
-      </MapView>
+    <Screen withPadding={false}>
       <View style={styles.container}>
-        <Typography variant="h2" style={{ marginBottom: sizes.padding }}>
-          Where to?
-        </Typography>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => {
-            setModalVisible(true);
-            setSelecting("origin");
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
           }}
-        >
-          <Typography>{origin ? origin.area : "From"}</Typography>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => {
-            setModalVisible(true);
-            setSelecting("destination");
-          }}
-        >
-          <Typography>{destination ? destination.area : "To"}</Typography>
-        </TouchableOpacity>
-        <Button
-          title="Find Ride"
-          onPress={handleFindRide}
-          disabled={!origin || !destination}
         />
+        <Card style={styles.bottomCard}>
+          <View style={styles.whereToButton}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="search" size={24} color={colors.text} />
+            </View>
+            <Typography
+              variant="h3"
+              onPress={() => router.push("/(customer)/ride/search")}
+            >
+              Where to?
+            </Typography>
+          </View>
+        </Card>
       </View>
-      <AddressSelectionModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSelect={handleSelectAddress}
-        onAddAddress={() => router.push("/(customer)/address/add")}
-        addresses={addresses}
-      />
     </Screen>
   );
 }
