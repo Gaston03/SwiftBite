@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Typography } from "@/components/shared/typography";
 import MapView, { Marker } from "react-native-maps";
-import { OrderProductLine } from "@/models/order-product-line";
+import { OrderProductLine } from "@/models/order";
 
 const OrderProductLineRow = ({ item }: { item: OrderProductLine }) => {
   const { currentTheme } = useTheme();
@@ -113,31 +113,35 @@ export default function OrderTrackingScreen() {
           <Typography>{order.status}</Typography>
         </View>
 
-        <View style={styles.section}>
-          <Typography variant="h3" style={styles.sectionTitle}>
-            Delivery Address
-          </Typography>
-          <Typography>
-            {order.deliveringAddress.area}, {order.deliveringAddress.city}
-          </Typography>
-        </View>
+        {order.deliveringAddress && (
+          <>
+            <View style={styles.section}>
+              <Typography variant="h3" style={styles.sectionTitle}>
+                Delivery Address
+              </Typography>
+              <Typography>
+                {order.deliveringAddress.area}, {order.deliveringAddress.city}
+              </Typography>
+            </View>
 
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: order.deliveringAddress.latitude,
-            longitude: order.deliveringAddress.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          }}
-        >
-          <Marker
-            coordinate={{
-              latitude: order.deliveringAddress.latitude,
-              longitude: order.deliveringAddress.longitude,
-            }}
-          />
-        </MapView>
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: order.deliveringAddress.latitude,
+                longitude: order.deliveringAddress.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+            >
+              <Marker
+                coordinate={{
+                  latitude: order.deliveringAddress.latitude,
+                  longitude: order.deliveringAddress.longitude,
+                }}
+              />
+            </MapView>
+          </>
+        )}
 
         <View style={styles.section}>
           <Typography variant="h3" style={styles.sectionTitle}>

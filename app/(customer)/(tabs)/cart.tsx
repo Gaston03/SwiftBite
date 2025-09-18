@@ -17,7 +17,10 @@ import { Address } from "@/models/address";
 import { Customer } from "@/models/customer";
 import { OrderStatus, PaymentMethodType } from "@/models/enums";
 import { PaymentMethod } from "@/models/payment-method";
-import { CreateOrderData } from "@/services/order-service";
+import {
+  CreateOrderData,
+  CreateOrderProductLineData,
+} from "@/services/order-service";
 import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useRouter } from "expo-router";
@@ -76,20 +79,30 @@ export default function CartScreen() {
   };
 
   const handlePurchase = async () => {
-    if (!customer) return;
-    console.log('customer', customer)
+    if (!customer || !selectedAddress) return;
+
+    const productLines: CreateOrderProductLineData[] = items.map((item) => {
+      const selectedToppingIds = Object.keys(item.selectedToppings).filter(
+        (toppingId) => item.selectedToppings[toppingId]
+      );
+
+      return {
+        productId: item.product.id,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        selectedToppings: selectedToppingIds,
+      };
+    });
 
     const orderData: CreateOrderData = {
       customerId: customer.id,
       establishmentId: items[0].product.establishmentId,
-      status: OrderStatus.PENDING,
       deliveryFee,
       totalPrice: total + deliveryFee + serviceFee,
-      deliveringAddress: selectedAddress,
-      productLines: [] /* items */,
+      deliveringAddressId: selectedAddress.id,
+      productLines,
     };
 
-    console.log('orderData', orderData)
     const newOrder = await placeOrder(orderData);
     if (newOrder) {
       clearCart();
