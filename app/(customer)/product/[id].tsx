@@ -1,30 +1,30 @@
-import { useLocalSearchParams, useRouter, Stack } from "expo-router";
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
-import { Screen } from "@/components/shared/screen";
-import { Typography } from "@/components/shared/typography";
-import { Product } from "@/models/product";
-import { useEffect, useState } from "react";
 import { ToppingRow } from "@/components/customer/topping-row";
 import { Button } from "@/components/shared/button";
-import { Ionicons } from "@expo/vector-icons";
-import { useCart } from "@/contexts/cart-context";
-import * as Haptics from "expo-haptics";
-import { useTheme } from "@/hooks/use-theme";
-import { useProduct } from "@/hooks/use-product";
-import { useTopping } from "@/hooks/use-topping";
+import { Screen } from "@/components/shared/screen";
+import { Typography } from "@/components/shared/typography";
+import { useOrder } from "@/contexts/order-context";
 import { useEstablishment } from "@/hooks/use-establishment";
+import { useProduct } from "@/hooks/use-product";
+import { useTheme } from "@/hooks/use-theme";
+import { useTopping } from "@/hooks/use-topping";
+import { Product } from "@/models/product";
+import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ProductDetailsScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { addToCart } = useCart();
+  const { addToCart } = useOrder();
   const { currentTheme } = useTheme();
   const { colors, fonts, sizes } = currentTheme;
   const [product, setProduct] = useState<Product | null>(null);

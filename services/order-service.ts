@@ -28,6 +28,7 @@ export type CreateOrderData = Omit<
 class OrderService {
   placeOrder = async (data: CreateOrderData): Promise<Order> => {
     const { productLines, ...orderData } = data;
+    console.log('productLines', productLines)
 
     // 1. Create the order
     const { data: newOrder, error: orderError } = await supabase
@@ -37,9 +38,11 @@ class OrderService {
       .single();
 
     if (orderError) {
+      console.log("orderError", orderError);
       throw orderError;
     }
 
+    console.log('newOrder', newOrder)
     const orderId = newOrder.id;
 
     // 2. Create the product lines
@@ -51,13 +54,14 @@ class OrderService {
       totalPrice: pl.unitPrice * pl.quantity,
       specialInstructions: pl.specialInstructions,
     }));
-
     const { data: newProductLines, error: productLinesError } = await supabase
-      .from("order_product_lines")
-      .insert(keysToSnakeCase(productLinesToInsert))
-      .select();
-
+    .from("order_product_lines")
+    .insert(keysToSnakeCase(productLinesToInsert))
+    .select();
+    
+    console.log('productLinesError', productLinesError)
     if (productLinesError) {
+      console.log("productLinesError", productLinesError);
       await supabase.from("orders").delete().eq("id", orderId);
       throw productLinesError;
     }
@@ -75,12 +79,14 @@ class OrderService {
       });
     });
 
+    console.log('toppingsToInsert', toppingsToInsert)
     if (toppingsToInsert.length > 0) {
       const { error: toppingsError } = await supabase
         .from("order_product_line_toppings")
         .insert(toppingsToInsert);
 
       if (toppingsError) {
+        console.log("toppingsError", toppingsError);
         await supabase
           .from("order_product_lines")
           .delete()
@@ -169,8 +175,15 @@ class OrderService {
     const { data, error } = await supabase
       .from("orders")
       .select(
-        "*, productLines:order_product_lines(*, product:products(*), selectedToppings:toppings(*))"
-      )
+        `*,
+        productLines:order_product_lines(
+          *,
+          product:products(*),
+          selectedToppings:order_product_line_toppings(
+            topping:toppings(*)
+          )
+        )
+      `)
       .eq("id", id)
       .single();
 
@@ -187,7 +200,14 @@ class OrderService {
     const { data, error } = await supabase
       .from("orders")
       .select(
-        "*, productLines:order_product_lines(*, product:products(*), selectedToppings:toppings(*))"
+        `*,
+        productLines:order_product_lines(
+        *,
+        product:products(*),
+        selectedToppings:order_product_line_toppings(
+          topping:toppings(*)
+        )
+      )`
       )
       .eq("establishment_id", establishmentId);
 
@@ -202,7 +222,14 @@ class OrderService {
     const { data, error } = await supabase
       .from("orders")
       .select(
-        "*, productLines:order_product_lines(*, product:products(*), selectedToppings:toppings(*))"
+        `*,
+        productLines:order_product_lines(
+        *,
+        product:products(*),
+        selectedToppings:order_product_line_toppings(
+          topping:toppings(*)
+        )
+      )`
       )
       .eq("customer_id", customerId);
 
@@ -217,7 +244,14 @@ class OrderService {
     const { data, error } = await supabase
       .from("orders")
       .select(
-        "*, productLines:order_product_lines(*, product:products(*), selectedToppings:toppings(*))"
+        `*,
+        productLines:order_product_lines(
+        *,
+        product:products(*),
+        selectedToppings:order_product_line_toppings(
+          topping:toppings(*)
+        )
+      )`
       )
       .eq("deliverer_id", delivererId);
 
