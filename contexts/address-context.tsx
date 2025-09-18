@@ -74,6 +74,7 @@ export const AddressProvider = ({
   };
 
   const updateAddress = async (id: string, address: Partial<Address>) => {
+    setLoading(true)
     try {
       await addressService.updateAddress(id, address);
       setAddresses(
@@ -81,6 +82,8 @@ export const AddressProvider = ({
       );
     } catch (error) {
       handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
